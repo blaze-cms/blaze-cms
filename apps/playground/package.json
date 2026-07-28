@@ -1,0 +1,15 @@
+{
+  "name": "@blaze-cms/playground",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "echo 'Run: node ../../packages/cms/dist/index.js dev from playground'",
+    "start": "echo 'Run: node ../../packages/cms/dist/index.js start from playground'",
+    "build": "echo 'Playground build OK'",
+    "generate": "echo 'Run: node ../../packages/cms/dist/index.js generate'"
+  },
+  "dependencies": {
+    "@blaze-cms/cms": "workspace:*",
+    "@blaze-cms/schema": "workspace:*"
+  }
+}

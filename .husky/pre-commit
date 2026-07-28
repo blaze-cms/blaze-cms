@@ -1,0 +1,5 @@
+npx lint-staged
+npx knip --no-config-hints
+if git rev-parse --verify HEAD > /dev/null 2>&1; then
+  env -u GIT_INDEX_FILE npx fallow audit --quiet || true
+fi

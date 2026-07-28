@@ -1,0 +1,57 @@
+{
+  "name": "blaze-cms",
+  "type": "module",
+  "private": true,
+  "packageManager": "pnpm@11.17.0",
+  "scripts": {
+    "dev": "turbo dev",
+    "dev:playground": "turbo dev --filter=@blaze-cms/playground",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "test": "turbo test",
+    "test:coverage": "vitest run --coverage",
+    "clean": "turbo clean && rm -rf node_modules",
+    "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,json,md}\"",
+    "eslint": "eslint .",
+    "prepare": "husky",
+    "fallow": "fallow",
+    "fallow:audit": "fallow audit",
+    "fallow:health": "fallow health --score",
+    "knip": "knip",
+    "knip:fix": "knip --fix"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.2.1",
+    "@commitlint/config-conventional": "^21.2.0",
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.62.0",
+    "@types/node": "^22.0.0",
+    "@vitest/coverage-v8": "^3.2.7",
+    "@vitest/eslint-plugin": "^1.6.23",
+    "eslint": "^10.6.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-no-secrets": "^2.3.3",
+    "eslint-plugin-no-unsanitized": "^4.1.5",
+    "eslint-plugin-perfectionist": "^5.10.0",
+    "eslint-plugin-security": "^4.0.1",
+    "fallow": "^3.2.0",
+    "globals": "^17.7.0",
+    "husky": "^9.1.7",
+    "knip": "^6.27.0",
+    "lint-staged": "^17.0.8",
+    "prettier": "^3.5.0",
+    "turbo": "^2.10.7",
+    "typescript": "^5.8.0",
+    "typescript-eslint": "^8.63.0",
+    "vitest": "^3.1.0"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.2.0",
+    "zod": "^4.4.3"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

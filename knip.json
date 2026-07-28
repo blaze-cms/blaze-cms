@@ -1,0 +1,49 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "exclude": ["files", "duplicates"],
+  "ignoreDependencies": [
+    "@blaze-cms/*",
+    "@tailwindcss/vite",
+    "@tanstack/react-query",
+    "@types/react",
+    "@types/react-dom",
+    "@vitejs/plugin-react",
+    "clsx",
+    "dompurify",
+    "firebase-admin",
+    "lucide-react",
+    "react",
+    "react-dom",
+    "tailwind-merge",
+    "tailwindcss",
+    "zod"
+  ],
+  "ignoreFiles": [
+    "**/test/**",
+    "**/__generated__/**",
+    "**/dist/**",
+    "packages/create-app/explicit/**",
+    "packages/create-app/my-cms/**",
+    "packages/create-app/my-value/**"
+  ],
+  "ignoreIssues": {
+    "packages/cms/src/server/schemas/**": ["exports", "types"],
+    "packages/cms/src/server/lib/**": ["exports", "types"],
+    "packages/core/src/container.ts": ["exports", "types"],
+    "packages/core/src/event-bus.ts": ["exports", "types"],
+    "packages/core/src/lifecycle.ts": ["exports", "types"],
+    "packages/graphql/src/types.ts": ["exports", "types"],
+    "packages/schema/src/watcher.ts": ["exports", "types"],
+    "packages/sdk/src/client.ts": ["exports", "types"],
+    "packages/types/src/schema.ts": ["types"]
+  },
+  "workspaces": {
+    ".": {
+      "entry": [
+        "packages/*/src/index.{ts,tsx}",
+        "packages/cms/src/server/app.ts",
+        "packages/cms/src/server/config.ts"
+      ]
+    }
+  }
+}

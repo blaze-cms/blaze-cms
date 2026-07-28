@@ -1,0 +1,138 @@
+{
+  "$schema": "https://raw.githubusercontent.com/fallow-rs/fallow/main/schema.json",
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/.turbo/**",
+    "**/coverage/**",
+    "packages/generators/test/**",
+    "apps/playground/cms/collections/posts.ts",
+    "packages/create-app/explicit/cms/collections/posts.ts",
+    "packages/create-app/my-cms/cms/collections/posts.ts",
+    "packages/create-app/my-value/cms/collections/posts.ts"
+  ],
+  "ignoreDependencies": [
+    "@blaze-cms/types",
+    "@blaze-cms/core",
+    "@blaze-cms/database",
+    "@blaze-cms/rest-api",
+    "@blaze-cms/schema",
+    "@blaze-cms/validation",
+    "@blaze-cms/cms",
+    "clsx",
+    "lucide-react",
+    "react",
+    "tailwind-merge",
+    "@tailwindcss/vite",
+    "@tanstack/react-query",
+    "dompurify",
+    "@types/dompurify",
+    "marked",
+    "@types/marked"
+  ],
+  "audit": {
+    "gate": "new-only"
+  },
+  "health": {
+    "maxCyclomatic": 20,
+    "maxCognitive": 30,
+    "maxUnitSize": 150,
+    "maxCrap": 30,
+    "ignore": ["packages/*/test/**/*.test.ts", "apps/*/test/**/*.test.ts"],
+    "thresholdOverrides": [
+      {
+        "files": ["packages/cms/src/server/routes/schemas.ts"],
+        "maxUnitSize": 500,
+        "reason": "auto-generated route registration"
+      },
+      {
+        "files": ["packages/cms/src/server/routes/media.ts"],
+        "maxUnitSize": 350,
+        "reason": "media route handler with DB queries"
+      },
+      {
+        "files": ["packages/cms/src/index.ts"],
+        "maxUnitSize": 250,
+        "maxCyclomatic": 70,
+        "maxCognitive": 110,
+        "maxCrap": 650,
+        "reason": "command-line arg parser with multiple subcommands including generate:types/sdk/validation"
+      },
+      {
+        "files": ["packages/validation/src/generator.ts"],
+        "maxCyclomatic": 45,
+        "maxCognitive": 30,
+        "maxCrap": 50,
+        "reason": "field-to-Zod mapping with regex validation for each field type"
+      },
+      {
+        "files": ["packages/generators/src/admin-forms.ts"],
+        "maxCyclomatic": 35,
+        "maxCrap": 100,
+        "reason": "field-to-input-type mapping with many type branches"
+      },
+      {
+        "files": ["packages/generators/src/sdk.ts"],
+        "maxCrap": 300,
+        "maxCyclomatic": 20,
+        "maxCognitive": 20,
+        "reason": "field-to-TS-type mapping with many type branches"
+      },
+      {
+        "files": ["packages/generators/src/graphql-schema.ts"],
+        "maxCrap": 200,
+        "reason": "GraphQL schema generation with many field type mappings"
+      },
+      {
+        "files": ["packages/generators/src/openapi.ts"],
+        "maxCrap": 50,
+        "reason": "OpenAPI schema generation with field type mappings"
+      },
+      {
+        "files": ["packages/cms/src/server/routes/collections.ts"],
+        "maxCognitive": 90,
+        "maxCyclomatic": 25,
+        "maxCrap": 120,
+        "reason": "collection CRUD route registration with relations, versions, permissions, and bulk operations"
+      },
+      {
+        "files": ["packages/rest-api/src/handlers.ts"],
+        "maxCyclomatic": 15,
+        "maxCognitive": 15,
+        "maxCrap": 55,
+        "reason": "REST API handlers with query validation, bulk operations, and version management"
+      },
+      {
+        "files": ["packages/cms/src/server/routes/webhooks.ts"],
+        "maxUnitSize": 300,
+        "reason": "webhook CRUD route registration"
+      },
+      {
+        "files": ["packages/cms/src/server/plugins/auth.ts"],
+        "maxUnitSize": 250,
+        "reason": "auth plugin with JWT, API key, and session management"
+      },
+      {
+        "files": ["packages/generators/src/hooks.ts"],
+        "maxCrap": 250,
+        "maxCyclomatic": 15,
+        "maxCognitive": 15,
+        "maxUnitSize": 350,
+        "reason": "React hooks generator with field-to-hook-type mapping and query client setup"
+      }
+    ]
+  },
+  "duplicates": {
+    "mode": "mild",
+    "minTokens": 50,
+    "skipLocal": true,
+    "threshold": 5.0,
+    "ignore": [
+      "packages/cms/src/server/**",
+      "packages/graphql/src/resolvers.ts",
+      "packages/rest-api/src/handlers.ts",
+      "packages/graphql/src/types.ts"
+    ]
+  },
+  "entry": ["packages/*/src/index.ts"]
+}

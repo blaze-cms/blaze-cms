@@ -1,0 +1,44 @@
+{
+  "name": "@blaze-cms/cms",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": "bin/cms.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "bin",
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@blaze-cms/auth": "workspace:*",
+    "@blaze-cms/core": "workspace:*",
+    "@blaze-cms/database": "workspace:*",
+    "@blaze-cms/generators": "workspace:*",
+    "@blaze-cms/graphql": "workspace:*",
+    "@blaze-cms/permissions": "workspace:*",
+    "@blaze-cms/plugins": "workspace:*",
+    "@blaze-cms/rest-api": "workspace:*",
+    "@blaze-cms/schema": "workspace:*",
+    "@blaze-cms/storage": "workspace:*",
+    "@blaze-cms/types": "workspace:*",
+    "dotenv": "^17.4.2",
+    "fastify": "^5.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0"
+  }
+}
