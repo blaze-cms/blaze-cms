@@ -152,30 +152,10 @@ Replicate [arche-cms](https://github.com/Arche-CMS/arche-cms) architecture, repl
 - [ ] `vitest.config.ts`
 - [ ] Tests
 
-## Phase 5: API & Code Generation
+## Phase 5: Code Generation
 
-### `@blaze-cms/rest-api` — REST Route Generation
-
-- [ ] `src/index.ts`
-- [ ] `src/types.ts` — Route config types
-- [ ] `src/handlers.ts` — CRUD handler factories
-- [ ] `src/middleware.ts` — Common middleware (auth, validation, pagination)
-- [ ] `src/route-generator.ts` — Collection/Global route generation
-- [ ] `src/register.ts` — Fastify route registration
-- [ ] `src/openapi.ts` — OpenAPI schema generation
-- [ ] `tsconfig.json`
-- [ ] `vitest.config.ts`
-- [ ] Tests
-
-### `@blaze-cms/graphql` — GraphQL Schema
-
-- [ ] `src/index.ts`
-- [ ] `src/types.ts` — GraphQL type mapping
-- [ ] `src/type-defs.ts` — GraphQL type definitions generator
-- [ ] `src/resolvers.ts` — GraphQL resolvers (backed by Firestore)
-- [ ] `tsconfig.json`
-- [ ] `vitest.config.ts`
-- [ ] Tests
+> **Note:** No API endpoints. This CMS writes directly to Firestore. The admin panel uses the Firebase client SDK.
+> Packages `@blaze-cms/rest-api` and `@blaze-cms/graphql` have been **removed** — all data access is through Firestore directly.
 
 ### `@blaze-cms/generators` — Code Generation Pipeline
 
@@ -184,10 +164,10 @@ Replicate [arche-cms](https://github.com/Arche-CMS/arche-cms) architecture, repl
 - [ ] `src/pipeline.ts` — GenerationPipeline orchestrator
 - [ ] `src/typegen.ts` — TypeScript type generation
 - [ ] `src/validation.ts` — Zod schema generation (wraps validation package)
-- [ ] `src/api-routes.ts` — API route generation
-- [ ] `src/graphql-schema.ts` — GraphQL schema generation
+- ~~`src/api-routes.ts` — Removed (no REST API)~~
+- ~~`src/graphql-schema.ts` — Removed (no GraphQL)~~
 - [ ] `src/migrations.ts` — Migration generation
-- [ ] `src/openapi.ts` — OpenAPI spec generation
+- ~~`src/openapi.ts` — Removed (no REST API)~~
 - [ ] `src/admin-forms.ts` — Admin form generation
 - [ ] `src/sdk.ts` — SDK generation
 - [ ] `src/hooks.ts` — React hooks generation
@@ -247,10 +227,10 @@ Replicate [arche-cms](https://github.com/Arche-CMS/arche-cms) architecture, repl
 - [ ] `src/server/plugins/error-handler.ts`
 - [ ] `src/server/plugins/health.ts`
 - [ ] `src/server/plugins/request-logger.ts`
-- [ ] `src/server/plugins/swagger.ts`
+- ~~`src/server/plugins/swagger.ts` — Removed (no REST API)~~
 - [ ] `src/server/plugins/auth.ts` — Firebase Auth middleware
 - [ ] `src/server/plugins/permissions.ts` — RBAC middleware
-- [ ] `src/server/plugins/graphql.ts` — GraphQL (Mercurius)
+- ~~`src/server/plugins/graphql.ts` — Removed (no GraphQL)~~
 - [ ] `src/server/plugins/static.ts` — Static file serving for admin panel
 
 ##### Server Routes
@@ -285,7 +265,7 @@ Replicate [arche-cms](https://github.com/Arche-CMS/arche-cms) architecture, repl
 
 ##### Admin Lib
 
-- [ ] `src/admin/lib/api.ts` — API client (Firebase REST or Fastify backend)
+- ~~`src/admin/lib/api.ts` — Removed (no REST endpoint; use Firebase client SDK directly)~~
 - [ ] `src/admin/lib/auth.tsx` — Firebase Auth client integration
 - [ ] `src/admin/lib/hooks.ts` — Common hooks
 - [ ] `src/admin/lib/utils.ts` — Utility functions
@@ -293,7 +273,7 @@ Replicate [arche-cms](https://github.com/Arche-CMS/arche-cms) architecture, repl
 - [ ] `src/admin/lib/providers/context.tsx` — Provider context
 - [ ] `src/admin/lib/providers/index.ts` — Provider exports
 - [ ] `src/admin/lib/providers/registry.ts` — Provider registry
-- [ ] `src/admin/lib/providers/rest.ts` — REST provider (Fastify backend)
+- ~~`src/admin/lib/providers/rest.ts` — Removed (no REST endpoint)~~
 - [ ] `src/admin/lib/providers/types.ts` — Provider type definitions
 - [ ] `src/admin/lib/providers/firebase.ts` — **Firebase provider** (direct Firestore access from admin)
 

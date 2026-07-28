@@ -117,18 +117,12 @@ importers:
       '@blaze-cms/generators':
         specifier: workspace:*
         version: link:../generators
-      '@blaze-cms/graphql':
-        specifier: workspace:*
-        version: link:../graphql
       '@blaze-cms/permissions':
         specifier: workspace:*
         version: link:../permissions
       '@blaze-cms/plugins':
         specifier: workspace:*
         version: link:../plugins
-      '@blaze-cms/rest-api':
-        specifier: workspace:*
-        version: link:../rest-api
       '@blaze-cms/schema':
         specifier: workspace:*
         version: link:../schema
@@ -178,15 +172,6 @@ importers:
         specifier: workspace:*
         version: link:../validation
 
-  packages/graphql:
-    dependencies:
-      '@blaze-cms/types':
-        specifier: workspace:*
-        version: link:../types
-      graphql:
-        specifier: ^16.0.0
-        version: 16.14.2
-
   packages/permissions:
     dependencies:
       '@blaze-cms/types':
@@ -199,23 +184,11 @@ importers:
         specifier: workspace:*
         version: link:../types
 
-  packages/rest-api:
-    dependencies:
-      '@blaze-cms/types':
-        specifier: workspace:*
-        version: link:../types
-      '@blaze-cms/validation':
-        specifier: workspace:*
-        version: link:../validation
-
   packages/schema:
     dependencies:
       '@blaze-cms/types':
         specifier: workspace:*
         version: link:../types
-      tsx:
-        specifier: ^4.23.0
-        version: 4.23.1
       zod:
         specifier: ^4.4.3
         version: 4.4.3
@@ -1919,10 +1892,6 @@ packages:
   gopd@1.2.0:
     resolution: {integrity: sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==}
     engines: {node: '>= 0.4'}
-
-  graphql@16.14.2:
-    resolution: {integrity: sha512-Chq1s4CY7jmh8gO2qvLIJyfCDIN+EHLFW/9iShnp1z8FjBQMoodWP1kDC36VAMXXIvAjj4ARa7ntfAV2BrjsbA==}
-    engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
 
   gtoken@7.1.0:
     resolution: {integrity: sha512-pCcEwRi+TKpMlxAQObHDQ56KawURgyAf6jtIY046fJ5tIv3zDe/LEIubckAO8fj6JnAxLdmWkUfNyulQ2iKdEw==}
@@ -4481,8 +4450,6 @@ snapshots:
   gopd@1.2.0:
     optional: true
 
-  graphql@16.14.2: {}
-
   gtoken@7.1.0(supports-color@7.2.0):
     dependencies:
       gaxios: 6.7.1(supports-color@7.2.0)
@@ -5222,6 +5189,7 @@ snapshots:
       esbuild: 0.28.1
     optionalDependencies:
       fsevents: 2.3.3
+    optional: true
 
   turbo@2.10.7:
     optionalDependencies:

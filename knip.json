@@ -32,7 +32,7 @@
     "packages/core/src/container.ts": ["exports", "types"],
     "packages/core/src/event-bus.ts": ["exports", "types"],
     "packages/core/src/lifecycle.ts": ["exports", "types"],
-    "packages/graphql/src/types.ts": ["exports", "types"],
+
     "packages/schema/src/watcher.ts": ["exports", "types"],
     "packages/sdk/src/client.ts": ["exports", "types"],
     "packages/types/src/schema.ts": ["types"]

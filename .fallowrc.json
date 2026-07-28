@@ -15,7 +15,6 @@
     "@blaze-cms/types",
     "@blaze-cms/core",
     "@blaze-cms/database",
-    "@blaze-cms/rest-api",
     "@blaze-cms/schema",
     "@blaze-cms/validation",
     "@blaze-cms/cms",
@@ -79,11 +78,6 @@
         "reason": "field-to-TS-type mapping with many type branches"
       },
       {
-        "files": ["packages/generators/src/graphql-schema.ts"],
-        "maxCrap": 200,
-        "reason": "GraphQL schema generation with many field type mappings"
-      },
-      {
         "files": ["packages/generators/src/openapi.ts"],
         "maxCrap": 50,
         "reason": "OpenAPI schema generation with field type mappings"
@@ -94,13 +88,6 @@
         "maxCyclomatic": 25,
         "maxCrap": 120,
         "reason": "collection CRUD route registration with relations, versions, permissions, and bulk operations"
-      },
-      {
-        "files": ["packages/rest-api/src/handlers.ts"],
-        "maxCyclomatic": 15,
-        "maxCognitive": 15,
-        "maxCrap": 55,
-        "reason": "REST API handlers with query validation, bulk operations, and version management"
       },
       {
         "files": ["packages/cms/src/server/routes/webhooks.ts"],
@@ -127,12 +114,7 @@
     "minTokens": 50,
     "skipLocal": true,
     "threshold": 5.0,
-    "ignore": [
-      "packages/cms/src/server/**",
-      "packages/graphql/src/resolvers.ts",
-      "packages/rest-api/src/handlers.ts",
-      "packages/graphql/src/types.ts"
-    ]
+    "ignore": ["packages/cms/src/server/**", "packages/generators/src/graphql-schema.ts"]
   },
   "entry": ["packages/*/src/index.ts"]
 }
