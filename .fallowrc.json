@@ -5,6 +5,7 @@
       "**/dist/**",
       "**/.turbo/**",
       "**/coverage/**",
+      "packages/create-app/bin/*.js",
       "packages/generators/test/**",
       "apps/playground/cms/collections/posts.ts",
       "packages/cms/src/commands/start.ts",
@@ -108,6 +109,13 @@
         "maxCognitive": 15,
         "maxUnitSize": 350,
         "reason": "React hooks generator with field-to-hook-type mapping and query client setup"
+      },
+      {
+        "files": ["packages/cms/src/admin/components/field-input.tsx"],
+        "maxCrap": 310,
+        "maxCyclomatic": 20,
+        "maxCognitive": 5,
+        "reason": "field type dispatch switch with many renderer branches"
       }
     ]
   },
