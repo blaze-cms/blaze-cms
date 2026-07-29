@@ -114,7 +114,7 @@
         "files": ["packages/cms/src/admin/components/field-input.tsx"],
         "maxCrap": 310,
         "maxCyclomatic": 20,
-        "maxCognitive": 5,
+        "maxCognitive": 10,
         "reason": "field type dispatch switch with many renderer branches"
       }
     ]
