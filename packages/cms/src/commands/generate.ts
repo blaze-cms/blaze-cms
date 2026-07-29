@@ -7,10 +7,12 @@ import {
 import { SchemaLoader } from "@blaze-cms/schema";
 import { writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
-
+import { fileURLToPath } from "node:url";
 export interface GenerateOptions {
   type?: string;
   dir?: string;
+  outDir?: string;
+  sync?: boolean;
 }
 
 async function generateSchemaRegistry(collections: unknown[], globals: unknown[], components: unknown[], outDir: string) {
@@ -36,14 +38,34 @@ export function getComponent(slug: string): ComponentDefinition | undefined {
   console.warn(`  ✓ Generated schema-registry.ts`);
 }
 
-async function generateFirestoreRules(collections: unknown[]) {
+async function generateFirestoreRules(collections: { slug: string }[], globals: { slug: string }[]) {
+  const collectionRules = collections
+    .map((c) => `    match /${c.slug}/{doc} {\n      allow read, write: if request.auth != null;\n    }`)
+    .join("\n");
+  const globalRules = globals
+    .map((g) => `    match /globals_${g.slug}/{doc} {\n      allow read, write: if request.auth != null;\n    }`)
+    .join("\n");
+
   const rules = `
 rules_version = 2;
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Admin access — Firebase Auth required
+
+    // Schemas — readable by all authenticated users, writable only by admins
+    match /_schemas/{collection}/{doc} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+
+    // Per-collection content rules
+${collectionRules}
+
+    // Global content rules
+${globalRules}
+
+    // Deny everything else
     match /{document=**} {
-      allow read, write: if request.auth != null;
+      allow read, write: if false;
     }
   }
 }
@@ -60,9 +82,12 @@ async function generateFirestoreIndexes(collections: unknown[]) {
   console.warn(`  ✓ Generated firestore.indexes.json`);
 }
 
+const _dirname = fileURLToPath(new URL(".", import.meta.url));
+const ADMIN_ROOT = resolve(_dirname, "../../src/admin");
+
 export async function generate(options: GenerateOptions): Promise<void> {
   const schemaDir = resolve(process.cwd(), options.dir ?? "cms");
-  const outDir = resolve(process.cwd(), "src/admin/__generated__");
+  const outDir = options.outDir ? resolve(process.cwd(), options.outDir) : resolve(ADMIN_ROOT, "__generated__");
 
   if (!existsSync(schemaDir)) {
     console.warn(`  ⚠ Schema directory not found: ${schemaDir}`);
@@ -95,7 +120,7 @@ export async function generate(options: GenerateOptions): Promise<void> {
     await generateSchemaRegistry(schema.collections, schema.globals, schema.components, outDir);
   }
   if (!options.type || options.type === "rules") {
-    await generateFirestoreRules(schema.collections);
+    await generateFirestoreRules(schema.collections, schema.globals);
   }
   if (!options.type || options.type === "indexes") {
     await generateFirestoreIndexes(schema.collections);
@@ -105,5 +130,14 @@ export async function generate(options: GenerateOptions): Promise<void> {
 
   if (!options.type) {
     console.warn(`\n  Generated files in ${outDir}`);
+  }
+
+  if (options.sync) {
+    const { syncToFirestore } = await import("./sync-to-firestore.js");
+    await syncToFirestore({
+      collections: schema.collections as never,
+      globals: schema.globals as never,
+      components: schema.components as never,
+    });
   }
 }

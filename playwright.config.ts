@@ -14,13 +14,13 @@ export default defineConfig({
   testDir: "./e2e",
   timeout: 30_000,
   use: {
-    baseURL: "http://localhost:3500/admin/",
+    baseURL: "http://localhost:5173/",
     trace: "on-first-retry",
   },
   webServer: {
-    command: "node ../../scripts/serve-spa.mjs dist 3500",
-    cwd: "packages/cms",
-    port: 3500,
+    command: "node ../../packages/cms/bin/cms.js dev",
+    cwd: "apps/playground",
+    port: 5173,
     reuseExistingServer: !process.env.CI,
     timeout: 30_000,
   },

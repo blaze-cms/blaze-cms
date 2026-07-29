@@ -5,24 +5,24 @@ export const collections: CollectionDefinition[] = [
   {
     "fields": [
       {
-        "label": "Title",
         "name": "title",
         "type": "text",
+        "label": "Title",
         "validation": {
           "required": true
         }
       },
       {
+        "name": "field",
+        "type": "array",
         "fields": [
           {
-            "label": "Item",
             "name": "item",
-            "type": "text"
+            "type": "text",
+            "label": "Item"
           }
         ],
-        "label": "Array Field",
-        "name": "field",
-        "type": "array"
+        "label": "Array Field"
       }
     ],
     "labels": {
@@ -34,17 +34,17 @@ export const collections: CollectionDefinition[] = [
   {
     "fields": [
       {
-        "label": "Title",
         "name": "title",
         "type": "text",
+        "label": "Title",
         "validation": {
           "required": true
         }
       },
       {
-        "label": "Boolean Field",
         "name": "field",
-        "type": "boolean"
+        "type": "boolean",
+        "label": "Boolean Field"
       }
     ],
     "labels": {
@@ -56,18 +56,18 @@ export const collections: CollectionDefinition[] = [
   {
     "fields": [
       {
-        "label": "Title",
         "name": "title",
         "type": "text",
+        "label": "Title",
         "validation": {
           "required": true
         }
       },
       {
-        "component": "seo",
-        "label": "Component Field",
         "name": "field",
-        "type": "component"
+        "type": "component",
+        "component": "seo",
+        "label": "Component Field"
       }
     ],
     "labels": {
@@ -79,17 +79,17 @@ export const collections: CollectionDefinition[] = [
   {
     "fields": [
       {
-        "label": "Title",
         "name": "title",
         "type": "text",
+        "label": "Title",
         "validation": {
           "required": true
         }
       },
       {
-        "label": "Date Field",
         "name": "field",
-        "type": "date"
+        "type": "date",
+        "label": "Date Field"
       }
     ],
     "labels": {
@@ -101,21 +101,21 @@ export const collections: CollectionDefinition[] = [
   {
     "fields": [
       {
-        "label": "Title",
         "name": "title",
         "type": "text",
+        "label": "Title",
         "validation": {
           "required": true
         }
       },
       {
+        "name": "field",
+        "type": "dynamicZone",
         "components": [
           "seo",
           "media-card"
         ],
-        "label": "Dynamic Zone Field",
-        "name": "field",
-        "type": "dynamicZone"
+        "label": "Dynamic Zone Field"
       }
     ],
     "labels": {
@@ -127,24 +127,24 @@ export const collections: CollectionDefinition[] = [
   {
     "fields": [
       {
-        "label": "Title",
         "name": "title",
         "type": "text",
+        "label": "Title",
         "validation": {
           "required": true
         }
       },
       {
+        "name": "field",
+        "type": "group",
         "fields": [
           {
-            "label": "Nested",
             "name": "nested",
-            "type": "text"
+            "type": "text",
+            "label": "Nested"
           }
         ],
-        "label": "Group Field",
-        "name": "field",
-        "type": "group"
+        "label": "Group Field"
       }
     ],
     "labels": {
@@ -156,17 +156,17 @@ export const collections: CollectionDefinition[] = [
   {
     "fields": [
       {
-        "label": "Title",
         "name": "title",
         "type": "text",
+        "label": "Title",
         "validation": {
           "required": true
         }
       },
       {
-        "label": "Media Field",
         "name": "field",
-        "type": "media"
+        "type": "media",
+        "label": "Media Field"
       }
     ],
     "labels": {
@@ -178,17 +178,17 @@ export const collections: CollectionDefinition[] = [
   {
     "fields": [
       {
-        "label": "Title",
         "name": "title",
         "type": "text",
+        "label": "Title",
         "validation": {
           "required": true
         }
       },
       {
-        "label": "Number Field",
         "name": "field",
-        "type": "number"
+        "type": "number",
+        "label": "Number Field"
       }
     ],
     "labels": {
@@ -204,43 +204,44 @@ export const collections: CollectionDefinition[] = [
     },
     "fields": [
       {
-        "label": "Title",
         "name": "title",
         "type": "text",
+        "label": "Title",
         "validation": {
           "required": true
         }
       },
       {
         "name": "slug",
-        "source": "title",
         "type": "slug",
+        "source": "title",
         "unique": true
       },
       {
-        "label": "Excerpt",
         "name": "excerpt",
-        "type": "textarea"
+        "type": "textarea",
+        "label": "Excerpt"
       },
       {
-        "label": "Content",
         "name": "content",
-        "type": "text"
+        "type": "text",
+        "label": "Content"
       },
       {
-        "defaultValue": false,
-        "label": "Published",
         "name": "published",
-        "type": "boolean"
+        "type": "boolean",
+        "defaultValue": false,
+        "label": "Published"
       },
       {
-        "label": "Published At",
         "name": "publishedAt",
-        "type": "datetime"
+        "type": "datetime",
+        "label": "Published At"
       },
       {
-        "label": "Category",
         "name": "category",
+        "type": "select",
+        "label": "Category",
         "options": [
           {
             "label": "News",
@@ -254,15 +255,14 @@ export const collections: CollectionDefinition[] = [
             "label": "Blog",
             "value": "blog"
           }
-        ],
-        "type": "select"
+        ]
       },
       {
+        "name": "author",
+        "type": "relation",
         "kind": "manyToOne",
         "label": "Author",
-        "name": "author",
-        "to": "users",
-        "type": "relation"
+        "to": "users"
       }
     ],
     "labels": {
@@ -278,18 +278,18 @@ export const collections: CollectionDefinition[] = [
   {
     "fields": [
       {
-        "label": "Title",
         "name": "title",
         "type": "text",
+        "label": "Title",
         "validation": {
           "required": true
         }
       },
       {
-        "label": "Relation Field",
         "name": "field",
-        "to": "users",
-        "type": "relation"
+        "type": "relation",
+        "label": "Relation Field",
+        "to": "users"
       }
     ],
     "labels": {
@@ -301,24 +301,24 @@ export const collections: CollectionDefinition[] = [
   {
     "fields": [
       {
-        "label": "Title",
         "name": "title",
         "type": "text",
+        "label": "Title",
         "validation": {
           "required": true
         }
       },
       {
+        "name": "field",
+        "type": "repeater",
         "fields": [
           {
-            "label": "Item",
             "name": "item",
-            "type": "text"
+            "type": "text",
+            "label": "Item"
           }
         ],
-        "label": "Repeater Field",
-        "name": "field",
-        "type": "repeater"
+        "label": "Repeater Field"
       }
     ],
     "labels": {
@@ -330,17 +330,17 @@ export const collections: CollectionDefinition[] = [
   {
     "fields": [
       {
-        "label": "Title",
         "name": "title",
         "type": "text",
+        "label": "Title",
         "validation": {
           "required": true
         }
       },
       {
-        "label": "Rich Text Field",
         "name": "field",
-        "type": "richText"
+        "type": "richText",
+        "label": "Rich Text Field"
       }
     ],
     "labels": {
@@ -352,16 +352,17 @@ export const collections: CollectionDefinition[] = [
   {
     "fields": [
       {
-        "label": "Title",
         "name": "title",
         "type": "text",
+        "label": "Title",
         "validation": {
           "required": true
         }
       },
       {
-        "label": "Select Field",
         "name": "field",
+        "type": "select",
+        "label": "Select Field",
         "options": [
           {
             "label": "Option A",
@@ -375,8 +376,7 @@ export const collections: CollectionDefinition[] = [
             "label": "Option C",
             "value": "option-c"
           }
-        ],
-        "type": "select"
+        ]
       }
     ],
     "labels": {
@@ -388,17 +388,17 @@ export const collections: CollectionDefinition[] = [
   {
     "fields": [
       {
-        "label": "Title",
         "name": "title",
         "type": "text",
+        "label": "Title",
         "validation": {
           "required": true
         }
       },
       {
-        "label": "Text Field",
         "name": "field",
-        "type": "text"
+        "type": "text",
+        "label": "Text Field"
       }
     ],
     "labels": {
@@ -415,27 +415,27 @@ export const globals: GlobalDefinition[] = [
     },
     "fields": [
       {
-        "label": "Hero Title",
         "name": "heroTitle",
-        "type": "text"
+        "type": "text",
+        "label": "Hero Title"
       },
       {
-        "label": "Hero Subtitle",
         "name": "heroSubtitle",
-        "type": "text"
+        "type": "text",
+        "label": "Hero Subtitle"
       },
       {
-        "defaultValue": true,
-        "label": "Show Featured Posts",
         "name": "showFeaturedPosts",
-        "type": "boolean"
+        "type": "boolean",
+        "defaultValue": true,
+        "label": "Show Featured Posts"
       },
       {
+        "name": "featuredPost",
+        "type": "relation",
         "kind": "oneToOne",
         "label": "Featured Post",
-        "name": "featuredPost",
-        "to": "posts",
-        "type": "relation"
+        "to": "posts"
       }
     ],
     "label": "Homepage",
@@ -447,45 +447,45 @@ export const globals: GlobalDefinition[] = [
     },
     "fields": [
       {
-        "label": "Site Name",
         "name": "siteName",
         "type": "text",
+        "label": "Site Name",
         "validation": {
           "required": true
         }
       },
       {
-        "label": "Tagline",
         "name": "tagline",
-        "type": "text"
+        "type": "text",
+        "label": "Tagline"
       },
       {
-        "label": "Description",
         "name": "description",
-        "type": "textarea"
+        "type": "textarea",
+        "label": "Description"
       },
       {
-        "label": "Logo",
         "name": "logo",
-        "type": "media"
+        "type": "media",
+        "label": "Logo"
       },
       {
-        "format": "hex",
-        "label": "Primary Color",
         "name": "primaryColor",
-        "type": "color"
-      },
-      {
+        "type": "color",
         "format": "hex",
-        "label": "Secondary Color",
-        "name": "secondaryColor",
-        "type": "color"
+        "label": "Primary Color"
       },
       {
-        "defaultValue": true,
-        "label": "Enable Comments",
+        "name": "secondaryColor",
+        "type": "color",
+        "format": "hex",
+        "label": "Secondary Color"
+      },
+      {
         "name": "enableComments",
-        "type": "boolean"
+        "type": "boolean",
+        "defaultValue": true,
+        "label": "Enable Comments"
       }
     ],
     "label": "Site Settings",
@@ -496,24 +496,25 @@ export const components: ComponentDefinition[] = [
   {
     "fields": [
       {
-        "label": "Button Label",
         "name": "label",
         "type": "text",
+        "label": "Button Label",
         "validation": {
           "required": true
         }
       },
       {
-        "label": "URL",
         "name": "url",
         "type": "text",
+        "label": "URL",
         "validation": {
           "required": true
         }
       },
       {
-        "label": "Variant",
         "name": "variant",
+        "type": "select",
+        "label": "Variant",
         "options": [
           {
             "label": "Primary",
@@ -527,13 +528,12 @@ export const components: ComponentDefinition[] = [
             "label": "Ghost",
             "value": "ghost"
           }
-        ],
-        "type": "select"
+        ]
       },
       {
-        "label": "Open in New Tab",
         "name": "openInNewTab",
-        "type": "boolean"
+        "type": "boolean",
+        "label": "Open in New Tab"
       }
     ],
     "label": "Button",
@@ -542,27 +542,27 @@ export const components: ComponentDefinition[] = [
   {
     "fields": [
       {
-        "label": "Heading",
         "name": "heading",
         "type": "text",
+        "label": "Heading",
         "validation": {
           "required": true
         }
       },
       {
-        "label": "Body",
         "name": "body",
-        "type": "text"
+        "type": "text",
+        "label": "Body"
       },
       {
-        "label": "CTA Label",
         "name": "ctaLabel",
-        "type": "text"
+        "type": "text",
+        "label": "CTA Label"
       },
       {
-        "label": "CTA URL",
         "name": "ctaUrl",
-        "type": "text"
+        "type": "text",
+        "label": "CTA URL"
       }
     ],
     "label": "CTA",
@@ -571,22 +571,22 @@ export const components: ComponentDefinition[] = [
   {
     "fields": [
       {
-        "label": "Heading",
         "name": "heading",
         "type": "text",
+        "label": "Heading",
         "validation": {
           "required": true
         }
       },
       {
-        "label": "Subheading",
         "name": "subheading",
-        "type": "text"
+        "type": "text",
+        "label": "Subheading"
       },
       {
-        "label": "Background Image URL",
         "name": "backgroundImage",
-        "type": "text"
+        "type": "text",
+        "label": "Background Image URL"
       }
     ],
     "label": "Hero",
@@ -595,29 +595,30 @@ export const components: ComponentDefinition[] = [
   {
     "fields": [
       {
-        "label": "Image",
         "name": "image",
         "type": "media",
+        "label": "Image",
         "validation": {
           "required": true
         }
       },
       {
-        "label": "Title",
         "name": "title",
         "type": "text",
+        "label": "Title",
         "validation": {
           "required": true
         }
       },
       {
-        "label": "Description",
         "name": "description",
-        "type": "textarea"
+        "type": "textarea",
+        "label": "Description"
       },
       {
-        "label": "Layout",
         "name": "layout",
+        "type": "select",
+        "label": "Layout",
         "options": [
           {
             "label": "Left",
@@ -631,8 +632,7 @@ export const components: ComponentDefinition[] = [
             "label": "Full",
             "value": "full"
           }
-        ],
-        "type": "select"
+        ]
       }
     ],
     "label": "Media Card",
@@ -641,27 +641,27 @@ export const components: ComponentDefinition[] = [
   {
     "fields": [
       {
-        "label": "SEO Title",
         "name": "title",
         "type": "text",
+        "label": "SEO Title",
         "validation": {
           "required": true
         }
       },
       {
-        "label": "Meta Description",
         "name": "description",
-        "type": "textarea"
+        "type": "textarea",
+        "label": "Meta Description"
       },
       {
-        "label": "OG Image URL",
         "name": "ogImage",
-        "type": "text"
+        "type": "text",
+        "label": "OG Image URL"
       },
       {
-        "label": "Canonical URL",
         "name": "canonicalUrl",
-        "type": "text"
+        "type": "text",
+        "label": "Canonical URL"
       }
     ],
     "label": "SEO",

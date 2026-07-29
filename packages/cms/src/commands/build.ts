@@ -7,7 +7,7 @@ import { build as viteBuild, type InlineConfig } from "vite";
 import { generate } from "./generate.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ADMIN_ROOT = path.resolve(__dirname, "../src/admin");
+const ADMIN_ROOT = path.resolve(__dirname, "../../src/admin");
 
 export interface BuildOptions {
   outDir?: string;
@@ -17,11 +17,11 @@ export async function build(_options: BuildOptions): Promise<void> {
   console.warn("\n  Blaze CMS Production Build\n");
 
   console.warn("  [1/3] Generating schema registry...");
-  await generate({});
+  await generate({ outDir: path.resolve(ADMIN_ROOT, "__generated__") });
 
   console.warn("  [2/3] Building admin panel...");
   const config: InlineConfig = {
-    base: "/admin/",
+    base: "/",
     build: {
       emptyOutDir: true,
       outDir: path.resolve(ADMIN_ROOT, "../../dist/admin"),
@@ -38,5 +38,5 @@ export async function build(_options: BuildOptions): Promise<void> {
   await viteBuild(config);
 
   console.warn("  [3/3] Build complete.\n");
-  console.warn(`  Output: dist/admin/\n`);
+  console.warn(`  Output: dist/\n`);
 }

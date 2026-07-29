@@ -4,7 +4,7 @@ import path from "path";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  base: "/admin/",
+  base: "/",
   build: {
     emptyOutDir: true,
     outDir: path.resolve(__dirname, "../../dist/admin"),

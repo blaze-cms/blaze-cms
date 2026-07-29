@@ -1,16 +1,17 @@
-import tailwindcss from "@tailwindcss/vite";
-import react from "@vitejs/plugin-react";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createServer, type ViteDevServer } from "vite";
 
+import { generate } from "./generate.js";
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ADMIN_ROOT = path.resolve(__dirname, "../src/admin");
+const ADMIN_ROOT = path.resolve(__dirname, "../../src/admin");
 
 export interface DevOptions {
   port?: number;
   host?: string;
   emulator?: boolean;
+  sync?: boolean;
 }
 
 export async function dev(options: DevOptions): Promise<void> {
@@ -18,7 +19,12 @@ export async function dev(options: DevOptions): Promise<void> {
   const host = options.host ?? "localhost";
 
   console.warn(`\n  Blaze CMS Dev Server\n`);
-  console.warn(`  Admin panel: http://${host}:${port}/admin/\n`);
+
+  console.warn("  [1/3] Generating schema registry...");
+  await generate({ outDir: path.resolve(ADMIN_ROOT, "__generated__"), sync: options.sync });
+
+  console.warn(`  [2/3] Starting dev server...\n`);
+  console.warn(`  Admin panel: http://${host}:${port}/\n`);
 
   if (options.emulator) {
     console.warn("  Starting Firebase Emulator...");
@@ -33,12 +39,7 @@ export async function dev(options: DevOptions): Promise<void> {
   }
 
   const server: ViteDevServer = await createServer({
-    configFile: false,
-    plugins: [react(), tailwindcss()],
-    resolve: {
-      alias: { "@": ADMIN_ROOT },
-    },
-    root: ADMIN_ROOT,
+    configFile: path.resolve(ADMIN_ROOT, "vite.config.ts"),
     server: { host, port },
   });
 

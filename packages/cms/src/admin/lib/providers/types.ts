@@ -16,7 +16,7 @@ export interface PaginatedResult<T> {
 
 export interface DataProvider {
   name: string;
-  type: "firebase" | "server";
+  type: "firebase" | "server" | "mock";
 
   getCollections(): Promise<CollectionDefinition[]>;
   getGlobals(): Promise<GlobalDefinition[]>;

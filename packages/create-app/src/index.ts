@@ -65,22 +65,36 @@ import { defineConfig } from "@blaze-cms/cms";
 
 export default defineConfig({
   firebase: {
-    projectId: process.env.FIREBASE_PROJECT_ID ?? "your-project-id",
-    apiKey: process.env.FIREBASE_API_KEY ?? "",
-    authDomain: process.env.FIREBASE_AUTH_DOMAIN ?? "",
-    storageBucket: process.env.FIREBASE_STORAGE_BUCKET ?? "",
-    appId: process.env.FIREBASE_APP_ID ?? "",
+    projectId: process.env.VITE_FIREBASE_PROJECT_ID ?? "your-project-id",
+    apiKey: process.env.VITE_FIREBASE_API_KEY ?? "",
+    authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN ?? "",
+    storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET ?? "",
+    appId: process.env.VITE_FIREBASE_APP_ID ?? "",
   },
 });
 `);
 
   // .env
   createFile(dir, ".env", `
-FIREBASE_PROJECT_ID=your-project-id
-FIREBASE_API_KEY=your-api-key
-FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
-FIREBASE_STORAGE_BUCKET=your-project.appspot.com
-FIREBASE_APP_ID=your-app-id
+VITE_FIREBASE_PROJECT_ID=your-project-id
+VITE_FIREBASE_API_KEY=your-api-key
+VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+VITE_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+VITE_FIREBASE_APP_ID=your-app-id
+VITE_BACKEND_MODE=firebase
+`);
+
+  // .env.example
+  createFile(dir, ".env.example", `
+# Firebase Configuration
+VITE_FIREBASE_API_KEY=
+VITE_FIREBASE_AUTH_DOMAIN=
+VITE_FIREBASE_PROJECT_ID=
+VITE_FIREBASE_STORAGE_BUCKET=
+VITE_FIREBASE_APP_ID=
+
+# Backend mode: "firebase" (default) or "mock"
+VITE_BACKEND_MODE=firebase
 `);
 
   // .gitignore
@@ -129,6 +143,7 @@ export default defineGlobal({
   console.warn("  Next steps:");
   console.warn(`    cd ${projectName}`);
   console.warn("    npm install");
-  console.warn("    # Update .env with your Firebase config");
+  console.warn("    cp .env.example .env");
+  console.warn("    # Edit .env with your Firebase config");
   console.warn("    npx blaze dev\n");
 }

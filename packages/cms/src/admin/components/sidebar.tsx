@@ -10,12 +10,17 @@ import {
   Settings,
   ChevronLeft,
   ChevronRight,
+  Flame,
   type LucideIcon,
 } from "lucide-react";
 import { useState } from "react";
 
 import { isDevMode } from "@/lib/backend-mode";
 import { cn } from "@/lib/utils";
+import {
+  collections as registryCollections,
+  globals as registryGlobals,
+} from "@/__generated__/schema-registry";
 
 interface NavItem {
   label: string;
@@ -23,19 +28,54 @@ interface NavItem {
   href: string;
 }
 
-const navItems: NavItem[] = [
-  { href: "/", icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/collections", icon: FileText, label: "Collections" },
-  { href: "/globals", icon: Globe, label: "Globals" },
-  { href: "/media", icon: Image, label: "Media" },
-  { href: "/users", icon: Users, label: "Users" },
-  { href: "/roles", icon: Shield, label: "Roles" },
-  ...(isDevMode() ? [{ href: "/schemas", icon: FileJson, label: "Schemas" } satisfies NavItem] : []),
-  { href: "/settings", icon: Settings, label: "Settings" },
-];
+interface NavSection {
+  label: string;
+  items: NavItem[];
+}
+
+function navSections(): NavSection[] {
+  const collections = registryCollections.map((c) => ({
+    href: `/collections/${c.slug}`,
+    icon: FileText,
+    label: (c as { labels?: { plural?: string; singular?: string } }).labels?.plural ?? c.slug,
+  }));
+
+  const globals = registryGlobals.map((g) => ({
+    href: `/globals/${g.slug}`,
+    icon: Globe,
+    label: g.label ?? g.slug,
+  }));
+
+  return [
+    {
+      label: "Overview",
+      items: [{ href: "/", icon: LayoutDashboard, label: "Dashboard" }],
+    },
+    {
+      label: "Content",
+      items: [
+        { href: "/collections", icon: FileText, label: "All Collections" },
+        ...collections,
+        { href: "/globals", icon: Globe, label: "All Globals" },
+        ...globals,
+        { href: "/media", icon: Image, label: "Media" },
+      ],
+    },
+    {
+      label: "System",
+      items: [
+        { href: "/users", icon: Users, label: "Users" },
+        { href: "/roles", icon: Shield, label: "Roles" },
+        ...(isDevMode() ? [{ href: "/schemas", icon: FileJson, label: "Schemas" }] : []),
+        { href: "/settings", icon: Settings, label: "Settings" },
+      ],
+    },
+  ];
+}
 
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const sections = navSections();
 
   return (
     <aside
@@ -44,8 +84,9 @@ export function Sidebar() {
         collapsed ? "w-16" : "w-60",
       )}
     >
-      <div className={cn("flex items-center border-b border-sidebar-border px-4 py-4", collapsed && "justify-center")}>
-        {!collapsed && <span className="text-lg font-bold">Blaze CMS</span>}
+      <div className={cn("flex items-center gap-2 border-b border-sidebar-border px-4 py-4", collapsed && "justify-center")}>
+        <Flame className="h-5 w-5 shrink-0 text-orange-500" />
+        {!collapsed && <span className="text-base font-bold tracking-tight">Blaze CMS</span>}
         <button
           onClick={() => setCollapsed(!collapsed)}
           className={cn(
@@ -57,21 +98,31 @@ export function Sidebar() {
         </button>
       </div>
 
-      <nav className="flex-1 space-y-1 p-2">
-        {navItems.map((item) => (
-          <Link
-            key={item.href}
-            to={item.href}
-            className={cn(
-              "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-              collapsed && "justify-center px-2",
-              // active state via [&.active] for TanStack Router
-              "[&.active]:bg-sidebar-accent [&.active]:text-sidebar-accent-foreground",
+      <nav className="flex-1 overflow-y-auto p-3">
+        {sections.map((section) => (
+          <div key={section.label} className="mb-4 last:mb-0">
+            {!collapsed && (
+              <p className="mb-1.5 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                {section.label}
+              </p>
             )}
-          >
-            <item.icon className="h-4 w-4 shrink-0" />
-            {!collapsed && <span>{item.label}</span>}
-          </Link>
+            <div className={cn("space-y-0.5", collapsed && "flex flex-col items-center")}>
+              {section.items.map((item) => (
+                <Link
+                  key={item.href}
+                  to={item.href}
+                  className={cn(
+                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                    collapsed && "justify-center px-2",
+                    "[&.active]:bg-sidebar-accent [&.active]:text-sidebar-accent-foreground",
+                  )}
+                >
+                  <item.icon className="h-4 w-4 shrink-0" />
+                  {!collapsed && <span>{item.label}</span>}
+                </Link>
+              ))}
+            </div>
+          </div>
         ))}
       </nav>
     </aside>

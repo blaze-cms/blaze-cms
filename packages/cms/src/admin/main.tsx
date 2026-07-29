@@ -1,4 +1,3 @@
-import { createBrowserHistory } from "@tanstack/history";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 
@@ -10,26 +9,8 @@ import { routeTree } from "@/router";
 
 import "./index.css";
 
-function stripBase(raw: string, b: string): string {
-  return raw.startsWith(b) ? "/" + raw.slice(b.length) : raw;
-}
-
 const queryClient = new QueryClient();
-const base: string = import.meta.env.BASE_URL || "/";
-const router = createRouter({
-  history: createBrowserHistory({
-    createHref: (href: string) => {
-      const full = base.replace(/\/$/, "") + "/" + href.replace(/^\//, "");
-      return full.replace(/\/+$/, "") || "/";
-    },
-    parseLocation: () => {
-      const p = stripBase(window.location.pathname + window.location.search + window.location.hash, base);
-      const url = new URL(p, "http://localhost");
-      return { hash: url.hash, href: p, pathname: url.pathname, search: url.search, state: window.history.state };
-    },
-  }),
-  routeTree,
-});
+const router = createRouter({ routeTree });
 
 declare module "@tanstack/react-router" {
   interface Register {

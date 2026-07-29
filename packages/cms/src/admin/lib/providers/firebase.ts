@@ -94,11 +94,15 @@ export const firebaseProvider: DataProvider = {
   },
 
   async getCollections() {
-    throw new Error("Schema introspection not supported in Firebase mode directly");
+    const snap = await getDocs(collection(db, "_schemas", "collections"));
+    const docs = snap.docs.map(docToData).filter(Boolean) as Record<string, unknown>[];
+    return docs.filter((d) => !d.deprecated) as never;
   },
 
   async getComponents() {
-    throw new Error("Schema introspection not supported in Firebase mode directly");
+    const snap = await getDocs(collection(db, "_schemas", "components"));
+    const docs = snap.docs.map(docToData).filter(Boolean) as Record<string, unknown>[];
+    return docs.filter((d) => !d.deprecated) as never;
   },
 
   async getGlobal(slug: string) {
@@ -107,7 +111,9 @@ export const firebaseProvider: DataProvider = {
   },
 
   async getGlobals() {
-    throw new Error("Schema introspection not supported in Firebase mode directly");
+    const snap = await getDocs(collection(db, "_schemas", "globals"));
+    const docs = snap.docs.map(docToData).filter(Boolean) as Record<string, unknown>[];
+    return docs.filter((d) => !d.deprecated) as never;
   },
 
   name: "firebase",

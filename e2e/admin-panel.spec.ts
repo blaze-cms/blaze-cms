@@ -30,4 +30,39 @@ test.describe("Blaze CMS Admin Panel", () => {
     await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
     await expect(page.getByText("Welcome to Blaze CMS")).toBeVisible();
   });
+
+  test("sidebar has section headings", async ({ page }) => {
+    await page.goto(".");
+
+    await expect(page.getByText("Overview")).toBeVisible();
+    await expect(page.getByText("Content")).toBeVisible();
+    await expect(page.getByText("System")).toBeVisible();
+  });
+
+  test("sidebar navigation links work", async ({ page }) => {
+    await page.goto(".");
+
+    await page.getByRole("link", { name: "Dashboard" }).click();
+    await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+
+    await page.getByRole("link", { name: "Collections" }).click();
+    await expect(page.getByRole("heading", { name: "Collections" })).toBeVisible();
+
+    await page.getByRole("link", { name: /^Globals$/ }).click();
+    await expect(page.getByRole("heading", { name: "Globals" })).toBeVisible();
+  });
+
+  test("collections page lists schemas from registry", async ({ page }) => {
+    await page.goto("collections");
+
+    await expect(page.getByRole("link", { name: /Post.*\/posts/i })).toBeVisible();
+    await expect(page.getByText("/posts")).toBeVisible();
+  });
+
+  test("globals page lists schemas from registry", async ({ page }) => {
+    await page.goto("globals");
+
+    await expect(page.getByRole("link", { name: /Homepage.*\/homepage/i })).toBeVisible();
+    await expect(page.getByRole("link", { name: /Site Settings.*\/site-settings/i })).toBeVisible();
+  });
 });

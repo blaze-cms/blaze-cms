@@ -7,3 +7,6 @@ coverage/
 .env.local
 test-results/
 playwright/.cache/
+
+# Generated schema files
+__generated__/

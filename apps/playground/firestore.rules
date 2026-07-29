@@ -1,0 +1,68 @@
+rules_version = 2;
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Schemas — readable by all authenticated users, writable only by admins
+    match /_schemas/{collection}/{doc} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+
+    // Per-collection content rules
+    match /array/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /boolean/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /component/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /date/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /dynamic-zone/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /group/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /media-test/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /number/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /posts/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /relation/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /repeater/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /rich-text/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /select/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /text/{doc} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Global content rules
+    match /globals_homepage/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /globals_site-settings/{doc} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Deny everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

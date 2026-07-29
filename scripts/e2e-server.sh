@@ -12,4 +12,4 @@ VITE_FIREBASE_APP_ID=1:000000000000:web:0000000000000000000000 \
   npx vite build --config src/admin/vite.config.ts > /dev/null 2>&1
 
 # Serve the built admin
-node "$ROOT/scripts/serve-spa.mjs" "$ROOT/packages/cms/dist" 3500
+node "$ROOT/scripts/serve-spa.mjs" "$ROOT/packages/cms/dist/admin" 3500
