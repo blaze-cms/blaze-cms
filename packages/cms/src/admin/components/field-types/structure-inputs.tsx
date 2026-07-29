@@ -1,22 +1,48 @@
-import type { FieldDefinition, SelectField, MultiSelectField, RadioField, RelationField, ComponentField, DynamicZoneField, ArrayField, ObjectField, GroupField, RepeaterField, TabsField, SlugField } from "@blaze-cms/types";
+import type {
+  FieldDefinition,
+  SelectField,
+  MultiSelectField,
+  RadioField,
+  RelationField,
+  ComponentField,
+  DynamicZoneField,
+  ArrayField,
+  ObjectField,
+  GroupField,
+  RepeaterField,
+  TabsField,
+  SlugField,
+} from "@blaze-cms/types";
 import type { ReactNode, ChangeEvent } from "react";
 
 import { Plus, X, GripVertical } from "lucide-react";
 
+import { getComponent } from "@/__generated__/schema-registry";
 import { FieldInput } from "@/components/field-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 
-export function renderStructureInput(field: FieldDefinition, value: unknown, onChange: (v: unknown) => void): ReactNode {
+export function renderStructureInput(
+  field: FieldDefinition,
+  value: unknown,
+  onChange: (v: unknown) => void,
+  id?: string,
+): ReactNode {
   switch (field.type) {
     case "select": {
       const f = field as SelectField;
       return (
-        <Select value={String(value ?? "")} onChange={(e: ChangeEvent<HTMLSelectElement>) => onChange(e.target.value)}>
+        <Select
+          id={id}
+          value={String(value ?? "")}
+          onChange={(e: ChangeEvent<HTMLSelectElement>) => onChange(e.target.value)}
+        >
           <option value="">Select...</option>
           {f.options.map((opt) => (
-            <option key={opt.value} value={opt.value}>{opt.label}</option>
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
           ))}
         </Select>
       );
@@ -39,12 +65,17 @@ export function renderStructureInput(field: FieldDefinition, value: unknown, onC
             {f.options
               .filter((o) => !selected.includes(o.value))
               .map((opt) => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
               ))}
           </Select>
           <div className="flex flex-wrap gap-2">
             {selected.map((s) => (
-              <span key={s} className="inline-flex items-center gap-1 rounded-md bg-secondary px-2 py-1 text-xs">
+              <span
+                key={s}
+                className="inline-flex items-center gap-1 rounded-md bg-secondary px-2 py-1 text-xs"
+              >
                 {s}
                 <button onClick={() => onChange(selected.filter((v) => v !== s))}>
                   <X className="h-3 w-3" />
@@ -95,6 +126,7 @@ export function renderStructureInput(field: FieldDefinition, value: unknown, onC
       return (
         <div className="space-y-1">
           <Input
+            id={id}
             type="text"
             value={String(value ?? "")}
             onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
@@ -120,7 +152,10 @@ export function renderStructureInput(field: FieldDefinition, value: unknown, onC
                     value={(item as Record<string, unknown>)?.[subField.name]}
                     onChange={(v: unknown) => {
                       const newItems = [...items];
-                      newItems[idx] = { ...(newItems[idx] as Record<string, unknown>), [subField.name]: v };
+                      newItems[idx] = {
+                        ...(newItems[idx] as Record<string, unknown>),
+                        [subField.name]: v,
+                      };
                       onChange(newItems);
                     }}
                   />
@@ -131,11 +166,7 @@ export function renderStructureInput(field: FieldDefinition, value: unknown, onC
               </button>
             </div>
           ))}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onChange([...items, {}])}
-          >
+          <Button variant="outline" size="sm" onClick={() => onChange([...items, {}])}>
             <Plus className="mr-1 h-3 w-3" /> Add item
           </Button>
         </div>
@@ -221,18 +252,33 @@ export function renderStructureInput(field: FieldDefinition, value: unknown, onC
       const items = Array.isArray(value) ? (value as Record<string, unknown>[]) : [];
       return (
         <div className="space-y-2">
-          {items.map((item, idx) => (
-            <div key={idx} className="rounded-md border p-3">
-              <div className="mb-2 flex items-center justify-between">
-                <span className="text-xs font-medium text-muted-foreground">
-                  {String(item.__component ?? "unknown")}
-                </span>
-                <button onClick={() => onChange(items.filter((_, i) => i !== idx))}>
-                  <X className="h-3 w-3 text-destructive" />
-                </button>
+          {items.map((item, idx) => {
+            const compDef = getComponent(String(item.__component ?? ""));
+            return (
+              <div key={idx} className="rounded-md border p-3">
+                <div className="mb-2 flex items-center justify-between">
+                  <span className="text-xs font-medium text-muted-foreground">
+                    {compDef?.label ?? String(item.__component ?? "unknown")}
+                  </span>
+                  <button onClick={() => onChange(items.filter((_, i) => i !== idx))}>
+                    <X className="h-3 w-3 text-destructive" />
+                  </button>
+                </div>
+                {compDef?.fields.map((subField) => (
+                  <FieldInput
+                    key={subField.name}
+                    field={subField}
+                    value={(item as Record<string, unknown>)?.[subField.name]}
+                    onChange={(v: unknown) => {
+                      const newItems = [...items];
+                      newItems[idx] = { ...(newItems[idx] ?? {}), [subField.name]: v };
+                      onChange(newItems);
+                    }}
+                  />
+                ))}
               </div>
-            </div>
-          ))}
+            );
+          })}
           <Select
             value=""
             onChange={(e: ChangeEvent<HTMLSelectElement>) => {
@@ -242,9 +288,14 @@ export function renderStructureInput(field: FieldDefinition, value: unknown, onC
             }}
           >
             <option value="">Add component...</option>
-            {dz.components.map((c) => (
-              <option key={c} value={c}>{c}</option>
-            ))}
+            {dz.components.map((c) => {
+              const compDef = getComponent(c);
+              return (
+                <option key={c} value={c}>
+                  {compDef?.label ?? c}
+                </option>
+              );
+            })}
           </Select>
         </div>
       );
@@ -255,12 +306,15 @@ export function renderStructureInput(field: FieldDefinition, value: unknown, onC
       return (
         <div className="space-y-1">
           <Input
+            id={id}
             type="text"
             value={String(value ?? "")}
             onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
             placeholder={`Related ${f.to} ID...`}
           />
-          <p className="text-xs text-muted-foreground">Relation to: {f.to} ({f.kind ?? "oneToOne"})</p>
+          <p className="text-xs text-muted-foreground">
+            Relation to: {f.to} ({f.kind ?? "oneToOne"})
+          </p>
         </div>
       );
     }
@@ -268,11 +322,49 @@ export function renderStructureInput(field: FieldDefinition, value: unknown, onC
     case "component": {
       const f = field as ComponentField;
       const obj = (value ?? {}) as Record<string, unknown>;
+      const compDef = getComponent(f.component);
+      const items = f.repeatable
+        ? Array.isArray(value)
+          ? (value as Record<string, unknown>[])
+          : []
+        : [obj];
       return (
-        <div className="rounded-md border p-3">
-          <p className="mb-2 text-xs text-muted-foreground">Component: {f.component}</p>
-          {/* Sub-fields would be rendered here if component definition is available */}
-          <p className="text-xs text-muted-foreground">{f.repeatable ? "(repeatable)" : "(single)"}</p>
+        <div className="space-y-2">
+          {items.map((item, idx) => (
+            <div key={idx} className="rounded-md border p-3">
+              <div className="mb-2 flex items-center justify-between">
+                <span className="text-xs font-medium text-muted-foreground">
+                  {compDef?.label ?? f.component}
+                </span>
+                {f.repeatable && (
+                  <button onClick={() => onChange(items.filter((_, i) => i !== idx))}>
+                    <X className="h-3 w-3 text-destructive" />
+                  </button>
+                )}
+              </div>
+              {compDef?.fields.map((subField) => (
+                <FieldInput
+                  key={subField.name}
+                  field={subField}
+                  value={(item as Record<string, unknown>)?.[subField.name]}
+                  onChange={(v: unknown) => {
+                    if (!f.repeatable) {
+                      onChange({ ...(item as Record<string, unknown>), [subField.name]: v });
+                    } else {
+                      const newItems = [...items];
+                      newItems[idx] = { ...(newItems[idx] ?? {}), [subField.name]: v };
+                      onChange(newItems);
+                    }
+                  }}
+                />
+              ))}
+            </div>
+          ))}
+          {f.repeatable && (
+            <Button variant="outline" size="sm" onClick={() => onChange([...items, {}])}>
+              <Plus className="mr-1 h-3 w-3" /> Add item
+            </Button>
+          )}
         </div>
       );
     }

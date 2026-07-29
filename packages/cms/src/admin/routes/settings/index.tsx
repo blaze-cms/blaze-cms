@@ -1,7 +1,7 @@
 import { createRoute, Link } from "@tanstack/react-router";
-import { Settings as SettingsIcon, Key, Puzzle, Users, Shield, Webhook } from "lucide-react";
+import { Puzzle } from "lucide-react";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { appLayoutRoute } from "@/routes/app-layout";
 
 export const settingsIndexRoute = createRoute({
@@ -10,13 +10,7 @@ export const settingsIndexRoute = createRoute({
   path: "/settings",
 });
 
-const settingsItems = [
-  { href: "/settings/api-tokens", icon: Key, label: "API Tokens" },
-  { href: "/settings/plugins", icon: Puzzle, label: "Plugins" },
-  { href: "/settings/users", icon: Users, label: "Users" },
-  { href: "/settings/roles", icon: Shield, label: "Roles" },
-  { href: "/settings/webhooks", icon: Webhook, label: "Webhooks" },
-];
+const settingsItems = [{ href: "/settings/plugins", icon: Puzzle, label: "Plugins" }];
 
 function SettingsList() {
   return (

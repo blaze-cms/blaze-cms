@@ -1,6 +1,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 
+import { ErrorBoundary } from "@/components/error-boundary";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ToastProvider } from "@/components/toast-provider";
 import { AuthProvider } from "@/lib/auth";
@@ -21,11 +23,14 @@ declare module "@tanstack/react-router" {
 export function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      {import.meta.env.DEV && <ReactQueryDevtools />}
       <ThemeProvider defaultTheme="system" storageKey="blaze-cms-theme">
         <AuthProvider>
           <DataProviderWrapper>
             <ToastProvider>
-              <RouterProvider router={router} />
+              <ErrorBoundary>
+                <RouterProvider router={router} />
+              </ErrorBoundary>
             </ToastProvider>
           </DataProviderWrapper>
         </AuthProvider>

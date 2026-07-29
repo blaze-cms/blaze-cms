@@ -61,7 +61,9 @@ function CollectionEntries() {
       ) : entries && entries.length > 0 ? (
         <div className="rounded-md border">
           {entries.map((entry) => {
+            const titleField = col.admin?.useAsTitle ?? "title";
             const title =
+              (entry[titleField] as string) ??
               (entry.title as string) ??
               (entry.name as string) ??
               (entry.slug as string) ??
@@ -76,9 +78,7 @@ function CollectionEntries() {
               >
                 <span className="font-medium">{String(title)}</span>
                 {status ? (
-                  <Badge variant={status === "published" ? "default" : "secondary"}>
-                    {status}
-                  </Badge>
+                  <Badge variant={status === "published" ? "default" : "secondary"}>{status}</Badge>
                 ) : null}
               </Link>
             );

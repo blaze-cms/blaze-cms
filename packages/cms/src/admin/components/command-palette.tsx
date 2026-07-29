@@ -2,15 +2,46 @@ import { useNavigate } from "@tanstack/react-router";
 import { Search } from "lucide-react";
 import { useEffect, useState, useCallback } from "react";
 
-const commands = [
-  { label: "Go to Dashboard", path: "/" },
-  { label: "Collections", path: "/collections" },
-  { label: "Globals", path: "/globals" },
-  { label: "Media Library", path: "/media" },
-  { label: "Users", path: "/users" },
-  { label: "Roles", path: "/roles" },
-  { label: "Settings", path: "/settings" },
-];
+import {
+  collections as registryCollections,
+  globals as registryGlobals,
+} from "@/__generated__/schema-registry";
+import { isDevMode } from "@/lib/backend-mode";
+
+interface Command {
+  label: string;
+  path: string;
+}
+
+function buildCommands(): Command[] {
+  const cmds: Command[] = [
+    { label: "Go to Dashboard", path: "/" },
+    { label: "All Collections", path: "/collections" },
+    { label: "All Globals", path: "/globals" },
+    { label: "Media Library", path: "/media" },
+    { label: "Users", path: "/users" },
+    { label: "Roles", path: "/roles" },
+    { label: "Settings", path: "/settings" },
+  ];
+
+  for (const col of registryCollections) {
+    const label =
+      (col as { labels?: { plural?: string; singular?: string } }).labels?.plural ?? col.slug;
+    cmds.push({ label: `Collection: ${label}`, path: `/collections/${col.slug}` });
+  }
+
+  for (const gl of registryGlobals) {
+    cmds.push({ label: `Global: ${gl.label ?? gl.slug}`, path: `/globals/${gl.slug}` });
+  }
+
+  if (isDevMode()) {
+    cmds.push({ label: "Schemas", path: "/schemas" });
+  }
+
+  return cmds;
+}
+
+const commands = buildCommands();
 
 export function CommandPalette() {
   const [open, setOpen] = useState(false);

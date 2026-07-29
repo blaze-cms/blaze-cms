@@ -30,16 +30,10 @@ Commands:
 
 Options:
   --help            Show help
-  --sync            Sync schemas to Firestore after generation
-                    Requires VITE_FIREBASE_PROJECT_ID and valid Firebase credentials.
-                    You may set GOOGLE_APPLICATION_CREDENTIALS for a service account,
-                    or omit it to use Application Default Credentials.
-                    Writes to _schemas/collections/{slug}, _schemas/globals/{slug},
-                    and _schemas/components/{slug}. Removed schemas are marked
-                    deprecated: true rather than deleted. The admin panel reads
-                    from these collections at runtime.
-                    Use "firebase-admin" privileges only; the admin panel UI also
-                    offers manual sync for authenticated admin users.
+  --sync            Deprecated. Sync now runs automatically when the
+                    VITE_BACKEND_MODE env var is set to firebase.
+                     Use "firebase-admin" privileges only. The dev server auto-syncs
+                     when the VITE_BACKEND_MODE env var is set to firebase.
   --project <id>    Firebase project ID (for deploy)
   --dir <path>      Schema directory (default: cms/)
   --name <slug>     Schema slug (for scaffold)
@@ -55,10 +49,8 @@ Schema Sync Flow:
   (types, validation, SDK, schema registry, Firestore rules/indexes) and writes schema
   definitions to Firestore under _schemas/. The admin panel introspects these at runtime.
 
-  To sync manually from the admin UI (when using Firebase backend mode):
-    1. Sign in with an admin user (has custom claim admin: true)
-    2. Navigate to /schemas
-    3. Click "Sync to Firestore"
+  Sync is automatic when the dev server runs with the VITE_BACKEND_MODE env var
+  set to firebase. Schemas are written to Firestore under _schemas/ on every generation.
 
   Security rules in firestore.rules protect _schemas/ (admin-only writes, all-auth reads)
   and generate per-collection content rules.
@@ -112,7 +104,7 @@ export async function main(): Promise<void> {
     }
     case "scaffold": {
       const m = await import("./commands/scaffold.js");
-      await m.scaffold({ type: args[1], name: getFlag(args, "--name") });
+      await m.scaffold({ name: getFlag(args, "--name"), type: args[1] });
       break;
     }
     case "lint": {

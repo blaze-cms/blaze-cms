@@ -1,39 +1,35 @@
 import type { FieldDefinition } from "@blaze-cms/types";
-import type { ReactNode, ChangeEvent } from "react";
+import type { ReactNode } from "react";
 
-export function renderTextInput(field: FieldDefinition, value: unknown, onChange: (v: unknown) => void): ReactNode {
+import { CodeEditor } from "@/components/field-types/code-editor";
+import { MarkdownEditor } from "@/components/field-types/markdown-editor";
+import { RichTextEditor } from "@/components/field-types/rich-text-editor";
+
+export function renderTextInput(
+  field: FieldDefinition,
+  value: unknown,
+  onChange: (v: unknown) => void,
+  _id?: string,
+): ReactNode {
   switch (field.type) {
     case "richText":
       return (
-        <textarea
-          className="flex min-h-[200px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        <RichTextEditor
           value={String(value ?? "")}
-          onChange={(e: ChangeEvent<HTMLTextAreaElement>) => onChange(e.target.value)}
-          placeholder="Rich text content (HTML)..."
+          onChange={(v) => onChange(v)}
+          placeholder={(field as { placeholder?: string }).placeholder}
         />
       );
     case "markdown":
+      return <MarkdownEditor value={String(value ?? "")} onChange={(v) => onChange(v)} />;
+    case "code":
       return (
-        <textarea
-          className="flex min-h-[200px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        <CodeEditor
           value={String(value ?? "")}
-          onChange={(e: ChangeEvent<HTMLTextAreaElement>) => onChange(e.target.value)}
-          placeholder="Markdown content..."
+          onChange={(v) => onChange(v)}
+          language={(field as { language?: string }).language}
         />
       );
-    case "code": {
-      const lang = (field as { language?: string }).language ?? "text";
-      return (
-        <div className="space-y-1">
-          <span className="text-xs text-muted-foreground">{lang}</span>
-          <textarea
-            className="flex min-h-[150px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            value={String(value ?? "")}
-            onChange={(e: ChangeEvent<HTMLTextAreaElement>) => onChange(e.target.value)}
-          />
-        </div>
-      );
-    }
     default:
       return null;
   }

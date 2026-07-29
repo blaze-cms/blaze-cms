@@ -3,10 +3,9 @@ import { ArrowLeft, Save } from "lucide-react";
 import { useState, type FormEvent } from "react";
 
 import { collections } from "@/__generated__/schema-registry";
+import { FieldInput } from "@/components/field-input";
 import { useToast } from "@/components/toast-provider";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useDataProvider } from "@/lib/providers/context";
 import { appLayoutRoute } from "@/routes/app-layout";
 
@@ -21,18 +20,17 @@ function NewEntry() {
   const router = useRouter();
   const provider = useDataProvider();
   const { addToast } = useToast();
-  const [title, setTitle] = useState("");
-  const [saving, setSaving] = useState(false);
   const col = collections.find((c) => c.slug === slug);
+  const [values, setValues] = useState<Record<string, unknown>>({});
+  const [saving, setSaving] = useState(false);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    if (!title.trim()) return;
     setSaving(true);
     try {
-      await provider.create(slug, { createdAt: new Date().toISOString(), status: "draft", title });
+      const id = await provider.create(slug, { createdAt: new Date().toISOString(), ...values });
       addToast({ description: "Your entry has been created.", title: "Entry created" });
-      router.navigate({ params: { slug }, to: "/collections/$slug" as string });
+      router.navigate({ params: { id, slug }, to: "/collections/$slug/$id" as string });
     } catch (err) {
       addToast({ description: String(err), title: "Error", variant: "destructive" });
     } finally {
@@ -53,17 +51,15 @@ function NewEntry() {
       </div>
 
       <form onSubmit={handleSubmit} className="max-w-lg space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="title">Title</Label>
-          <Input
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Enter title..."
-            autoFocus
+        {col?.fields.map((field) => (
+          <FieldInput
+            key={field.name}
+            field={field}
+            value={values[field.name]}
+            onChange={(v) => setValues((prev) => ({ ...prev, [field.name]: v }))}
           />
-        </div>
-        <Button type="submit" disabled={saving || !title.trim()}>
+        ))}
+        <Button type="submit" disabled={saving}>
           <Save className="mr-1 h-4 w-4" /> {saving ? "Saving..." : "Save"}
         </Button>
       </form>

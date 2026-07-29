@@ -3,13 +3,19 @@ import type { ReactNode, ChangeEvent } from "react";
 
 import { Input } from "@/components/ui/input";
 
-export function renderMediaInput(field: FieldDefinition, value: unknown, onChange: (v: unknown) => void): ReactNode {
+export function renderMediaInput(
+  field: FieldDefinition,
+  value: unknown,
+  onChange: (v: unknown) => void,
+  id?: string,
+): ReactNode {
   switch (field.type) {
     case "media":
     case "upload":
       return (
         <div className="space-y-2">
           <Input
+            id={id}
             type="text"
             value={String(value ?? "")}
             onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
@@ -33,6 +39,7 @@ export function renderMediaInput(field: FieldDefinition, value: unknown, onChang
             className="h-10 w-10 cursor-pointer rounded-md border"
           />
           <Input
+            id={id}
             type="text"
             value={String(value ?? "")}
             onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}

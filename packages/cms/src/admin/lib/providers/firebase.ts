@@ -13,20 +13,25 @@ import {
   where,
   orderBy,
   limit,
-  startAfter,
   type Firestore,
   type DocumentSnapshot,
 } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL, type FirebaseStorage } from "firebase/storage";
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  type FirebaseStorage,
+} from "firebase/storage";
 
-import type { DataProvider, QueryOptions, PaginatedResult } from "./types";
+import type { DataProvider, QueryOptions } from "./types";
 
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY ?? "",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID ?? "",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN ?? "",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID ?? "",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET ?? "",
+const firebaseConfig: Record<string, string> = {
+  apiKey: String(import.meta.env.VITE_FIREBASE_API_KEY ?? ""),
+  appId: String(import.meta.env.VITE_FIREBASE_APP_ID ?? ""),
+  authDomain: String(import.meta.env.VITE_FIREBASE_AUTH_DOMAIN ?? ""),
+  projectId: String(import.meta.env.VITE_FIREBASE_PROJECT_ID ?? ""),
+  storageBucket: String(import.meta.env.VITE_FIREBASE_STORAGE_BUCKET ?? ""),
 };
 
 let app: FirebaseApp;
@@ -47,7 +52,7 @@ function docToData(d: DocumentSnapshot): Record<string, unknown> | null {
 
 export const firebaseProvider: DataProvider = {
   async create(collectionName: string, data: Record<string, unknown>) {
-    const col = collection(db, collectionName);
+    const col = collection(db, `collections_${collectionName}`);
     if (data.id) {
       await setDoc(doc(col, data.id as string), data);
       return data.id as string;
@@ -56,7 +61,7 @@ export const firebaseProvider: DataProvider = {
     return docRef.id;
   },
   async delete(collectionName: string, id: string) {
-    await deleteDoc(doc(db, collectionName, id));
+    await deleteDoc(doc(db, `collections_${collectionName}`, id));
   },
 
   async findMany(collectionName: string, options?: QueryOptions) {
@@ -70,12 +75,12 @@ export const firebaseProvider: DataProvider = {
     }
 
     if (options?.sort) {
-      constraints.push(orderBy(options.sort, options?.order ?? "asc"));
+      constraints.push(orderBy(options.sort, options.order ?? "asc"));
     }
 
     constraints.push(limit(pageSize + 1));
 
-    const q = query(collection(db, collectionName), ...constraints);
+    const q = query(collection(db, `collections_${collectionName}`), ...constraints);
     const snap = await getDocs(q);
     const docs = snap.docs.map(docToData).filter(Boolean) as Record<string, unknown>[];
     const hasMore = docs.length > pageSize;
@@ -89,7 +94,7 @@ export const firebaseProvider: DataProvider = {
   },
 
   async findOne(collectionName: string, id: string) {
-    const snap = await getDoc(doc(db, collectionName, id));
+    const snap = await getDoc(doc(db, `collections_${collectionName}`, id));
     return docToData(snap);
   },
 
@@ -122,7 +127,7 @@ export const firebaseProvider: DataProvider = {
 
   async update(collectionName: string, id: string, data: Record<string, unknown>) {
     const { id: _, ...updateData } = data;
-    await updateDoc(doc(db, collectionName, id), updateData);
+    await updateDoc(doc(db, `collections_${collectionName}`, id), updateData);
   },
 
   async upsertGlobal(slug: string, data: Record<string, unknown>) {

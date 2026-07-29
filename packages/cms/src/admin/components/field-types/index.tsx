@@ -6,7 +6,12 @@ import { renderMediaInput } from "./media-inputs";
 import { renderStructureInput } from "./structure-inputs";
 import { renderTextInput } from "./text-inputs";
 
-export function renderField(field: FieldDefinition, value: unknown, onChange: (v: unknown) => void): ReactNode {
+export function renderField(
+  field: FieldDefinition,
+  value: unknown,
+  onChange: (v: unknown) => void,
+  id?: string,
+): ReactNode {
   switch (field.type) {
     case "text":
     case "textarea":
@@ -18,17 +23,17 @@ export function renderField(field: FieldDefinition, value: unknown, onChange: (v
     case "password":
     case "url":
     case "json":
-      return renderBasicInput(field, value, onChange);
+      return renderBasicInput(field, value, onChange, id);
 
     case "richText":
     case "markdown":
     case "code":
-      return renderTextInput(field, value, onChange);
+      return renderTextInput(field, value, onChange, id);
 
     case "media":
     case "upload":
     case "color":
-      return renderMediaInput(field, value, onChange);
+      return renderMediaInput(field, value, onChange, id);
 
     case "select":
     case "multiSelect":
@@ -43,9 +48,13 @@ export function renderField(field: FieldDefinition, value: unknown, onChange: (v
     case "group":
     case "repeater":
     case "slug":
-      return renderStructureInput(field, value, onChange);
+      return renderStructureInput(field, value, onChange, id);
 
     default:
-      return <p className="text-sm text-muted-foreground">Unknown field type: {(field as FieldDefinition).type}</p>;
+      return (
+        <p className="text-sm text-muted-foreground">
+          Unknown field type: {(field as FieldDefinition).type}
+        </p>
+      );
   }
 }

@@ -21,7 +21,8 @@ export async function dev(options: DevOptions): Promise<void> {
   console.warn(`\n  Blaze CMS Dev Server\n`);
 
   console.warn("  [1/3] Generating schema registry...");
-  await generate({ outDir: path.resolve(ADMIN_ROOT, "__generated__"), sync: options.sync });
+  const isFirebase = process.env.VITE_BACKEND_MODE === "firebase";
+  await generate({ outDir: path.resolve(ADMIN_ROOT, "__generated__"), sync: isFirebase });
 
   console.warn(`  [2/3] Starting dev server...\n`);
   console.warn(`  Admin panel: http://${host}:${port}/\n`);
@@ -29,10 +30,14 @@ export async function dev(options: DevOptions): Promise<void> {
   if (options.emulator) {
     console.warn("  Starting Firebase Emulator...");
     const { spawn } = await import("node:child_process");
-    const emulator = spawn("npx", ["firebase", "emulators:start", "--only", "firestore,auth,storage"], {
-      shell: true,
-      stdio: "inherit",
-    });
+    const emulator = spawn(
+      "npx",
+      ["firebase", "emulators:start", "--only", "firestore,auth,storage"],
+      {
+        shell: true,
+        stdio: "inherit",
+      },
+    );
     emulator.on("exit", (code) => {
       if (code !== 0) console.error("Firebase Emulator exited with code", code);
     });

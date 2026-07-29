@@ -1,9 +1,14 @@
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createRoute, useRouter } from "@tanstack/react-router";
 import { ArrowLeft, Save } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 
+import { globals } from "@/__generated__/schema-registry";
+import { FieldInput } from "@/components/field-input";
+import { useToast } from "@/components/toast-provider";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useDataProvider } from "@/lib/providers/context";
 import { appLayoutRoute } from "@/routes/app-layout";
 
 export const globalDetailRoute = createRoute({
@@ -15,7 +20,41 @@ export const globalDetailRoute = createRoute({
 function GlobalEditor() {
   const { slug } = globalDetailRoute.useParams();
   const router = useRouter();
-  const [value, setValue] = useState("");
+  const provider = useDataProvider();
+  const { addToast } = useToast();
+  const queryClient = useQueryClient();
+  const globalDef = globals.find((g) => g.slug === slug);
+  const [values, setValues] = useState<Record<string, unknown>>({});
+  const [saving, setSaving] = useState(false);
+  const [initialLoaded, setInitialLoaded] = useState(false);
+
+  const { data: entry, isLoading } = useQuery({
+    queryFn: async () => provider.getGlobal(slug),
+    queryKey: ["global", slug],
+  });
+
+  useEffect(() => {
+    if (entry && !initialLoaded) {
+      setValues(entry);
+      setInitialLoaded(true);
+    }
+  }, [entry, initialLoaded]);
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      await provider.upsertGlobal(slug, values);
+      addToast({ description: "Global has been saved.", title: "Saved" });
+      await queryClient.invalidateQueries({ queryKey: ["global", slug] });
+    } catch (err) {
+      addToast({ description: String(err), title: "Error", variant: "destructive" });
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  const label = globalDef?.label ?? slug;
 
   return (
     <div>
@@ -26,22 +65,32 @@ function GlobalEditor() {
         >
           <ArrowLeft className="h-4 w-4" /> Back
         </button>
-        <h1 className="text-3xl font-bold capitalize">{slug}</h1>
+        <h1 className="text-3xl font-bold">{label}</h1>
+        <p className="text-muted-foreground text-sm">/{slug}</p>
       </div>
 
-      <div className="max-w-2xl space-y-4">
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Content</label>
-          <textarea
-            className="flex min-h-[200px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-          />
+      {isLoading ? (
+        <div className="max-w-lg space-y-4">
+          {[1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-10 w-full" />
+          ))}
+          <Skeleton className="h-10 w-24" />
         </div>
-        <Button>
-          <Save className="mr-1 h-4 w-4" /> Save
-        </Button>
-      </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="max-w-lg space-y-4">
+          {globalDef?.fields.map((field) => (
+            <FieldInput
+              key={field.name}
+              field={field}
+              value={values[field.name]}
+              onChange={(v) => setValues((prev) => ({ ...prev, [field.name]: v }))}
+            />
+          ))}
+          <Button type="submit" disabled={saving}>
+            <Save className="mr-1 h-4 w-4" /> {saving ? "Saving..." : "Save"}
+          </Button>
+        </form>
+      )}
     </div>
   );
 }

@@ -53,10 +53,70 @@ service cloud.firestore {
     }
 
     // Global content rules
+    match /globals_boolean/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /globals_checkbox/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /globals_code/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /globals_color/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /globals_date/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /globals_datetime/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /globals_email/{doc} {
+      allow read, write: if request.auth != null;
+    }
     match /globals_homepage/{doc} {
       allow read, write: if request.auth != null;
     }
+    match /globals_json/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /globals_markdown/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /globals_media-settings/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /globals_multi-select/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /globals_number/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /globals_password/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /globals_radio/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /globals_rich-text/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /globals_select/{doc} {
+      allow read, write: if request.auth != null;
+    }
     match /globals_site-settings/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /globals_slug/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /globals_text/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /globals_textarea/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /globals_url/{doc} {
       allow read, write: if request.auth != null;
     }
 

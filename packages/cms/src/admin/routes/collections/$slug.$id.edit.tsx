@@ -3,10 +3,10 @@ import { createRoute, useRouter } from "@tanstack/react-router";
 import { ArrowLeft, Save } from "lucide-react";
 import { useState, useEffect, type FormEvent } from "react";
 
+import { collections } from "@/__generated__/schema-registry";
+import { FieldInput } from "@/components/field-input";
 import { useToast } from "@/components/toast-provider";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDataProvider } from "@/lib/providers/context";
 import { appLayoutRoute } from "@/routes/app-layout";
@@ -23,7 +23,8 @@ function EditEntry() {
   const provider = useDataProvider();
   const { addToast } = useToast();
   const queryClient = useQueryClient();
-  const [title, setTitle] = useState("");
+  const col = collections.find((c) => c.slug === slug);
+  const [values, setValues] = useState<Record<string, unknown>>({});
   const [saving, setSaving] = useState(false);
 
   const { data: entry, isLoading } = useQuery({
@@ -32,15 +33,14 @@ function EditEntry() {
   });
 
   useEffect(() => {
-    if (entry?.title) setTitle(entry.title as string);
+    if (entry) setValues(entry);
   }, [entry]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    if (!title.trim()) return;
     setSaving(true);
     try {
-      await provider.update(slug, id, { title });
+      await provider.update(slug, id, values);
       addToast({ description: "Entry has been updated.", title: "Saved" });
       await queryClient.invalidateQueries({ queryKey: ["collection", slug] });
     } catch (err) {
@@ -49,6 +49,8 @@ function EditEntry() {
       setSaving(false);
     }
   }
+
+  const label = col?.labels?.singular ?? slug;
 
   return (
     <div>
@@ -59,28 +61,28 @@ function EditEntry() {
         >
           <ArrowLeft className="h-4 w-4" /> Back
         </button>
-        <h1 className="text-3xl font-bold">Edit {slug}</h1>
+        <h1 className="text-3xl font-bold">Edit {label}</h1>
         <p className="text-muted-foreground text-sm">ID: {id}</p>
       </div>
 
       {isLoading ? (
         <div className="max-w-lg space-y-4">
-          <Skeleton className="h-10 w-full" />
+          {[1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-10 w-full" />
+          ))}
           <Skeleton className="h-10 w-24" />
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="max-w-lg space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
-            <Input
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter title..."
-              autoFocus
+          {col?.fields.map((field) => (
+            <FieldInput
+              key={field.name}
+              field={field}
+              value={values[field.name]}
+              onChange={(v) => setValues((prev) => ({ ...prev, [field.name]: v }))}
             />
-          </div>
-          <Button type="submit" disabled={saving || !title.trim()}>
+          ))}
+          <Button type="submit" disabled={saving}>
             <Save className="mr-1 h-4 w-4" /> {saving ? "Saving..." : "Save"}
           </Button>
         </form>

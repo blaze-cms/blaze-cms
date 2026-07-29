@@ -1,9 +1,28 @@
-import { Outlet } from "@tanstack/react-router";
+import { Outlet, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 import { Header } from "@/components/header";
 import { Sidebar } from "@/components/sidebar";
+import { useAuth } from "@/lib/auth";
 
 export function AppLayout() {
+  const { loading, user } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && !user) navigate({ to: "/login" });
+  }, [loading, user, navigate]);
+
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center text-muted-foreground text-sm">
+        Loading...
+      </div>
+    );
+  }
+
+  if (!user) return null;
+
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar />

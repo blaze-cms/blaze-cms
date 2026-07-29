@@ -15,12 +15,12 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
-import { isDevMode } from "@/lib/backend-mode";
-import { cn } from "@/lib/utils";
 import {
   collections as registryCollections,
   globals as registryGlobals,
 } from "@/__generated__/schema-registry";
+import { isDevMode } from "@/lib/backend-mode";
+import { cn } from "@/lib/utils";
 
 interface NavItem {
   label: string;
@@ -35,40 +35,62 @@ interface NavSection {
 
 function navSections(): NavSection[] {
   const collections = registryCollections.map((c) => ({
+    group: (c as { admin?: { group?: string } }).admin?.group ?? "Collections",
     href: `/collections/${c.slug}`,
     icon: FileText,
     label: (c as { labels?: { plural?: string; singular?: string } }).labels?.plural ?? c.slug,
   }));
 
   const globals = registryGlobals.map((g) => ({
+    group: g.admin?.group ?? "Globals",
     href: `/globals/${g.slug}`,
     icon: Globe,
     label: g.label ?? g.slug,
   }));
 
+  const contentItems: (NavItem & { group?: string })[] = [
+    { group: "Collections", href: "/collections", icon: FileText, label: "All Collections" },
+    ...collections,
+    { group: "Globals", href: "/globals", icon: Globe, label: "All Globals" },
+    ...globals,
+    { group: "Media", href: "/media", icon: Image, label: "Media" },
+  ];
+
+  const groups = new Map<string, (NavItem & { group?: string })[]>();
+  const ungrouped: (NavItem & { group?: string })[] = [];
+
+  for (const item of contentItems) {
+    if (item.group) {
+      const g = groups.get(item.group) ?? [];
+      g.push(item);
+      groups.set(item.group, g);
+    } else {
+      ungrouped.push(item);
+    }
+  }
+
+  const dynamicSections: NavSection[] = [];
+  for (const [groupLabel, items] of groups) {
+    dynamicSections.push({ items, label: groupLabel });
+  }
+  if (ungrouped.length > 0) {
+    dynamicSections.push({ items: ungrouped, label: "Content" });
+  }
+
   return [
     {
-      label: "Overview",
       items: [{ href: "/", icon: LayoutDashboard, label: "Dashboard" }],
+      label: "Overview",
     },
+    ...dynamicSections,
     {
-      label: "Content",
-      items: [
-        { href: "/collections", icon: FileText, label: "All Collections" },
-        ...collections,
-        { href: "/globals", icon: Globe, label: "All Globals" },
-        ...globals,
-        { href: "/media", icon: Image, label: "Media" },
-      ],
-    },
-    {
-      label: "System",
       items: [
         { href: "/users", icon: Users, label: "Users" },
         { href: "/roles", icon: Shield, label: "Roles" },
         ...(isDevMode() ? [{ href: "/schemas", icon: FileJson, label: "Schemas" }] : []),
         { href: "/settings", icon: Settings, label: "Settings" },
       ],
+      label: "System",
     },
   ];
 }
@@ -84,7 +106,12 @@ export function Sidebar() {
         collapsed ? "w-16" : "w-60",
       )}
     >
-      <div className={cn("flex items-center gap-2 border-b border-sidebar-border px-4 py-4", collapsed && "justify-center")}>
+      <div
+        className={cn(
+          "flex items-center gap-2 border-b border-sidebar-border px-4 py-4",
+          collapsed && "justify-center",
+        )}
+      >
         <Flame className="h-5 w-5 shrink-0 text-orange-500" />
         {!collapsed && <span className="text-base font-bold tracking-tight">Blaze CMS</span>}
         <button
@@ -111,6 +138,7 @@ export function Sidebar() {
                 <Link
                   key={item.href}
                   to={item.href}
+                  title={collapsed ? item.label : undefined}
                   className={cn(
                     "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                     collapsed && "justify-center px-2",
