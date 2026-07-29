@@ -108,7 +108,7 @@ export function Sidebar() {
     >
       <div
         className={cn(
-          "flex items-center gap-2 border-b border-sidebar-border px-4 py-4",
+          "flex items-center gap-3 border-b border-sidebar-border px-6 py-3",
           collapsed && "justify-center",
         )}
       >

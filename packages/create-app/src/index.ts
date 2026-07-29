@@ -1,12 +1,23 @@
 import { mkdirSync, writeFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
+import { createInterface } from "node:readline";
 
 function createFile(dir: string, name: string, content: string) {
   writeFileSync(resolve(dir, name), content.trimStart());
   console.warn(`  ✓ Created ${name}`);
 }
 
-export function scaffold(projectName: string): void {
+function makePrompt(question: string): Promise<string> {
+  const rl = createInterface({ input: process.stdin, output: process.stdout });
+  return new Promise((resolve) => {
+    rl.question(question, (answer) => {
+      rl.close();
+      resolve(answer.trim());
+    });
+  });
+}
+
+export async function scaffold(projectName: string): Promise<void> {
   const dir = resolve(process.cwd(), projectName);
 
   if (existsSync(dir)) {
@@ -14,7 +25,9 @@ export function scaffold(projectName: string): void {
     process.exit(1);
   }
 
-  console.warn(`\n  Creating Blazing CMS project: ${projectName}\n`);
+  const displayName = await makePrompt(`Project display name (${projectName}): `) || projectName;
+
+  console.warn(`\n  Creating Blazing CMS project: ${displayName}\n`);
 
   // Create directory structure
   mkdirSync(resolve(dir, "cms/collections"), { recursive: true });
@@ -64,6 +77,7 @@ export function scaffold(projectName: string): void {
 import { defineConfig } from "@blazing-cms/cms";
 
 export default defineConfig({
+  projectName: ${JSON.stringify(displayName)},
   firebase: {
     projectId: process.env.VITE_FIREBASE_PROJECT_ID ?? "your-project-id",
     apiKey: process.env.VITE_FIREBASE_API_KEY ?? "",

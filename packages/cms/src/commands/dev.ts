@@ -21,8 +21,7 @@ export async function dev(options: DevOptions): Promise<void> {
   console.warn(`\n  Blazing CMS Dev Server\n`);
 
   console.warn("  [1/3] Generating schema registry...");
-  const isFirebase = process.env.VITE_BACKEND_MODE === "firebase";
-  await generate({ outDir: path.resolve(ADMIN_ROOT, "__generated__"), sync: isFirebase });
+  await generate({ outDir: path.resolve(ADMIN_ROOT, "__generated__") });
 
   console.warn(`  [2/3] Starting dev server...\n`);
   console.warn(`  Admin panel: http://${host}:${port}/\n`);

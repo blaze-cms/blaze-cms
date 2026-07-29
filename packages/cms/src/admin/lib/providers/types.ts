@@ -1,5 +1,3 @@
-import type { CollectionDefinition, GlobalDefinition, ComponentDefinition } from "@blazing-cms/types";
-
 export interface QueryOptions {
   limit?: number;
   cursor?: string;
@@ -17,10 +15,6 @@ export interface PaginatedResult<T> {
 export interface DataProvider {
   name: string;
   type: "firebase" | "server" | "mock";
-
-  getCollections(): Promise<CollectionDefinition[]>;
-  getGlobals(): Promise<GlobalDefinition[]>;
-  getComponents(): Promise<ComponentDefinition[]>;
 
   findOne(collection: string, id: string): Promise<Record<string, unknown> | null>;
   findMany(collection: string, options?: QueryOptions): Promise<PaginatedResult<Record<string, unknown>>>;
