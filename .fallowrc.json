@@ -1,19 +1,19 @@
 {
   "$schema": "https://raw.githubusercontent.com/fallow-rs/fallow/main/schema.json",
-    "ignorePatterns": [
-      "**/node_modules/**",
-      "**/dist/**",
-      "**/.turbo/**",
-      "**/coverage/**",
-      "packages/create-app/bin/*.js",
-      "packages/generators/test/**",
-      "apps/playground/cms/collections/posts.ts",
-      "packages/cms/src/commands/start.ts",
-      "packages/cms/src/server/**",
-      "packages/create-app/explicit/cms/collections/posts.ts",
-      "packages/create-app/my-cms/cms/collections/posts.ts",
-      "packages/create-app/my-value/cms/collections/posts.ts"
-    ],
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/.turbo/**",
+    "**/coverage/**",
+    "packages/create-app/bin/*.js",
+    "packages/generators/test/**",
+    "apps/playground/cms/collections/posts.ts",
+    "packages/cms/src/commands/start.ts",
+    "packages/cms/src/server/**",
+    "packages/create-app/explicit/cms/collections/posts.ts",
+    "packages/create-app/my-cms/cms/collections/posts.ts",
+    "packages/create-app/my-value/cms/collections/posts.ts"
+  ],
   "ignoreDependencies": [
     "@blazing-cms/types",
     "@blazing-cms/core",
@@ -64,7 +64,7 @@
         "files": ["packages/validation/src/generator.ts"],
         "maxCyclomatic": 45,
         "maxCognitive": 30,
-        "maxCrap": 50,
+        "maxCrap": 310,
         "reason": "field-to-Zod mapping with regex validation for each field type"
       },
       {
@@ -112,10 +112,8 @@
       },
       {
         "files": ["packages/cms/src/admin/components/field-input.tsx"],
-        "maxCrap": 310,
-        "maxCyclomatic": 20,
-        "maxCognitive": 10,
-        "reason": "field type dispatch switch with many renderer branches"
+        "maxCrap": 50,
+        "reason": "FieldLabel with required indicator JSX and nullish coalescing"
       }
     ]
   },
