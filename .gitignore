@@ -8,7 +8,6 @@ coverage/
 test-results/
 playwright/.cache/
 
-# Generated schema files
-__generated__/
+# Generated schema files (committed for CI typecheck)
 
 graphify-out/
