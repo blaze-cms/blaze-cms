@@ -1,13 +1,14 @@
 import { createRoute, Link } from "@tanstack/react-router";
-import { appLayoutRoute } from "@/routes/app-layout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, Database } from "lucide-react";
+
 import { collections } from "@/__generated__/schema-registry";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { appLayoutRoute } from "@/routes/app-layout";
 
 export const collectionsIndexRoute = createRoute({
+  component: CollectionsList,
   getParentRoute: () => appLayoutRoute,
   path: "/collections",
-  component: CollectionsList,
 });
 
 function CollectionsList() {

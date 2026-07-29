@@ -14,8 +14,8 @@ interface ThemeProviderState {
 }
 
 const initialState: ThemeProviderState = {
-  theme: "system",
   setTheme: () => null,
+  theme: "system",
 };
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
@@ -48,13 +48,13 @@ export function ThemeProvider({
   return (
     <ThemeProviderContext.Provider
       value={{
-        theme,
         setTheme: (t: Theme) => {
           try {
             localStorage.setItem(storageKey, t);
           } catch { /* noop */ }
           setTheme(t);
         },
+        theme,
       }}
     >
       {children}

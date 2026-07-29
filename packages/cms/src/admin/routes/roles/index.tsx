@@ -1,19 +1,20 @@
 import { createRoute, Link } from "@tanstack/react-router";
-import { appLayoutRoute } from "@/routes/app-layout";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Plus, Shield } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { appLayoutRoute } from "@/routes/app-layout";
+
 export const rolesIndexRoute = createRoute({
+  component: RolesList,
   getParentRoute: () => appLayoutRoute,
   path: "/roles",
-  component: RolesList,
 });
 
 const sampleRoles = [
-  { id: "1", name: "Admin", description: "Full access" },
-  { id: "2", name: "Editor", description: "Can edit content" },
-  { id: "3", name: "Viewer", description: "Read-only access" },
+  { description: "Full access", id: "1", name: "Admin" },
+  { description: "Can edit content", id: "2", name: "Editor" },
+  { description: "Read-only access", id: "3", name: "Viewer" },
 ];
 
 function RolesList() {

@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
+
 import { Button } from "@/components/ui/button";
 
 interface Props {
@@ -14,11 +15,11 @@ interface State {
 export class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { error: null, hasError: false };
   }
 
   static getDerivedStateFromError(error: Error): State {
-    return { hasError: true, error };
+    return { error, hasError: true };
   }
 
   override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
@@ -36,7 +37,7 @@ export class ErrorBoundary extends Component<Props, State> {
             <p className="text-muted-foreground text-sm">{this.state.error?.message}</p>
             <Button
               onClick={() => {
-                this.setState({ hasError: false, error: null });
+                this.setState({ error: null, hasError: false });
                 window.location.reload();
               }}
             >

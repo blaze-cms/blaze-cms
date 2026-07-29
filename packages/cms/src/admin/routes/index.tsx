@@ -1,10 +1,11 @@
 import { createRoute } from "@tanstack/react-router";
+
 import { appLayoutRoute } from "@/routes/app-layout";
 
 export const indexRoute = createRoute({
+  component: Dashboard,
   getParentRoute: () => appLayoutRoute,
   path: "/",
-  component: Dashboard,
 });
 
 function Dashboard() {

@@ -1,6 +1,8 @@
-import type { DataProvider } from "./types";
-import { firebaseProvider } from "./firebase";
 import { getBackendMode } from "@/lib/backend-mode";
+
+import type { DataProvider } from "./types";
+
+import { firebaseProvider } from "./firebase";
 
 let currentProvider: DataProvider | null = null;
 

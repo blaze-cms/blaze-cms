@@ -1,17 +1,18 @@
 import { createRoute, Link } from "@tanstack/react-router";
-import { appLayoutRoute } from "@/routes/app-layout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Globe } from "lucide-react";
 
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { appLayoutRoute } from "@/routes/app-layout";
+
 export const globalsIndexRoute = createRoute({
+  component: GlobalsList,
   getParentRoute: () => appLayoutRoute,
   path: "/globals",
-  component: GlobalsList,
 });
 
 const globals = [
-  { slug: "homepage", label: "Homepage" },
-  { slug: "site-settings", label: "Site Settings" },
+  { label: "Homepage", slug: "homepage" },
+  { label: "Site Settings", slug: "site-settings" },
 ];
 
 function GlobalsList() {

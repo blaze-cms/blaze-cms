@@ -1,8 +1,9 @@
-import { build as viteBuild, type InlineConfig } from "vite";
-import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import react from "@vitejs/plugin-react";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { build as viteBuild, type InlineConfig } from "vite";
+
 import { generate } from "./generate.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -20,18 +21,18 @@ export async function build(_options: BuildOptions): Promise<void> {
 
   console.warn("  [2/3] Building admin panel...");
   const config: InlineConfig = {
-    configFile: false,
-    root: ADMIN_ROOT,
-    plugins: [react(), tailwindcss()],
     base: "/admin/",
     build: {
-      outDir: path.resolve(ADMIN_ROOT, "../../dist/admin"),
       emptyOutDir: true,
+      outDir: path.resolve(ADMIN_ROOT, "../../dist/admin"),
     },
+    configFile: false,
+    logLevel: "warn",
+    plugins: [react(), tailwindcss()],
     resolve: {
       alias: { "@": ADMIN_ROOT },
     },
-    logLevel: "warn",
+    root: ADMIN_ROOT,
   };
 
   await viteBuild(config);

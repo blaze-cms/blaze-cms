@@ -1,4 +1,5 @@
 import { doc, getDoc, setDoc, type Firestore } from "firebase/firestore";
+
 import type { GlobalApi } from "./types.js";
 
 export function createGlobalApi(db: Firestore): GlobalApi {

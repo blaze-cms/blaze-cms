@@ -18,14 +18,15 @@ import {
   type DocumentSnapshot,
 } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL, type FirebaseStorage } from "firebase/storage";
+
 import type { DataProvider, QueryOptions, PaginatedResult } from "./types";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY ?? "",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID ?? "",
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN ?? "",
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID ?? "",
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET ?? "",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID ?? "",
 };
 
 let app: FirebaseApp;
@@ -45,24 +46,17 @@ function docToData(d: DocumentSnapshot): Record<string, unknown> | null {
 }
 
 export const firebaseProvider: DataProvider = {
-  name: "firebase",
-  type: "firebase",
-
-  async getCollections() {
-    throw new Error("Schema introspection not supported in Firebase mode directly");
+  async create(collectionName: string, data: Record<string, unknown>) {
+    const col = collection(db, collectionName);
+    if (data.id) {
+      await setDoc(doc(col, data.id as string), data);
+      return data.id as string;
+    }
+    const docRef = await addDoc(col, data);
+    return docRef.id;
   },
-
-  async getGlobals() {
-    throw new Error("Schema introspection not supported in Firebase mode directly");
-  },
-
-  async getComponents() {
-    throw new Error("Schema introspection not supported in Firebase mode directly");
-  },
-
-  async findOne(collectionName: string, id: string) {
-    const snap = await getDoc(doc(db, collectionName, id));
-    return docToData(snap);
+  async delete(collectionName: string, id: string) {
+    await deleteDoc(doc(db, collectionName, id));
   },
 
   async findMany(collectionName: string, options?: QueryOptions) {
@@ -88,34 +82,41 @@ export const firebaseProvider: DataProvider = {
     if (hasMore) docs.pop();
 
     return {
+      cursor: hasMore ? snap.docs[pageSize - 1]?.id : undefined,
       data: docs,
       hasMore,
-      cursor: hasMore ? snap.docs[pageSize - 1]?.id : undefined,
     };
   },
 
-  async create(collectionName: string, data: Record<string, unknown>) {
-    const col = collection(db, collectionName);
-    if (data.id) {
-      await setDoc(doc(col, data.id as string), data);
-      return data.id as string;
-    }
-    const docRef = await addDoc(col, data);
-    return docRef.id;
+  async findOne(collectionName: string, id: string) {
+    const snap = await getDoc(doc(db, collectionName, id));
+    return docToData(snap);
   },
 
-  async update(collectionName: string, id: string, data: Record<string, unknown>) {
-    const { id: _, ...updateData } = data;
-    await updateDoc(doc(db, collectionName, id), updateData);
+  async getCollections() {
+    throw new Error("Schema introspection not supported in Firebase mode directly");
   },
 
-  async delete(collectionName: string, id: string) {
-    await deleteDoc(doc(db, collectionName, id));
+  async getComponents() {
+    throw new Error("Schema introspection not supported in Firebase mode directly");
   },
 
   async getGlobal(slug: string) {
     const snap = await getDoc(doc(db, `globals_${slug}`, "value"));
     return docToData(snap);
+  },
+
+  async getGlobals() {
+    throw new Error("Schema introspection not supported in Firebase mode directly");
+  },
+
+  name: "firebase",
+
+  type: "firebase",
+
+  async update(collectionName: string, id: string, data: Record<string, unknown>) {
+    const { id: _, ...updateData } = data;
+    await updateDoc(doc(db, collectionName, id), updateData);
   },
 
   async upsertGlobal(slug: string, data: Record<string, unknown>) {

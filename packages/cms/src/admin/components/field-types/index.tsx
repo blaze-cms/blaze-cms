@@ -1,9 +1,10 @@
 import type { FieldDefinition } from "@blaze-cms/types";
 import type { ReactNode } from "react";
+
 import { renderBasicInput } from "./basic-inputs";
-import { renderTextInput } from "./text-inputs";
 import { renderMediaInput } from "./media-inputs";
 import { renderStructureInput } from "./structure-inputs";
+import { renderTextInput } from "./text-inputs";
 
 export function renderField(field: FieldDefinition, value: unknown, onChange: (v: unknown) => void): ReactNode {
   switch (field.type) {

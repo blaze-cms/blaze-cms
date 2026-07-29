@@ -1,18 +1,19 @@
 import { createRoute, Link } from "@tanstack/react-router";
-import { appLayoutRoute } from "@/routes/app-layout";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Users as UsersIcon } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { appLayoutRoute } from "@/routes/app-layout";
+
 export const usersIndexRoute = createRoute({
+  component: UsersList,
   getParentRoute: () => appLayoutRoute,
   path: "/users",
-  component: UsersList,
 });
 
 const sampleUsers = [
-  { id: "1", name: "Admin User", email: "admin@example.com", role: "admin" },
-  { id: "2", name: "Editor User", email: "editor@example.com", role: "editor" },
+  { email: "admin@example.com", id: "1", name: "Admin User", role: "admin" },
+  { email: "editor@example.com", id: "2", name: "Editor User", role: "editor" },
 ];
 
 function UsersList() {

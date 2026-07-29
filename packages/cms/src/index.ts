@@ -38,60 +38,61 @@ function getFlag(args: string[], name: string): string | undefined {
   return idx !== -1 ? args[idx + 1] : undefined;
 }
 
-export function main(): void {
+export async function main(): Promise<void> {
   const args = process.argv.slice(2);
 
   if (args.length === 0 || args[0] === "--help") {
     printHelp();
-    process.exit(0);
+    return;
   }
 
   const cmd = args[0];
 
   switch (cmd) {
     case "dev": {
-      void import("./commands/dev.js").then((m) =>
-        m.dev({
-          host: getFlag(args, "--host"),
-          port: getFlag(args, "--port") ? Number(getFlag(args, "--port")) : undefined,
-          emulator: args.includes("--emulator"),
-        }),
-      );
+      const m = await import("./commands/dev.js");
+      await m.dev({
+        emulator: args.includes("--emulator"),
+        host: getFlag(args, "--host"),
+        port: getFlag(args, "--port") ? Number(getFlag(args, "--port")) : undefined,
+      });
       break;
     }
     case "build": {
-      void import("./commands/build.js").then((m) => m.build({}));
+      const m = await import("./commands/build.js");
+      await m.build({});
       break;
     }
     case "generate": {
-      const type = args[1];
-      void import("./commands/generate.js").then((m) =>
-        m.generate({
-          dir: getFlag(args, "--dir"),
-          type,
-        }),
-      );
+      const m = await import("./commands/generate.js");
+      await m.generate({
+        dir: getFlag(args, "--dir"),
+        type: args[1],
+      });
       break;
     }
     case "deploy": {
-      void import("./commands/deploy.js").then((m) => m.deploy({}));
+      const m = await import("./commands/deploy.js");
+      await m.deploy({});
       break;
     }
     case "scaffold": {
-      void import("./commands/scaffold.js").then((m) => m.scaffold({}));
+      const m = await import("./commands/scaffold.js");
+      await m.scaffold({});
       break;
     }
     case "lint": {
-      void import("./commands/lint.js").then((m) => m.lint({ dir: getFlag(args, "--dir") }));
+      const m = await import("./commands/lint.js");
+      await m.lint({ dir: getFlag(args, "--dir") });
       break;
     }
     case "doctor": {
-      void import("./commands/doctor.js").then((m) => m.doctor({ dir: getFlag(args, "--dir") }));
+      const m = await import("./commands/doctor.js");
+      await m.doctor({ dir: getFlag(args, "--dir") });
       break;
     }
     default:
       console.error(`Unknown command: ${cmd}`);
       printHelp();
-      process.exit(1);
   }
 }

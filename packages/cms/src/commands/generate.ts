@@ -5,8 +5,8 @@ import {
   GenerationPipeline,
 } from "@blaze-cms/generators";
 import { SchemaLoader } from "@blaze-cms/schema";
-import { resolve } from "node:path";
 import { writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { resolve } from "node:path";
 
 export interface GenerateOptions {
   type?: string;

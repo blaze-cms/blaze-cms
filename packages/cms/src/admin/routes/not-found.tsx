@@ -1,10 +1,11 @@
 import { createRoute } from "@tanstack/react-router";
+
 import { rootRoute } from "@/routes/__root";
 
 export const notFoundRoute = createRoute({
+  component: NotFound,
   getParentRoute: () => rootRoute,
   path: "*",
-  component: NotFound,
 });
 
 function NotFound() {

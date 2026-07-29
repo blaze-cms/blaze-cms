@@ -1,12 +1,13 @@
-import { cn } from "@/lib/utils";
 import { type ReactNode, useState } from "react";
+
+import { cn } from "@/lib/utils";
 
 interface TooltipProps {
   content: string;
   children: ReactNode;
 }
 
-function Tooltip({ content, children }: TooltipProps) {
+function Tooltip({ children, content }: TooltipProps) {
   const [show, setShow] = useState(false);
 
   return (

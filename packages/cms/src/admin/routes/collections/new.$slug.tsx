@@ -1,18 +1,19 @@
 import { createRoute, useRouter } from "@tanstack/react-router";
-import { appLayoutRoute } from "@/routes/app-layout";
+import { ArrowLeft, Save } from "lucide-react";
+import { useState, type FormEvent } from "react";
+
+import { collections } from "@/__generated__/schema-registry";
+import { useToast } from "@/components/toast-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/toast-provider";
 import { useDataProvider } from "@/lib/providers/context";
-import { ArrowLeft, Save } from "lucide-react";
-import { useState, type FormEvent } from "react";
-import { collections } from "@/__generated__/schema-registry";
+import { appLayoutRoute } from "@/routes/app-layout";
 
 export const newEntryRoute = createRoute({
+  component: NewEntry,
   getParentRoute: () => appLayoutRoute,
   path: "/collections/new/$slug",
-  component: NewEntry,
 });
 
 function NewEntry() {
@@ -29,11 +30,11 @@ function NewEntry() {
     if (!title.trim()) return;
     setSaving(true);
     try {
-      await provider.create(slug, { title, status: "draft", createdAt: new Date().toISOString() });
-      addToast({ title: "Entry created", description: "Your entry has been created." });
-      router.navigate({ to: "/collections/$slug" as string, params: { slug } });
+      await provider.create(slug, { createdAt: new Date().toISOString(), status: "draft", title });
+      addToast({ description: "Your entry has been created.", title: "Entry created" });
+      router.navigate({ params: { slug }, to: "/collections/$slug" as string });
     } catch (err) {
-      addToast({ title: "Error", description: String(err), variant: "destructive" });
+      addToast({ description: String(err), title: "Error", variant: "destructive" });
     } finally {
       setSaving(false);
     }

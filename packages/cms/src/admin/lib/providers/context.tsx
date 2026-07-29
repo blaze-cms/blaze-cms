@@ -1,5 +1,7 @@
 import { createContext, useContext, type ReactNode } from "react";
+
 import type { DataProvider } from "./types";
+
 import { getProvider } from "./registry";
 
 const ProviderContext = createContext<DataProvider | null>(null);

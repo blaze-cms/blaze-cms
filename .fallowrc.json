@@ -1,16 +1,18 @@
 {
   "$schema": "https://raw.githubusercontent.com/fallow-rs/fallow/main/schema.json",
-  "ignorePatterns": [
-    "**/node_modules/**",
-    "**/dist/**",
-    "**/.turbo/**",
-    "**/coverage/**",
-    "packages/generators/test/**",
-    "apps/playground/cms/collections/posts.ts",
-    "packages/create-app/explicit/cms/collections/posts.ts",
-    "packages/create-app/my-cms/cms/collections/posts.ts",
-    "packages/create-app/my-value/cms/collections/posts.ts"
-  ],
+    "ignorePatterns": [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/.turbo/**",
+      "**/coverage/**",
+      "packages/generators/test/**",
+      "apps/playground/cms/collections/posts.ts",
+      "packages/cms/src/commands/start.ts",
+      "packages/cms/src/server/**",
+      "packages/create-app/explicit/cms/collections/posts.ts",
+      "packages/create-app/my-cms/cms/collections/posts.ts",
+      "packages/create-app/my-value/cms/collections/posts.ts"
+    ],
   "ignoreDependencies": [
     "@blaze-cms/types",
     "@blaze-cms/core",

@@ -1,7 +1,4 @@
-import { cn } from "@/lib/utils";
-import { isDevMode } from "@/lib/backend-mode";
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
 import {
   LayoutDashboard,
   FileText,
@@ -15,6 +12,10 @@ import {
   ChevronRight,
   type LucideIcon,
 } from "lucide-react";
+import { useState } from "react";
+
+import { isDevMode } from "@/lib/backend-mode";
+import { cn } from "@/lib/utils";
 
 interface NavItem {
   label: string;
@@ -23,14 +24,14 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { label: "Dashboard", icon: LayoutDashboard, href: "/" },
-  { label: "Collections", icon: FileText, href: "/collections" },
-  { label: "Globals", icon: Globe, href: "/globals" },
-  { label: "Media", icon: Image, href: "/media" },
-  { label: "Users", icon: Users, href: "/users" },
-  { label: "Roles", icon: Shield, href: "/roles" },
-  ...(isDevMode() ? [{ label: "Schemas", icon: FileJson, href: "/schemas" } satisfies NavItem] : []),
-  { label: "Settings", icon: Settings, href: "/settings" },
+  { href: "/", icon: LayoutDashboard, label: "Dashboard" },
+  { href: "/collections", icon: FileText, label: "Collections" },
+  { href: "/globals", icon: Globe, label: "Globals" },
+  { href: "/media", icon: Image, label: "Media" },
+  { href: "/users", icon: Users, label: "Users" },
+  { href: "/roles", icon: Shield, label: "Roles" },
+  ...(isDevMode() ? [{ href: "/schemas", icon: FileJson, label: "Schemas" } satisfies NavItem] : []),
+  { href: "/settings", icon: Settings, label: "Settings" },
 ];
 
 export function Sidebar() {

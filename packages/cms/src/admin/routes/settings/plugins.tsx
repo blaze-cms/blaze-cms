@@ -1,12 +1,13 @@
 import { createRoute } from "@tanstack/react-router";
-import { appLayoutRoute } from "@/routes/app-layout";
-import { Card, CardContent } from "@/components/ui/card";
 import { Puzzle } from "lucide-react";
 
+import { Card, CardContent } from "@/components/ui/card";
+import { appLayoutRoute } from "@/routes/app-layout";
+
 export const pluginsRoute = createRoute({
+  component: PluginsSettings,
   getParentRoute: () => appLayoutRoute,
   path: "/settings/plugins",
-  component: PluginsSettings,
 });
 
 function PluginsSettings() {

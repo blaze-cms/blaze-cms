@@ -1,10 +1,12 @@
 import type { FieldDefinition, SelectField, MultiSelectField, RadioField, RelationField, ComponentField, DynamicZoneField, ArrayField, ObjectField, GroupField, RepeaterField, TabsField, SlugField } from "@blaze-cms/types";
 import type { ReactNode, ChangeEvent } from "react";
+
+import { Plus, X, GripVertical } from "lucide-react";
+
+import { FieldInput } from "@/components/field-input";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { FieldInput } from "@/components/field-input";
-import { Plus, X, GripVertical } from "lucide-react";
 
 export function renderStructureInput(field: FieldDefinition, value: unknown, onChange: (v: unknown) => void): ReactNode {
   switch (field.type) {

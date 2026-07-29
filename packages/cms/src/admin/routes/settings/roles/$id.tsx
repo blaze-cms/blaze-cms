@@ -1,15 +1,16 @@
 import { createRoute, useRouter } from "@tanstack/react-router";
-import { appLayoutRoute } from "@/routes/app-layout";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { ArrowLeft, Save } from "lucide-react";
 import { useState } from "react";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { appLayoutRoute } from "@/routes/app-layout";
+
 export const settingsRoleDetailRoute = createRoute({
+  component: SettingsRoleDetail,
   getParentRoute: () => appLayoutRoute,
   path: "/settings/roles/$id",
-  component: SettingsRoleDetail,
 });
 
 function SettingsRoleDetail() {

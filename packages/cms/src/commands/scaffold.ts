@@ -1,5 +1,6 @@
 import { writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
+
 import { prompt } from "./utils/prompt.js";
 
 export interface ScaffoldOptions {

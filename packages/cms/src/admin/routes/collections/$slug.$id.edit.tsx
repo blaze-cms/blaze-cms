@@ -1,23 +1,24 @@
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createRoute, useRouter } from "@tanstack/react-router";
-import { appLayoutRoute } from "@/routes/app-layout";
+import { ArrowLeft, Save } from "lucide-react";
+import { useState, useEffect, type FormEvent } from "react";
+
+import { useToast } from "@/components/toast-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useToast } from "@/components/toast-provider";
 import { useDataProvider } from "@/lib/providers/context";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, Save } from "lucide-react";
-import { useState, useEffect, type FormEvent } from "react";
+import { appLayoutRoute } from "@/routes/app-layout";
 
 export const editEntryRoute = createRoute({
+  component: EditEntry,
   getParentRoute: () => appLayoutRoute,
   path: "/collections/$slug/$id",
-  component: EditEntry,
 });
 
 function EditEntry() {
-  const { slug, id } = editEntryRoute.useParams();
+  const { id, slug } = editEntryRoute.useParams();
   const router = useRouter();
   const provider = useDataProvider();
   const { addToast } = useToast();
@@ -26,8 +27,8 @@ function EditEntry() {
   const [saving, setSaving] = useState(false);
 
   const { data: entry, isLoading } = useQuery({
-    queryKey: ["collection", slug, id],
     queryFn: async () => provider.findOne(slug, id),
+    queryKey: ["collection", slug, id],
   });
 
   useEffect(() => {
@@ -40,10 +41,10 @@ function EditEntry() {
     setSaving(true);
     try {
       await provider.update(slug, id, { title });
-      addToast({ title: "Saved", description: "Entry has been updated." });
+      addToast({ description: "Entry has been updated.", title: "Saved" });
       await queryClient.invalidateQueries({ queryKey: ["collection", slug] });
     } catch (err) {
-      addToast({ title: "Error", description: String(err), variant: "destructive" });
+      addToast({ description: String(err), title: "Error", variant: "destructive" });
     } finally {
       setSaving(false);
     }

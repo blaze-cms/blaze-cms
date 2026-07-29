@@ -1,5 +1,6 @@
-import { cn } from "@/lib/utils";
 import { type HTMLAttributes, type ReactNode } from "react";
+
+import { cn } from "@/lib/utils";
 
 interface DialogProps {
   open: boolean;
@@ -7,7 +8,7 @@ interface DialogProps {
   children: ReactNode;
 }
 
-function Dialog({ open, onOpenChange, children }: DialogProps) {
+function Dialog({ children, onOpenChange, open }: DialogProps) {
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -17,7 +18,7 @@ function Dialog({ open, onOpenChange, children }: DialogProps) {
   );
 }
 
-function DialogContent({ className, children, ...props }: HTMLAttributes<HTMLDivElement>) {
+function DialogContent({ children, className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={cn(

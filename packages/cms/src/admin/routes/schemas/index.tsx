@@ -1,21 +1,22 @@
 import { createRoute, Link } from "@tanstack/react-router";
-import { appLayoutRoute } from "@/routes/app-layout";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, FileJson, Construction } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { appLayoutRoute } from "@/routes/app-layout";
+
 export const schemasIndexRoute = createRoute({
+  component: SchemasList,
   getParentRoute: () => appLayoutRoute,
   path: "/schemas",
-  component: SchemasList,
 });
 
 const schemas = [
-  { type: "collection", slug: "posts", label: "Posts" },
-  { type: "collection", slug: "pages", label: "Pages" },
-  { type: "global", slug: "homepage", label: "Homepage" },
-  { type: "global", slug: "site-settings", label: "Site Settings" },
-  { type: "component", slug: "hero", label: "Hero" },
+  { label: "Posts", slug: "posts", type: "collection" },
+  { label: "Pages", slug: "pages", type: "collection" },
+  { label: "Homepage", slug: "homepage", type: "global" },
+  { label: "Site Settings", slug: "site-settings", type: "global" },
+  { label: "Hero", slug: "hero", type: "component" },
 ];
 
 function SchemasList() {
@@ -49,7 +50,7 @@ function SchemasList() {
           <Link
             key={`${s.type}-${s.slug}`}
             to={"/schemas/$type/$slug" as string}
-            params={{ type: s.type, slug: s.slug } as Record<string, string>}
+            params={{ slug: s.slug, type: s.type } as Record<string, string>}
           >
             <Card className="cursor-pointer transition-colors hover:bg-accent">
               <CardHeader>

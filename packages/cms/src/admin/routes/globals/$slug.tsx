@@ -1,14 +1,15 @@
 import { createRoute, useRouter } from "@tanstack/react-router";
-import { appLayoutRoute } from "@/routes/app-layout";
+import { ArrowLeft, Save } from "lucide-react";
+import { useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
-import { ArrowLeft, Save } from "lucide-react";
+import { appLayoutRoute } from "@/routes/app-layout";
 
 export const globalDetailRoute = createRoute({
+  component: GlobalEditor,
   getParentRoute: () => appLayoutRoute,
   path: "/globals/$slug",
-  component: GlobalEditor,
 });
 
 function GlobalEditor() {

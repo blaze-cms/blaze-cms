@@ -3,10 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "echo 'Run: node ../../packages/cms/dist/index.js dev from playground'",
-    "start": "echo 'Run: node ../../packages/cms/dist/index.js start from playground'",
-    "build": "echo 'Playground build OK'",
-    "generate": "echo 'Run: node ../../packages/cms/dist/index.js generate'",
+    "dev": "node ../../packages/cms/bin/cms.js dev",
+    "build": "node ../../packages/cms/bin/cms.js build",
+    "generate": "node ../../packages/cms/bin/cms.js generate",
     "test": "vitest run"
   },
   "dependencies": {

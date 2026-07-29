@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { AlertCircle, Wifi } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export function OfflineIndicator() {
   const [online, setOnline] = useState(navigator.onLine);

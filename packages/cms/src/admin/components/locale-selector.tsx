@@ -1,5 +1,6 @@
-import { Select } from "@/components/ui/select";
 import type { ChangeEvent } from "react";
+
+import { Select } from "@/components/ui/select";
 
 interface LocaleSelectorProps {
   locales: string[];
@@ -7,7 +8,7 @@ interface LocaleSelectorProps {
   onChange: (locale: string) => void;
 }
 
-export function LocaleSelector({ locales, value, onChange }: LocaleSelectorProps) {
+export function LocaleSelector({ locales, onChange, value }: LocaleSelectorProps) {
   if (locales.length <= 1) return null;
 
   return (

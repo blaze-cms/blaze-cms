@@ -1,11 +1,12 @@
 import { createRoute } from "@tanstack/react-router";
-import { appLayoutRoute } from "@/routes/app-layout";
 import { Construction } from "lucide-react";
 
+import { appLayoutRoute } from "@/routes/app-layout";
+
 export const schemaDetailRoute = createRoute({
+  component: SchemaDetail,
   getParentRoute: () => appLayoutRoute,
   path: "/schemas/$type/$slug",
-  component: SchemaDetail,
 });
 
 function SchemaDetail() {

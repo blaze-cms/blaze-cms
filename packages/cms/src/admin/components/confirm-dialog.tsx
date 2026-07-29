@@ -13,14 +13,14 @@ interface ConfirmDialogProps {
 }
 
 export function ConfirmDialog({
-  open,
-  onOpenChange,
-  title,
-  description,
-  confirmLabel = "Confirm",
   cancelLabel = "Cancel",
-  variant = "destructive",
+  confirmLabel = "Confirm",
+  description,
   onConfirm,
+  onOpenChange,
+  open,
+  title,
+  variant = "destructive",
 }: ConfirmDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

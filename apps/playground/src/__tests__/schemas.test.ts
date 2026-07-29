@@ -1,32 +1,30 @@
-import { describe, it, expect } from "vitest";
 import { SchemaValidator } from "@blaze-cms/schema";
+import { describe, it, expect } from "vitest";
 
+import arrayCollection from "../../cms/collections/array.js";
+import booleanCollection from "../../cms/collections/boolean.js";
+import componentCollection from "../../cms/collections/component.js";
+import dateCollection from "../../cms/collections/date.js";
+import dynamicZoneCollection from "../../cms/collections/dynamic-zone.js";
+import groupCollection from "../../cms/collections/group.js";
+import mediaCollection from "../../cms/collections/media.js";
+import numberCollection from "../../cms/collections/number.js";
 // Collection schemas
 import postsCollection from "../../cms/collections/posts.js";
-import textCollection from "../../cms/collections/text.js";
-import numberCollection from "../../cms/collections/number.js";
-import booleanCollection from "../../cms/collections/boolean.js";
-import dateCollection from "../../cms/collections/date.js";
-import mediaCollection from "../../cms/collections/media.js";
+import relationCollection from "../../cms/collections/relation.js";
+import repeaterCollection from "../../cms/collections/repeater.js";
 import richTextCollection from "../../cms/collections/rich-text.js";
 import selectCollection from "../../cms/collections/select.js";
-import relationCollection from "../../cms/collections/relation.js";
-import groupCollection from "../../cms/collections/group.js";
-import repeaterCollection from "../../cms/collections/repeater.js";
-import arrayCollection from "../../cms/collections/array.js";
-import componentCollection from "../../cms/collections/component.js";
-import dynamicZoneCollection from "../../cms/collections/dynamic-zone.js";
-
+import textCollection from "../../cms/collections/text.js";
+import buttonComponent from "../../cms/components/button.js";
+import ctaComponent from "../../cms/components/cta.js";
+// Component schemas
+import heroComponent from "../../cms/components/hero.js";
+import mediaCardComponent from "../../cms/components/media-card.js";
+import seoComponent from "../../cms/components/seo.js";
 // Global schemas
 import homepageGlobal from "../../cms/globals/homepage.js";
 import siteSettingsGlobal from "../../cms/globals/site-settings.js";
-
-// Component schemas
-import heroComponent from "../../cms/components/hero.js";
-import buttonComponent from "../../cms/components/button.js";
-import ctaComponent from "../../cms/components/cta.js";
-import mediaCardComponent from "../../cms/components/media-card.js";
-import seoComponent from "../../cms/components/seo.js";
 
 const validator = new SchemaValidator();
 

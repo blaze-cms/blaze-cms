@@ -1,4 +1,3 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 import { initializeApp, type FirebaseApp } from "firebase/app";
 import {
   getAuth,
@@ -7,6 +6,7 @@ import {
   onAuthStateChanged,
   type User,
 } from "firebase/auth";
+import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 
 interface AuthContextValue {
   user: User | null;
@@ -25,10 +25,10 @@ export function useAuth() {
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY ?? "",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID ?? "",
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN ?? "",
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID ?? "",
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET ?? "",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID ?? "",
 };
 
 let app: FirebaseApp;
@@ -61,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ loading, login, logout, user }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,4 +1,5 @@
 import type { FieldDefinition } from "@blaze-cms/types";
+
 import { renderField } from "@/components/field-types/index";
 
 interface FieldInputProps {
@@ -8,7 +9,7 @@ interface FieldInputProps {
   error?: string;
 }
 
-export function FieldInput({ field, value, onChange, error }: FieldInputProps) {
+export function FieldInput({ error, field, onChange, value }: FieldInputProps) {
   return (
     <div className="space-y-2">
       {field.type === "tabs" || field.type === "dynamicZone" ? null : (

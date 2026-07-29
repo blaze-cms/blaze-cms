@@ -1,5 +1,6 @@
 import type { FieldDefinition } from "@blaze-cms/types";
 import type { ReactNode, ChangeEvent } from "react";
+
 import { Input } from "@/components/ui/input";
 
 export function renderMediaInput(field: FieldDefinition, value: unknown, onChange: (v: unknown) => void): ReactNode {

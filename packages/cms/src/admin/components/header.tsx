@@ -1,6 +1,7 @@
+import { LogOut } from "lucide-react";
+
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
 
 export function Header() {
   return (

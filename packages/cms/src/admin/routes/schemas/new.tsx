@@ -1,11 +1,12 @@
 import { createRoute } from "@tanstack/react-router";
-import { appLayoutRoute } from "@/routes/app-layout";
 import { Construction } from "lucide-react";
 
+import { appLayoutRoute } from "@/routes/app-layout";
+
 export const newSchemaRoute = createRoute({
+  component: NewSchema,
   getParentRoute: () => appLayoutRoute,
   path: "/schemas/new",
-  component: NewSchema,
 });
 
 function NewSchema() {

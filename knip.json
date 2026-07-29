@@ -27,8 +27,6 @@
     "packages/create-app/my-value/**"
   ],
   "ignoreIssues": {
-    "packages/cms/src/server/schemas/**": ["exports", "types"],
-    "packages/cms/src/server/lib/**": ["exports", "types"],
     "packages/core/src/container.ts": ["exports", "types"],
     "packages/core/src/event-bus.ts": ["exports", "types"],
     "packages/core/src/lifecycle.ts": ["exports", "types"],
@@ -40,9 +38,7 @@
   "workspaces": {
     ".": {
       "entry": [
-        "packages/*/src/index.{ts,tsx}",
-        "packages/cms/src/server/app.ts",
-        "packages/cms/src/server/config.ts"
+        "packages/*/src/index.{ts,tsx}"
       ]
     }
   }

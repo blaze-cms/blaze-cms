@@ -1,5 +1,6 @@
-import { cn } from "@/lib/utils";
 import { type HTMLAttributes } from "react";
+
+import { cn } from "@/lib/utils";
 
 function Avatar({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
@@ -13,7 +14,7 @@ function Avatar({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   );
 }
 
-function AvatarImage({ className, src, alt, ...props }: HTMLAttributes<HTMLImageElement> & { src?: string; alt?: string }) {
+function AvatarImage({ alt, className, src, ...props }: HTMLAttributes<HTMLImageElement> & { src?: string; alt?: string }) {
   // eslint-disable-next-line @next/next/no-img-element
   return <img src={src} alt={alt} className={cn("aspect-square h-full w-full", className)} {...props} />;
 }

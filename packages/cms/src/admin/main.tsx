@@ -1,11 +1,13 @@
+import { createBrowserHistory } from "@tanstack/history";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { RouterProvider, createRouter } from "@tanstack/react-router";
+
 import { ThemeProvider } from "@/components/theme-provider";
+import { ToastProvider } from "@/components/toast-provider";
 import { AuthProvider } from "@/lib/auth";
 import { DataProviderWrapper } from "@/lib/providers/index";
-import { ToastProvider } from "@/components/toast-provider";
-import { RouterProvider, createRouter } from "@tanstack/react-router";
-import { createBrowserHistory } from "@tanstack/history";
 import { routeTree } from "@/router";
+
 import "./index.css";
 
 function stripBase(raw: string, b: string): string {
@@ -15,18 +17,18 @@ function stripBase(raw: string, b: string): string {
 const queryClient = new QueryClient();
 const base: string = import.meta.env.BASE_URL || "/";
 const router = createRouter({
-  routeTree,
   history: createBrowserHistory({
-    parseLocation: () => {
-      const p = stripBase(window.location.pathname + window.location.search + window.location.hash, base);
-      const url = new URL(p, "http://localhost");
-      return { href: p, pathname: url.pathname, search: url.search, hash: url.hash, state: window.history.state };
-    },
     createHref: (href: string) => {
       const full = base.replace(/\/$/, "") + "/" + href.replace(/^\//, "");
       return full.replace(/\/+$/, "") || "/";
     },
+    parseLocation: () => {
+      const p = stripBase(window.location.pathname + window.location.search + window.location.hash, base);
+      const url = new URL(p, "http://localhost");
+      return { hash: url.hash, href: p, pathname: url.pathname, search: url.search, state: window.history.state };
+    },
   }),
+  routeTree,
 });
 
 declare module "@tanstack/react-router" {

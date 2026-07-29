@@ -1,5 +1,6 @@
-import { cn } from "@/lib/utils";
 import { forwardRef, type InputHTMLAttributes } from "react";
+
+import { cn } from "@/lib/utils";
 
 const Checkbox = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(
   ({ className, ...props }, ref) => {

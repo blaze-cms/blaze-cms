@@ -1,15 +1,16 @@
 import { createRoute, useRouter } from "@tanstack/react-router";
-import { appLayoutRoute } from "@/routes/app-layout";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { appLayoutRoute } from "@/routes/app-layout";
+
 export const newUserRoute = createRoute({
+  component: NewUser,
   getParentRoute: () => appLayoutRoute,
   path: "/users/new",
-  component: NewUser,
 });
 
 function NewUser() {

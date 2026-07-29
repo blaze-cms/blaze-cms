@@ -1,17 +1,18 @@
-import { createRoute, Link } from "@tanstack/react-router";
-import { appLayoutRoute } from "@/routes/app-layout";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Plus, FileText } from "lucide-react";
-import { useDataProvider } from "@/lib/providers/context";
 import { useQuery } from "@tanstack/react-query";
+import { createRoute, Link } from "@tanstack/react-router";
+import { Plus, FileText } from "lucide-react";
+
 import { collections } from "@/__generated__/schema-registry";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useDataProvider } from "@/lib/providers/context";
+import { appLayoutRoute } from "@/routes/app-layout";
 
 export const collectionDetailRoute = createRoute({
+  component: CollectionEntries,
   getParentRoute: () => appLayoutRoute,
   path: "/collections/$slug",
-  component: CollectionEntries,
 });
 
 function CollectionEntries() {
@@ -20,11 +21,11 @@ function CollectionEntries() {
   const col = collections.find((c) => c.slug === slug);
 
   const { data: entries, isLoading } = useQuery({
-    queryKey: ["collection", slug],
     queryFn: async () => {
       const result = await provider.findMany(slug, { limit: 50 });
       return result.data;
     },
+    queryKey: ["collection", slug],
   });
 
   if (!col) {
@@ -70,7 +71,7 @@ function CollectionEntries() {
               <Link
                 key={entry.id as string}
                 to={"/collections/$slug/$id" as string}
-                params={{ slug, id: entry.id as string } as Record<string, string>}
+                params={{ id: entry.id as string, slug } as Record<string, string>}
                 className="flex items-center justify-between border-b px-4 py-3 transition-colors hover:bg-accent last:border-b-0"
               >
                 <span className="font-medium">{String(title)}</span>

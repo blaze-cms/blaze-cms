@@ -1,11 +1,13 @@
 import { initializeApp, type FirebaseApp } from "firebase/app";
-import { getFirestore, type Firestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { getFirestore, type Firestore } from "firebase/firestore";
 import { getStorage, type FirebaseStorage } from "firebase/storage";
+
 import type { BlazeClientConfig, CollectionApi, GlobalApi, AuthApi } from "./types.js";
+
+import { createAuthApi } from "./auth.js";
 import { createCollectionApi } from "./collection.js";
 import { createGlobalApi } from "./global.js";
-import { createAuthApi } from "./auth.js";
 
 export interface BlazeClient {
   /** Access a Firestore collection by name */
@@ -39,6 +41,8 @@ export function createBlazeClient(config: BlazeClientConfig): BlazeClient {
   const collections = new Map<string, CollectionApi>();
 
   return {
+    app,
+    auth: createAuthApi(auth),
     collection(name: string): CollectionApi {
       let api = collections.get(name);
       if (!api) {
@@ -47,10 +51,8 @@ export function createBlazeClient(config: BlazeClientConfig): BlazeClient {
       }
       return api;
     },
-    globals: createGlobalApi(db),
-    auth: createAuthApi(auth),
-    app,
     db,
+    globals: createGlobalApi(db),
     storage,
   };
 }

@@ -15,6 +15,7 @@ import {
   type DocumentSnapshot,
   type QueryConstraint,
 } from "firebase/firestore";
+
 import type { CollectionApi, QueryOptions, PaginatedResult } from "./types.js";
 
 const PAGE_SIZE = 25;
@@ -28,6 +29,24 @@ export function createCollectionApi(db: Firestore, collectionName: string): Coll
   const colRef = collection(db, collectionName);
 
   return {
+    async create(data: Record<string, unknown>): Promise<string> {
+      if (data.id) {
+        await setDoc(doc(colRef, data.id as string), data);
+        return data.id as string;
+      }
+      const docRef = await addDoc(colRef, data);
+      return docRef.id;
+    },
+
+    async delete(id: string): Promise<void> {
+      await deleteDoc(doc(db, collectionName, id));
+    },
+
+    async findById(id: string): Promise<Record<string, unknown> | null> {
+      const snap = await getDoc(doc(db, collectionName, id));
+      return docToData(snap);
+    },
+
     async findMany(options?: QueryOptions): Promise<PaginatedResult> {
       const constraints: QueryConstraint[] = [];
       const pageSize = options?.limit ?? PAGE_SIZE;
@@ -51,33 +70,15 @@ export function createCollectionApi(db: Firestore, collectionName: string): Coll
       if (hasMore) docs.pop();
 
       return {
+        cursor: hasMore ? snap.docs[pageSize - 1]?.id : undefined,
         data: docs,
         hasMore,
-        cursor: hasMore ? snap.docs[pageSize - 1]?.id : undefined,
       };
-    },
-
-    async findById(id: string): Promise<Record<string, unknown> | null> {
-      const snap = await getDoc(doc(db, collectionName, id));
-      return docToData(snap);
-    },
-
-    async create(data: Record<string, unknown>): Promise<string> {
-      if (data.id) {
-        await setDoc(doc(colRef, data.id as string), data);
-        return data.id as string;
-      }
-      const docRef = await addDoc(colRef, data);
-      return docRef.id;
     },
 
     async update(id: string, data: Record<string, unknown>): Promise<void> {
       const { id: _, ...updateData } = data;
       await updateDoc(doc(db, collectionName, id), updateData);
-    },
-
-    async delete(id: string): Promise<void> {
-      await deleteDoc(doc(db, collectionName, id));
     },
   };
 }

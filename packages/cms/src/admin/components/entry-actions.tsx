@@ -1,5 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { Save, Eye, History, Trash2 } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 
 interface EntryActionsProps {
   onSave?: () => void;
@@ -10,7 +11,7 @@ interface EntryActionsProps {
   deleting?: boolean;
 }
 
-export function EntryActions({ onSave, onPreview, onHistory, onDelete, saving, deleting }: EntryActionsProps) {
+export function EntryActions({ deleting, onDelete, onHistory, onPreview, onSave, saving }: EntryActionsProps) {
   return (
     <div className="flex items-center gap-2">
       {onPreview && (

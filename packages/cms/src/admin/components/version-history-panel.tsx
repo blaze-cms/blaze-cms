@@ -1,5 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { Clock, RotateCcw } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 
 interface Version {
   id: string;
@@ -14,7 +15,7 @@ interface VersionHistoryPanelProps {
   onRestore: (versionId: string) => void;
 }
 
-export function VersionHistoryPanel({ open, onClose, versions, onRestore }: VersionHistoryPanelProps) {
+export function VersionHistoryPanel({ onClose, onRestore, open, versions }: VersionHistoryPanelProps) {
   if (!open) return null;
 
   return (

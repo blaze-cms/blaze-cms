@@ -1,14 +1,15 @@
 import { createRoute } from "@tanstack/react-router";
-import { rootRoute } from "@/routes/__root";
 import { useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { rootRoute } from "@/routes/__root";
 
 export const loginRoute = createRoute({
+  component: Login,
   getParentRoute: () => rootRoute,
   path: "/login",
-  component: Login,
 });
 
 function Login() {

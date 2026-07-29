@@ -1,5 +1,6 @@
-import { cn } from "@/lib/utils";
 import { type ButtonHTMLAttributes, type HTMLAttributes, createContext, useContext, useState } from "react";
+
+import { cn } from "@/lib/utils";
 
 interface TabsContextValue {
   value: string;
@@ -14,18 +15,18 @@ interface TabsProps extends HTMLAttributes<HTMLDivElement> {
   onValueChange?: (value: string) => void;
 }
 
-function Tabs({ defaultValue, value, onValueChange, children, className, ...props }: TabsProps) {
+function Tabs({ children, className, defaultValue, onValueChange, value, ...props }: TabsProps) {
   const [internalValue, setInternalValue] = useState(defaultValue);
   const currentValue = value ?? internalValue;
 
   return (
     <TabsContext.Provider
       value={{
-        value: currentValue,
         onValueChange: (v: string) => {
           setInternalValue(v);
           onValueChange?.(v);
         },
+        value: currentValue,
       }}
     >
       <div className={cn("", className)} {...props}>

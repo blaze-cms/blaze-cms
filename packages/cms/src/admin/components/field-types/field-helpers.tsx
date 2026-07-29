@@ -1,7 +1,8 @@
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 import type { FieldDefinition } from "@blaze-cms/types";
 import type { ChangeEvent } from "react";
+
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 
 export function renderInputField(
   field: FieldDefinition,

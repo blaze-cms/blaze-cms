@@ -1,7 +1,8 @@
-import { build } from "./build.js";
 import { execSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
+
+import { build } from "./build.js";
 
 export interface DeployOptions {
   project?: string;
@@ -23,8 +24,8 @@ export async function deploy(options: DeployOptions): Promise<void> {
   console.warn("  [2/2] Deploying to Firebase Hosting...");
   const projectFlag = options.project ? ` --project ${options.project}` : "";
   execSync(`npx firebase deploy --only hosting${projectFlag}`, {
-    stdio: "inherit",
     cwd: process.cwd(),
+    stdio: "inherit",
   });
 
   console.warn("\n  ✓ Deploy complete.\n");

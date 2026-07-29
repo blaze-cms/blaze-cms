@@ -1,13 +1,14 @@
 import { createRoute, Link } from "@tanstack/react-router";
-import { appLayoutRoute } from "@/routes/app-layout";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Plus, Shield } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { appLayoutRoute } from "@/routes/app-layout";
+
 export const settingsRolesRoute = createRoute({
+  component: SettingsRoles,
   getParentRoute: () => appLayoutRoute,
   path: "/settings/roles",
-  component: SettingsRoles,
 });
 
 function SettingsRoles() {

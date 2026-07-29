@@ -1,54 +1,45 @@
 import { rootRoute } from "@/routes/__root";
 import { appLayoutRoute } from "@/routes/app-layout";
-
-// Core
-import { loginRoute } from "@/routes/login";
-import { notFoundRoute } from "@/routes/not-found";
-
-// Dashboard (under app layout)
-import { indexRoute } from "@/routes/index";
-
+import { collectionDetailRoute } from "@/routes/collections/$slug";
+import { editEntryRoute } from "@/routes/collections/$slug.$id.edit";
 // Collections
 import { collectionsIndexRoute } from "@/routes/collections/index";
-import { collectionDetailRoute } from "@/routes/collections/$slug";
 import { newEntryRoute } from "@/routes/collections/new.$slug";
-import { editEntryRoute } from "@/routes/collections/$slug.$id.edit";
-
+import { globalDetailRoute } from "@/routes/globals/$slug";
 // Globals
 import { globalsIndexRoute } from "@/routes/globals/index";
-import { globalDetailRoute } from "@/routes/globals/$slug";
-
+// Dashboard (under app layout)
+import { indexRoute } from "@/routes/index";
+// Core
+import { loginRoute } from "@/routes/login";
 // Media
 import { mediaRoute } from "@/routes/media/index";
-
-// Users
-import { usersIndexRoute } from "@/routes/users/index";
-import { newUserRoute } from "@/routes/users/new";
-import { userDetailRoute } from "@/routes/users/$id";
-
+import { notFoundRoute } from "@/routes/not-found";
+import { roleDetailRoute } from "@/routes/roles/$id";
 // Roles
 import { rolesIndexRoute } from "@/routes/roles/index";
 import { newRoleRoute } from "@/routes/roles/new";
-import { roleDetailRoute } from "@/routes/roles/$id";
-
+import { schemaDetailRoute } from "@/routes/schemas/$type.$slug";
 // Schemas
 import { schemasIndexRoute } from "@/routes/schemas/index";
 import { newSchemaRoute } from "@/routes/schemas/new";
-import { schemaDetailRoute } from "@/routes/schemas/$type.$slug";
-
+import { apiTokensRoute } from "@/routes/settings/api-tokens";
 // Settings
 import { settingsIndexRoute } from "@/routes/settings/index";
-import { apiTokensRoute } from "@/routes/settings/api-tokens";
 import { pluginsRoute } from "@/routes/settings/plugins";
-import { settingsUsersRoute } from "@/routes/settings/users/index";
-import { settingsNewUserRoute } from "@/routes/settings/users/new";
-import { settingsUserDetailRoute } from "@/routes/settings/users/$id";
+import { settingsRoleDetailRoute } from "@/routes/settings/roles/$id";
 import { settingsRolesRoute } from "@/routes/settings/roles/index";
 import { settingsNewRoleRoute } from "@/routes/settings/roles/new";
-import { settingsRoleDetailRoute } from "@/routes/settings/roles/$id";
+import { settingsUserDetailRoute } from "@/routes/settings/users/$id";
+import { settingsUsersRoute } from "@/routes/settings/users/index";
+import { settingsNewUserRoute } from "@/routes/settings/users/new";
+import { settingsWebhookDetailRoute } from "@/routes/settings/webhooks/$id";
 import { settingsWebhooksRoute } from "@/routes/settings/webhooks/index";
 import { settingsNewWebhookRoute } from "@/routes/settings/webhooks/new";
-import { settingsWebhookDetailRoute } from "@/routes/settings/webhooks/$id";
+import { userDetailRoute } from "@/routes/users/$id";
+// Users
+import { usersIndexRoute } from "@/routes/users/index";
+import { newUserRoute } from "@/routes/users/new";
 
 export const routeTree = rootRoute.addChildren([
   loginRoute,

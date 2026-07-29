@@ -1,12 +1,13 @@
 import { createRoute } from "@tanstack/react-router";
-import { appLayoutRoute } from "@/routes/app-layout";
-import { Button } from "@/components/ui/button";
 import { Upload, FolderPlus } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
+import { appLayoutRoute } from "@/routes/app-layout";
+
 export const mediaRoute = createRoute({
+  component: MediaLibrary,
   getParentRoute: () => appLayoutRoute,
   path: "/media",
-  component: MediaLibrary,
 });
 
 function MediaLibrary() {

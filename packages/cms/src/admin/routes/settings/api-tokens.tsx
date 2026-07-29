@@ -1,13 +1,14 @@
 import { createRoute } from "@tanstack/react-router";
-import { appLayoutRoute } from "@/routes/app-layout";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Plus, Key } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { appLayoutRoute } from "@/routes/app-layout";
+
 export const apiTokensRoute = createRoute({
+  component: ApiTokens,
   getParentRoute: () => appLayoutRoute,
   path: "/settings/api-tokens",
-  component: ApiTokens,
 });
 
 function ApiTokens() {
