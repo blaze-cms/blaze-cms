@@ -1,435 +1,223 @@
 # Blaze CMS — Firebase Firestore CMS
 
-Replicate [arche-cms](https://github.com/Arche-CMS/arche-cms) architecture, replacing SQLite/PostgreSQL with **Firebase Firestore** as the sole database backend.
+A CMS that stores all data in **Firebase Firestore**. The admin panel is a React SPA using the **Firebase client SDK** directly — no backend server. Deployed to **Firebase Hosting**.
+
+**v1 target:** Code-first schema definition → build-time code generation → admin panel + published SDK.
 
 ---
 
-## Phase 1: Monorepo Foundation
+## Phase 1: Monorepo Foundation — ✅ Complete
 
-- [x] Root `package.json` (pnpm workspace, scripts, deps: firebase-admin, zod)
+- [x] Root `package.json` (pnpm workspace, scripts)
 - [x] `pnpm-workspace.yaml`
 - [x] `tsconfig.base.json`
-- [x] `turbo.json` (task orchestration)
+- [x] `turbo.json`
 - [x] `.prettierrc`
 - [x] `.gitignore`
-- [ ] Root `vitest.workspace.ts`
-- [ ] `eslint.config.js` (flat config with typescript-eslint)
-- [ ] `.nvmrc`
-- [ ] `.env` (template with Firebase config placeholders)
+- [x] `vitest.workspace.ts`
+- [x] `eslint.config.js`
+- [x] `.nvmrc`
+- [x] `.env` template
 
-## Phase 2: Core Packages
+## Phase 2: Core Packages — v1
 
-### `@blaze-cms/types` — Foundation Type Definitions
+### `@blaze-cms/types` — Foundation Types — ✅ Source Complete
 
-- [x] `src/core.ts` — Logger, Config (FirebaseConfig), EventMap, CMSContext
+- [x] `src/core.ts` — Config, EventMap, CMSContext
 - [x] `src/fields.ts` — 29 field type interfaces
 - [x] `src/schema.ts` — Collection/Global/Component definitions
-- [x] `src/database.ts` — DatabaseAdapter interface (Firestore-compatible)
+- [x] `src/database.ts` — DatabaseAdapter interface (for SDK compat)
 - [x] `src/plugin.ts` — PluginDefinition, PluginHooks
-- [x] `src/index.ts` — Re-exports
-- [ ] `tsconfig.json`
-- [ ] `vitest.config.ts`
-- [ ] Basic tests
-
-### `@blaze-cms/core` — DI, Events, Lifecycle
-
-- [x] `src/container.ts` — DI Container (singleton/transient, child containers)
-- [x] `src/event-bus.ts` — Typed EventBus with middleware chain
-- [x] `src/lifecycle.ts` — State machine (init → ready → shutdown)
-- [x] `src/logger.ts` — Leveled logger
-- [x] `src/config.ts` — Firebase config loader (env vars + JSON credentials)
 - [x] `src/index.ts`
-- [ ] `tsconfig.json`
-- [ ] `vitest.config.ts`
-- [ ] Tests (container, event-bus, lifecycle, logger, config)
+- [x] `tsconfig.json`
+- [ ] **Tests**
 
-### `@blaze-cms/schema` — Schema DSL & Loader
+### `@blaze-cms/schema` — Schema DSL — ✅ Source Complete
 
-- [x] `src/fields.ts` — 29 field helper functions (text(), number(), etc.)
-- [x] `src/loader.ts` — SchemaLoader (dynamic imports from `cms/` dir)
-- [ ] `src/watcher.ts` — SchemaWatcher (file watching for hot-reload)
-- [ ] `src/validator.ts` — Schema validation utilities
-- [ ] `src/define-collection.ts` — `defineCollection()` helper
-- [ ] `src/define-global.ts` — `defineGlobal()` helper
-- [ ] `src/define-component.ts` — `defineComponent()` helper
-- [ ] `src/index.ts`
-- [ ] `tsconfig.json`
-- [ ] `vitest.config.ts`
-- [ ] Tests (loader, watcher, validator, fields)
+- [x] `src/fields.ts` — 29 field helper functions (`text()`, `number()`, etc.)
+- [x] `src/loader.ts` — SchemaLoader (discovers `cms/` dir)
+- [x] `src/watcher.ts` — Dev-only file watcher for hot-reload
+- [x] `src/validator.ts` — Schema validation
+- [x] `src/define-collection.ts` — `defineCollection()`
+- [x] `src/define-global.ts` — `defineGlobal()`
+- [x] `src/define-component.ts` — `defineComponent()`
+- [x] `src/index.ts`
+- [x] `tsconfig.json`
+- [ ] **Tests**
 
-## Phase 3: Firebase Backend Packages
+### `@blaze-cms/validation` — Zod Forms — ✅ Source Complete
 
-### `@blaze-cms/database` — Firestore Adapter
+- [x] `src/index.ts`
+- [x] `src/generator.ts` — Zod schemas from `FieldDefinition[]`
+- [x] `tsconfig.json`
+- [ ] **Tests**
 
-- [ ] `src/types.ts` — QueryOptions, DatabaseAdapter interface (already in types package)
-- [ ] `src/firestore.ts` — **FirestoreAdapter**: implements DatabaseAdapter
-  - `connect()` / `disconnect()` — init Firebase Admin app
-  - `findOne()` — `doc(collection, id).get()`
-  - `findMany()` — `collectionGroup` / `collection` queries with pagination, sorting, filtering
-  - `create()` — `add()` with auto-ID or `set()` with custom ID
-  - `update()` — `update()` / `set({...}, {merge: true})`
-  - `delete()` — `doc(collection, id).delete()`
-  - `deleteMany()` — batch deletes (max 500 per batch)
-  - `transaction()` — `runTransaction()`
-  - Timestamps handling (createdAt, updatedAt)
-  - Subcollection support for versions/drafts
-  - Compound index management
-- [ ] `src/repository.ts` — Collection-scoped Repository wrapper
-- [ ] `src/migration.ts` — Firestore schema migration utilities (collection creation, indexes)
-- [ ] `src/migration-generator.ts` — Auto-migration from schema diffs (Firestore indexes, collection groups)
-- [ ] `src/index.ts`
-- [ ] `tsconfig.json`
-- [ ] `vitest.config.ts`
-- [ ] Tests (FirestoreAdapter CRUD, queries, transactions, pagination)
+### `@blaze-cms/permissions` — RBAC Engine — ✅ Source Complete
 
-### `@blaze-cms/auth` — Firebase Auth
+- [x] `src/index.ts`
+- [x] `src/types.ts` — Role, Permission, AccessControl types
+- [x] `src/access-control.ts` — Field-level CRUD per collection
+- [x] `tsconfig.json`
+- [ ] **Tests**
 
-- [ ] `src/index.ts`
-- [ ] `src/service.ts` — FirebaseAuthService
-  - `login()` — `signInWithEmailAndPassword` (client-side) or `verifyIdToken` (server-side)
-  - `register()` — `createUser()` via Admin SDK
-  - `verifyToken()` — `admin.auth().verifyIdToken()`
-  - `getUser()` — `admin.auth().getUser()`
-  - Custom claims for RBAC roles
-- [ ] `src/middleware.ts` — Fastify middleware for Firebase Auth token verification
-- [ ] `src/types.ts` — Auth-specific types
-- [ ] `tsconfig.json`
-- [ ] `vitest.config.ts`
-- [ ] Tests (token verification, user CRUD, custom claims)
+## Phase 3: Code Generation
 
-### `@blaze-cms/storage` — Firebase Storage Adapter
+### `@blaze-cms/generators` — Code Gen Pipeline — 🟡 Source Complete
 
-- [ ] `src/index.ts`
-- [ ] `src/types.ts` — StorageAdapter interface
-- [ ] `src/firebase-storage.ts` — FirebaseStorageAdapter
-  - `upload()` — `bucket.file(path).save()`
-  - `download()` — `bucket.file(path).download()`
-  - `delete()` — `bucket.file(path).delete()`
-  - `list()` — `bucket.getFiles()`
-  - Signed URL generation for public access
-- [ ] `tsconfig.json`
-- [ ] `vitest.config.ts`
-- [ ] Tests
+- [x] `src/index.ts`
+- [x] `src/generator.ts` — Base interface
+- [x] `src/pipeline.ts` — Orchestrator (schema → output)
+- [x] `src/typegen.ts` — TypeScript type generation from schemas
+- [x] `src/validation.ts` — Zod schema generation
+- [x] `src/sdk.ts` — SDK code generation
+- [x] `tsconfig.json`
+- [x] Inline in CLI: `schema-registry`, `firestore-rules`, `firestore-indexes` generation
+- [ ] **Tests**
 
-## Phase 4: Middleware Packages
+**Flow:** `blaze generate` produces:
+- `src/admin/__generated__/schema-registry.ts` → imported by admin panel at build time
+- `firestore.indexes.json` + `firestore.rules` in project root
 
-### `@blaze-cms/validation` — Zod Validation Generator
+### `@blaze-cms/sdk` — Browser Client SDK — ✅ Complete
 
-- [ ] `src/index.ts`
-- [ ] `src/generator.ts` — Generate Zod schemas from FieldDefinition[]
-  - Map each field type to Zod schema (z.string(), z.number(), etc.)
-  - Handle required/optional, min/max, pattern, unique
-  - Nested fields (array, object, group, repeater, tabs, dynamicZone)
-- [ ] `tsconfig.json`
-- [ ] `vitest.config.ts`
-- [ ] Tests
+A thin typed wrapper around Firebase client SDK for consuming content from external frontends.
 
-### `@blaze-cms/permissions` — RBAC Engine
+```
+npm install @blaze-cms/sdk firebase
+```
 
-- [ ] `src/index.ts`
-- [ ] `src/types.ts` — Role, Permission, AccessControl types
-- [ ] `src/access-control.ts` — AccessControl class
-  - Role-based access checks
-  - CRUD permissions per collection
-  - Field-level permissions
-  - Middleware integration
-- [ ] `tsconfig.json`
-- [ ] `vitest.config.ts`
-- [ ] Tests
+```ts
+import { createBlazeClient } from "@blaze-cms/sdk";
+const blaze = createBlazeClient(firebaseConfig);
 
-### `@blaze-cms/plugins` — Plugin System
+const posts = await blaze.collection("posts").findMany({
+  filters: [{ field: "status", op: "==", value: "published" }],
+  orderBy: { field: "createdAt", direction: "desc" },
+});
+```
 
-- [ ] `src/index.ts`
-- [ ] `src/plugin-manager.ts` — PluginManager (registry, enable/disable, hook system)
-- [ ] `src/discovery.ts` — Auto-discovery from node_modules
-- [ ] `src/plugins/seo/index.ts`
-- [ ] `src/plugins/audit-log/index.ts`
-- [ ] `src/plugins/webhooks/index.ts`
-- [ ] `src/plugins/search/index.ts`
-- [ ] `src/plugins/comments/index.ts`
-- [ ] `src/plugins/analytics/index.ts`
-- [ ] `tsconfig.json`
-- [ ] `vitest.config.ts`
-- [ ] Tests
+- [x] `src/index.ts` — Re-exports all APIs
+- [x] `src/client.ts` — `createBlazeClient()` factory
+- [x] `src/types.ts` — `BlazeClientConfig`, `CollectionApi`, `GlobalApi`, `AuthApi`, `QueryOptions`
+- [x] `src/collection.ts` — `findMany`, `findById`, `create`, `update`, `delete`
+- [x] `src/global.ts` — `get()`, `upsert()`
+- [x] `src/auth.ts` — Firebase Auth wrapper
+- [x] `src/errors.ts` — `BlazeError`, `NotFoundError`, `ValidationError`
+- [x] Package configured with `firebase` as peer dependency
 
-## Phase 5: Code Generation
+> **Firebase security rules** enforce read/write access — no API tokens needed. The SDK uses the Firebase client SDK under the hood.
 
-> **Note:** No API endpoints. This CMS writes directly to Firestore. The admin panel uses the Firebase client SDK.
-> Packages `@blaze-cms/rest-api` and `@blaze-cms/graphql` have been **removed** — all data access is through Firestore directly.
+## Phase 4: CLI + Admin Panel
 
-### `@blaze-cms/generators` — Code Generation Pipeline
+### `@blaze-cms/cms` — CLI + Admin Panel
 
-- [ ] `src/index.ts`
-- [ ] `src/generator.ts` — Base Generator interface
-- [ ] `src/pipeline.ts` — GenerationPipeline orchestrator
-- [ ] `src/typegen.ts` — TypeScript type generation
-- [ ] `src/validation.ts` — Zod schema generation (wraps validation package)
-- ~~`src/api-routes.ts` — Removed (no REST API)~~
-- ~~`src/graphql-schema.ts` — Removed (no GraphQL)~~
-- [ ] `src/migrations.ts` — Migration generation
-- ~~`src/openapi.ts` — Removed (no REST API)~~
-- [ ] `src/admin-forms.ts` — Admin form generation
-- [ ] `src/sdk.ts` — SDK generation
-- [ ] `src/hooks.ts` — React hooks generation
-- [ ] `tsconfig.json`
-- [ ] `vitest.config.ts`
-- [ ] Tests
+#### CLI — ✅ Complete (v1)
 
-### `@blaze-cms/sdk` — TypeScript Client SDK
+The CLI is a build-time and dev-time tool. No server runtime.
 
-- [ ] `src/index.ts`
-- [ ] `src/types.ts` — SDK type definitions
-- [ ] `src/client.ts` — Base HTTP client
-- [ ] `src/client-entry.ts` — Client factory
-- [ ] `src/collection.ts` — Collection CRUD methods
-- [ ] `src/global.ts` — Global get/upsert
-- [ ] `src/auth.ts` — Auth methods
-- [ ] `src/media.ts` — Media methods
-- [ ] `src/roles.ts` — Role methods
-- [ ] `src/users.ts` — User methods
-- [ ] `src/activity.ts` — Activity log methods
-- [ ] `src/settings.ts` — Settings methods
-- [ ] `src/errors.ts` — Custom error types
-- [ ] `tsconfig.json`
-- [ ] `vitest.config.ts`
-- [ ] Tests
+- [x] `bin/cms.js` — CLI binary entry
+- [x] `src/index.ts` — `defineConfig()`, `main()`, arg parsing (7 commands)
+- [x] `src/commands/dev.ts` — **Dev** (Vite dev server + optional Firebase Emulator)
+- [x] `src/commands/build.ts` — **Build** (generate + Vite build → `dist/admin/`)
+- [x] `src/commands/generate.ts` — **Generate** (types, validation, SDK, registry, rules, indexes)
+- [x] `src/commands/deploy.ts` — **Deploy** (`firebase deploy --only hosting`)
+- [x] `src/commands/scaffold.ts` — **Scaffold** (new collection/global)
+- [x] `src/commands/doctor.ts` — Project health check
+- [x] `src/commands/lint.ts` — Schema linting
+- [x] **Tests**
 
-## Phase 6: CMS Server & CLI
+#### Admin Panel (React SPA) — ✅ Built
 
-### `@blaze-cms/cms` — CLI, Server, Admin Panel
+Vite build passes (~920KB JS, ~275KB gzipped). TypeScript check clean.
 
-#### CLI (bin/cms.js)
+- [x] Entry files: `index.html`, `index.css`, `main.tsx`, `vite.config.ts`, `vite-env.d.ts`
+- [x] `router.tsx` — 31 routes under `rootRoute` → `appLayoutRoute`
+- [x] **Admin lib:** `auth.tsx`, `hooks.ts`, `utils.ts`, `backend-mode.ts`, providers
+- [x] **UI components:** 16 shadcn-style components (button, input, select, switch, dialog, etc.)
+- [x] **App components:** theme-provider, sidebar, header, toast, command-palette, pagination, etc.
+- [x] **Field types:** 29 field type renderers across 6 files
+- [x] **Routes:** dashboard, login, forgot/reset password, collections CRUD, globals, media (9 components), users CRUD, roles CRUD, schemas list + detail, settings + sub-routes
 
-- [ ] `bin/cms.js` — CLI entry point
-- [ ] `src/index.ts` — `defineConfig()`, `main()`, CLI arg parsing
-- [ ] `src/commands/dev.ts` — Dev server with file watching + Vite HMR
-- [ ] `src/commands/start.ts` — Production server start
-- [ ] `src/commands/build.ts` — Production build
-- [ ] `src/commands/migrate.ts` — Firestore index/migration management
-- [ ] `src/commands/generate.ts` — Code generation
-- [ ] `src/commands/typegen.ts` — Type generation alias
-- [ ] `src/commands/lint.ts` — Schema linting
-- [ ] `src/commands/doctor.ts` — Project health check
-- [ ] `src/commands/collection.ts` — Scaffold new collection
-- [ ] `src/commands/plugin.ts` — Scaffold new plugin
-- [ ] `src/templates/templates.ts` — Scaffold templates
+##### Dev-only Schema Builder — ✅ Complete
 
-#### Server (Fastify)
+- [x] `isDevMode()` exported from `backend-mode.ts` (`import.meta.env.DEV`)
+- [x] Schema builder routes guarded with `import.meta.env.PROD` → "Not available in production" notice
+- [x] Sidebar conditionally shows "Schemas" link only in dev mode
+- [x] Routes always registered, components tree-shaken in production build
 
-- [ ] `src/server/config.ts` — ServerConfig with Firebase settings
-- [ ] `src/server/app.ts` — Fastify app assembly (routes, plugins, security)
-- [ ] `src/server/bootstrap.ts` — Server startup (init Firebase, load schema, start)
+#### Admin Panel v1 gaps — ✅ Complete
 
-##### Server Plugins
+- [x] Firebase Auth provider wired (login page authenticates via `signInWithEmailAndPassword`)
+- [x] Collections list reads from generated `schema-registry.ts`
+- [x] Collection entries use `useDataProvider()` → Firestore queries via `firebaseProvider`
+- [x] New/edit entry forms use provider `create()`/`update()` and `@tanstack/react-query`
+- [x] Schema registry imported from `@/__generated__/schema-registry`
+- [x] Stub registry created so Vite builds without running `blaze generate` first
+- [x] `QueryClientProvider` wrapping entire app
 
-- [ ] `src/server/plugins/cors.ts`
-- [ ] `src/server/plugins/rate-limit.ts`
-- [ ] `src/server/plugins/error-handler.ts`
-- [ ] `src/server/plugins/health.ts`
-- [ ] `src/server/plugins/request-logger.ts`
-- ~~`src/server/plugins/swagger.ts` — Removed (no REST API)~~
-- [ ] `src/server/plugins/auth.ts` — Firebase Auth middleware
-- [ ] `src/server/plugins/permissions.ts` — RBAC middleware
-- ~~`src/server/plugins/graphql.ts` — Removed (no GraphQL)~~
-- [ ] `src/server/plugins/static.ts` — Static file serving for admin panel
+### `@blaze-cms/create-app` — Scaffolding CLI — ✅ Complete
 
-##### Server Routes
+`npx create-blaze-cms-app my-cms` bootstraps a new project with Firebase config, example collections/globals, build/dev/deploy scripts.
 
-- [ ] `src/server/routes/collections.ts` — Collection CRUD (auto-generated from schema)
-- [ ] `src/server/routes/users.ts` — User management
-- [ ] `src/server/routes/roles.ts` — Role management
-- [ ] `src/server/routes/api-tokens.ts` — API token management
-- [ ] `src/server/routes/webhooks.ts` — Webhook management
-- [ ] `src/server/routes/activity.ts` — Activity/audit log
-- [ ] `src/server/routes/media.ts` — Media upload/download
-- [ ] `src/server/routes/schemas.ts` — Schema introspection
+- [x] `bin/create-blaze-cms-app.js`
+- [x] `src/index.ts` — Scaffold logic (creates dirs, writes configs, example schemas)
+- [x] Templates: `package.json`, `tsconfig.json`, `blaze-cms.config.ts`, `.env`, `.gitignore`, example `posts` collection + `site-settings` global
 
-##### Server Lib
+## Phase 5: Playground App — 🟡 Partially Complete
 
-- [ ] `src/server/lib/activity.ts` — Activity logger
-- [ ] `src/server/lib/errors.ts` — Error types
-- [ ] `src/server/lib/utils.ts` — Utility functions
-- [ ] `src/server/lib/webhooks.ts` — Webhook dispatcher
-- [ ] `src/server/schemas/shared.ts` — Shared JSON schemas
-- [ ] `src/server/services/scheduled-publisher.ts` — Scheduled publishing
+- [x] `apps/playground/package.json`, `blaze-cms.config.ts`, `.env`
+- [x] Example: `cms/collections/posts.ts`
+- [x] Example: `cms/globals/homepage.ts`, `cms/globals/site-settings.ts`
+- [ ] Example collections covering all 29 field types
+- [ ] Example globals
+- [ ] Example components
 
-#### Admin Panel (React SPA)
+## Phase 6: Testing & Quality — 🔴 Mostly Missing
 
-- [ ] `src/admin/index.html` — HTML entry
-- [ ] `src/admin/index.css` — Global styles (Tailwind v4)
-- [ ] `src/admin/index.ts` — Entry point
-- [ ] `src/admin/main.tsx` — App root with providers
-- [ ] `src/admin/router.tsx` — TanStack Router tree
-- [ ] `src/admin/vite.config.ts` — Vite config
-- [ ] `src/admin/vite-env.d.ts` — Vite env types
-
-##### Admin Lib
-
-- ~~`src/admin/lib/api.ts` — Removed (no REST endpoint; use Firebase client SDK directly)~~
-- [ ] `src/admin/lib/auth.tsx` — Firebase Auth client integration
-- [ ] `src/admin/lib/hooks.ts` — Common hooks
-- [ ] `src/admin/lib/utils.ts` — Utility functions
-- [ ] `src/admin/lib/backend-mode.ts` — Backend mode detection
-- [ ] `src/admin/lib/providers/context.tsx` — Provider context
-- [ ] `src/admin/lib/providers/index.ts` — Provider exports
-- [ ] `src/admin/lib/providers/registry.ts` — Provider registry
-- ~~`src/admin/lib/providers/rest.ts` — Removed (no REST endpoint)~~
-- [ ] `src/admin/lib/providers/types.ts` — Provider type definitions
-- [ ] `src/admin/lib/providers/firebase.ts` — **Firebase provider** (direct Firestore access from admin)
-
-##### Admin Components
-
-- [ ] `src/admin/components/theme-provider.tsx`
-- [ ] `src/admin/components/sidebar.tsx`
-- [ ] `src/admin/components/header.tsx`
-- [ ] `src/admin/components/field-input.tsx` — Dynamic field renderer
-- [ ] `src/admin/components/entry-actions.tsx`
-- [ ] `src/admin/components/confirm-dialog.tsx`
-- [ ] `src/admin/components/error-boundary.tsx`
-- [ ] `src/admin/components/locale-selector.tsx`
-- [ ] `src/admin/components/mode-toggle.tsx`
-- [ ] `src/admin/components/offline-indicator.tsx`
-- [ ] `src/admin/components/pagination.tsx`
-- [ ] `src/admin/components/command-palette.tsx`
-- [ ] `src/admin/components/toast-provider.tsx`
-- [ ] `src/admin/components/version-history-panel.tsx`
-
-##### Field Type Components
-
-- [ ] `src/admin/components/field-types/index.ts`
-- [ ] `src/admin/components/field-types/field-helpers.tsx`
-- [ ] `src/admin/components/field-types/basic-inputs.tsx` — text, textarea, number, boolean, date, datetime, email, password, url, json
-- [ ] `src/admin/components/field-types/text-inputs.tsx` — richText, markdown, code
-- [ ] `src/admin/components/field-types/media-inputs.tsx` — media, upload, color
-- [ ] `src/admin/components/field-types/structure-inputs.tsx` — select, multiSelect, radio, checkbox, relation, component, dynamicZone, array, object, tabs, group, repeater, slug
-
-##### UI Components (shadcn-style)
-
-- [ ] `src/admin/components/ui/button.tsx`
-- [ ] `src/admin/components/ui/input.tsx`
-- [ ] `src/admin/components/ui/select.tsx`
-- [ ] `src/admin/components/ui/checkbox.tsx`
-- [ ] `src/admin/components/ui/switch.tsx`
-- [ ] `src/admin/components/ui/label.tsx`
-- [ ] `src/admin/components/ui/badge.tsx`
-- [ ] `src/admin/components/ui/card.tsx`
-- [ ] `src/admin/components/ui/dialog.tsx`
-- [ ] `src/admin/components/ui/alert.tsx`
-- [ ] `src/admin/components/ui/skeleton.tsx`
-- [ ] `src/admin/components/ui/separator.tsx`
-- [ ] `src/admin/components/ui/avatar.tsx`
-- [ ] `src/admin/components/ui/tabs.tsx`
-- [ ] `src/admin/components/ui/tooltip.tsx`
-- [ ] `src/admin/components/ui/password-input.tsx`
-
-##### Admin Routes
-
-- [ ] `src/admin/routes/__root.tsx` — Root layout (sidebar + header + outlet)
-- [ ] `src/admin/routes/index.tsx` — Dashboard
-- [ ] `src/admin/routes/login.tsx` — Firebase Auth login page
-- [ ] `src/admin/routes/not-found.tsx`
-- [ ] `src/admin/routes/forgot-password.tsx`
-- [ ] `src/admin/routes/reset-password.tsx`
-- [ ] `src/admin/routes/collections/index.tsx` — Collections list
-- [ ] `src/admin/routes/collections/$slug.tsx` — Collection entries list
-- [ ] `src/admin/routes/collections/new.$slug.tsx` — New entry form
-- [ ] `src/admin/routes/collections/$id_.$slug.edit.tsx` — Edit entry form
-- [ ] `src/admin/routes/globals/index.tsx` — Globals list
-- [ ] `src/admin/routes/globals/$slug.tsx` — Global editor
-- [ ] `src/admin/routes/media/index.tsx` — Media library
-- [ ] `src/admin/routes/media/components/breadcrumb-nav.tsx`
-- [ ] `src/admin/routes/media/components/empty-state.tsx`
-- [ ] `src/admin/routes/media/components/folder-card.tsx`
-- [ ] `src/admin/routes/media/components/index.ts`
-- [ ] `src/admin/routes/media/components/loading-skeleton.tsx`
-- [ ] `src/admin/routes/media/components/media-card.tsx`
-- [ ] `src/admin/routes/media/components/media-header.tsx`
-- [ ] `src/admin/routes/media/components/new-folder-input.tsx`
-- [ ] `src/admin/routes/media/components/upload-overlay.tsx`
-- [ ] `src/admin/routes/users/index.tsx`
-- [ ] `src/admin/routes/users/new.tsx`
-- [ ] `src/admin/routes/users/$id.tsx`
-- [ ] `src/admin/routes/roles/index.tsx`
-- [ ] `src/admin/routes/roles/new.tsx`
-- [ ] `src/admin/routes/roles/$id.tsx`
-- [ ] `src/admin/routes/schemas/index.tsx`
-- [ ] `src/admin/routes/schemas/new.tsx`
-- [ ] `src/admin/routes/schemas/$type.$slug.tsx`
-- [ ] `src/admin/routes/schemas/components/field-config.ts`
-- [ ] `src/admin/routes/schemas/components/field-type-picker.tsx`
-- [ ] `src/admin/routes/schemas/components/index.ts`
-- [ ] `src/admin/routes/schemas/components/loading-skeleton.tsx`
-- [ ] `src/admin/routes/settings/index.tsx`
-- [ ] `src/admin/routes/settings/api-tokens.tsx`
-- [ ] `src/admin/routes/settings/plugins.tsx`
-- [ ] `src/admin/routes/settings/users/index.tsx`
-- [ ] `src/admin/routes/settings/users/new.tsx`
-- [ ] `src/admin/routes/settings/users/$id.tsx`
-- [ ] `src/admin/routes/settings/roles/index.tsx`
-- [ ] `src/admin/routes/settings/roles/new.tsx`
-- [ ] `src/admin/routes/settings/roles/$id.tsx`
-- [ ] `src/admin/routes/settings/webhooks/index.tsx`
-- [ ] `src/admin/routes/settings/webhooks/new.tsx`
-- [ ] `src/admin/routes/settings/webhooks/$id.tsx`
-
-### `@blaze-cms/create-app` — Project Scaffolding CLI
-
-- [ ] `bin/create-blaze-cms-app.js` — CLI entry
-- [ ] `src/index.ts` — Scaffold logic (template files, package.json, config)
-- [ ] Templates: `explicit/`, `my-cms/`, `my-value/` scaffold directories
-- [ ] `tsconfig.json`
-- [ ] `vitest.config.ts`
-- [ ] Tests
-
-## Phase 7: Application
-
-### Playground App
-
-- [ ] `apps/playground/package.json`
-- [ ] `apps/playground/blaze-cms.config.ts` — Firebase config
-- [ ] `apps/playground/.env` — Firebase credentials
-- [ ] `apps/playground/cms/collections/posts.ts` — Example collection
-- [ ] `apps/playground/cms/collections/...` — All 29 field type examples
-- [ ] `apps/playground/cms/globals/homepage.ts`
-- [ ] `apps/playground/cms/globals/site-settings.ts`
-- [ ] `apps/playground/cms/globals/...` — All 29 field type examples
-- [ ] `apps/playground/cms/components/hero.ts`
-- [ ] `apps/playground/cms/components/...` — Example components
-
-## Phase 8: Testing & Quality
-
-- [ ] Package tests for each package (vitest)
-- [ ] Root `vitest.workspace.ts`
-- [ ] E2E tests with Playwright
+- [ ] Package tests for v1 packages (vitest)
+- [x] Root `vitest.workspace.ts`
 - [ ] TypeScript strict mode compliance
-- [ ] ESLint configuration
-- [ ] Lint-staged / Husky git hooks
+- [x] ESLint config
+- [x] lint-staged / husky
 
-## Phase 9: Documentation & DevOps
+## Phase 7: Documentation & DevOps — 🔴 Missing
 
 - [ ] `README.md` — Project overview, setup, usage
 - [ ] `AGENTS.md` — AI assistant instructions
-- [ ] `.github/workflows/ci.yml` — CI pipeline
-- [ ] Dockerfile — Production container
-- [ ] `docker-compose.yml` — Local dev setup (Firebase Emulator)
+- [ ] `.github/workflows/ci.yml`
+- [ ] `firebase.json` — Hosting config (rewrites → `index.html`)
+- [ ] `.firebaserc` — Project aliases
+- [ ] Firestore indexes + security rules template
 
 ---
 
-## Key Firestore Design Decisions
+## Deprioritized (code exists, not in v1 plan)
 
-| Concern             | Decision                                                                    |
-| ------------------- | --------------------------------------------------------------------------- |
-| **Collections**     | Each CMS collection → Firestore top-level collection with auto-ID           |
-| **Globals**         | Single-document collections (e.g. `globals_homepage`)                       |
-| **Versions/Drafts** | Subcollection under each document: `{collection}/{id}/versions/{versionId}` |
-| **Relations**       | Store as document references (`doc(path)`) or string IDs                    |
-| **Indexes**         | Composite indexes defined in `firestore.indexes.json`                       |
-| **Auth**            | Firebase Auth Admin SDK for server-side verification                        |
-| **Storage**         | Firebase Storage for media files                                            |
-| **Queries**         | Compound queries with `where`, `orderBy`, `limit`, `offset` (via cursors)   |
-| **Transactions**    | Firestore `runTransaction` for atomic operations                            |
-| **Batch writes**    | Firestore `writeBatch` for bulk operations (max 500)                        |
-| **Pagination**      | Cursor-based pagination with `startAfter`/`endBefore`                       |
-| **Timestamps**      | Automatic `createdAt`/`updatedAt` via Firestore `serverTimestamp`           |
-| **Admin panel**     | Can use Firebase client SDK directly (real-time updates) or via Fastify API |
-| **Local dev**       | Firebase Emulator Suite (`firebase emulators:start`)                        |
+These packages are source-complete but are **server-oriented abstractions** not needed for the client-only v1:
+
+| Package | Reason |
+|---------|--------|
+| `@blaze-cms/core` | DI container, EventBus, lifecycle — server plugin architecture |
+| `@blaze-cms/database` | FirestoreAdapter + Repository — Node.js Firestore abstraction |
+| `@blaze-cms/auth` | Firebase Auth service + Fastify middleware — server-side auth |
+| `@blaze-cms/storage` | Firebase Storage adapter — server file operations |
+| `@blaze-cms/plugins` | Plugin system + built-in plugins — server hook system |
+
+## Key Design Decisions
+
+| Concern | Decision |
+|---------|----------|
+| **Collections** | Each CMS collection → Firestore top-level collection, auto-ID |
+| **Globals** | Single-document collections (`globals_<slug>`) |
+| **Versions/Drafts** | Subcollection: `{collection}/{id}/versions/{versionId}` |
+| **Relations** | Store as document references or string IDs |
+| **Auth** | Firebase Auth client SDK in admin panel; security rules enforce access |
+| **Storage** | Firebase Storage client SDK for media uploads |
+| **Admin panel** | React SPA, Firebase client SDK directly, no backend |
+| **Schema definition** | Code-first (TypeScript in `cms/` dir), build-time gen creates registry |
+| **Schema builder** | Dev-only admin UI, hidden in production (import.meta.env.DEV guard) |
+| **SDK** | Browser-only, wraps Firebase client SDK, consumes published content |
+| **Pagination** | Cursor-based with `startAfter`/`endBefore` |
+| **Timestamps** | Automatic `createdAt`/`updatedAt` via `serverTimestamp` |
+| **Local dev** | Firebase Emulator Suite + Vite dev server |
+| **Deployment** | `blaze build && blaze deploy` → Firebase Hosting |

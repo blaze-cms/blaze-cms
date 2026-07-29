@@ -1,6 +1,7 @@
 {
   "name": "@blaze-cms/sdk",
   "version": "0.1.0",
+  "description": "Browser SDK for Blaze CMS — wraps Firebase client SDK for typed content consumption",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -21,5 +22,10 @@
     "test": "vitest run",
     "clean": "rm -rf dist"
   },
-  "dependencies": {}
+  "peerDependencies": {
+    "firebase": "^12.16.0"
+  },
+  "devDependencies": {
+    "firebase": "^12.16.0"
+  }
 }

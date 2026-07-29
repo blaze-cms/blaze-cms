@@ -6,7 +6,8 @@
     "dev": "echo 'Run: node ../../packages/cms/dist/index.js dev from playground'",
     "start": "echo 'Run: node ../../packages/cms/dist/index.js start from playground'",
     "build": "echo 'Playground build OK'",
-    "generate": "echo 'Run: node ../../packages/cms/dist/index.js generate'"
+    "generate": "echo 'Run: node ../../packages/cms/dist/index.js generate'",
+    "test": "vitest run"
   },
   "dependencies": {
     "@blaze-cms/cms": "workspace:*",

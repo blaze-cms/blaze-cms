@@ -18,10 +18,6 @@ function generateFieldSchema(field: FieldDefinition): z.ZodType {
   let schema = baseFieldSchema(field);
 
   if (field.validation) {
-    if (!field.validation.required) {
-      schema = schema.optional();
-    }
-
     if (field.validation.min !== undefined) {
       if (schema instanceof z.ZodNumber) {
         schema = (schema as z.ZodNumber).min(field.validation.min);
@@ -47,6 +43,10 @@ function generateFieldSchema(field: FieldDefinition): z.ZodType {
         schema = (schema as z.ZodString).regex(new RegExp(field.validation.pattern));
       }
     }
+  }
+
+  if (!field.validation?.required) {
+    schema = schema.optional();
   }
 
   if (field.defaultValue !== undefined) {

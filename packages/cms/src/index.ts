@@ -4,13 +4,10 @@ config();
 export interface BlazeUserConfig {
   firebase: {
     projectId: string;
-    clientEmail?: string;
-    privateKey?: string;
+    apiKey?: string;
+    authDomain?: string;
     storageBucket?: string;
-  };
-  server?: {
-    port?: number;
-    host?: string;
+    appId?: string;
   };
 }
 
@@ -23,10 +20,11 @@ function printHelp(): void {
 Usage: blaze <command> [options]
 
 Commands:
-  dev         Start dev server with file watching
-  start       Start production server
-  build       Build for production
-  generate    Run code generation
+  dev         Start dev server (Vite + Firebase Emulator)
+  build       Build admin panel for production
+  generate    Run code generation (types, SDK, schema registry, rules, indexes)
+  deploy      Deploy admin panel to Firebase Hosting
+  scaffold    Scaffold a new collection or global
   lint        Lint schema definitions
   doctor      Check project health
 
@@ -56,14 +54,7 @@ export function main(): void {
         m.dev({
           host: getFlag(args, "--host"),
           port: getFlag(args, "--port") ? Number(getFlag(args, "--port")) : undefined,
-        }),
-      );
-      break;
-    }
-    case "start": {
-      void import("./commands/start.js").then((m) =>
-        m.start({
-          port: getFlag(args, "--port") ? Number(getFlag(args, "--port")) : undefined,
+          emulator: args.includes("--emulator"),
         }),
       );
       break;
@@ -80,6 +71,14 @@ export function main(): void {
           type,
         }),
       );
+      break;
+    }
+    case "deploy": {
+      void import("./commands/deploy.js").then((m) => m.deploy({}));
+      break;
+    }
+    case "scaffold": {
+      void import("./commands/scaffold.js").then((m) => m.scaffold({}));
       break;
     }
     case "lint": {

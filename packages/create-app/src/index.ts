@@ -1,3 +1,134 @@
+import { mkdirSync, writeFileSync, existsSync } from "node:fs";
+import { resolve } from "node:path";
+
+function createFile(dir: string, name: string, content: string) {
+  writeFileSync(resolve(dir, name), content.trimStart());
+  console.warn(`  ✓ Created ${name}`);
+}
+
 export function scaffold(projectName: string): void {
-  console.warn(`Scaffolding Blaze CMS project: ${projectName}`);
+  const dir = resolve(process.cwd(), projectName);
+
+  if (existsSync(dir)) {
+    console.error(`\n  ✗ Directory "${projectName}" already exists.\n`);
+    process.exit(1);
+  }
+
+  console.warn(`\n  Creating Blaze CMS project: ${projectName}\n`);
+
+  // Create directory structure
+  mkdirSync(resolve(dir, "cms/collections"), { recursive: true });
+  mkdirSync(resolve(dir, "cms/globals"), { recursive: true });
+  mkdirSync(resolve(dir, "src"), { recursive: true });
+
+  // package.json
+  createFile(dir, "package.json", `
+{
+  "name": "${projectName}",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "blaze dev",
+    "build": "blaze build",
+    "deploy": "blaze deploy",
+    "generate": "blaze generate",
+    "scaffold": "blaze scaffold"
+  },
+  "dependencies": {
+    "@blaze-cms/cms": "latest",
+    "firebase": "^12"
+  },
+  "devDependencies": {
+    "typescript": "^5"
+  }
+}
+`);
+
+  // tsconfig.json
+  createFile(dir, "tsconfig.json", `
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true
+  },
+  "include": ["cms"]
+}
+`);
+
+  // blaze-cms.config.ts
+  createFile(dir, "blaze-cms.config.ts", `
+import { defineConfig } from "@blaze-cms/cms";
+
+export default defineConfig({
+  firebase: {
+    projectId: process.env.FIREBASE_PROJECT_ID ?? "your-project-id",
+    apiKey: process.env.FIREBASE_API_KEY ?? "",
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN ?? "",
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET ?? "",
+    appId: process.env.FIREBASE_APP_ID ?? "",
+  },
+});
+`);
+
+  // .env
+  createFile(dir, ".env", `
+FIREBASE_PROJECT_ID=your-project-id
+FIREBASE_API_KEY=your-api-key
+FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+FIREBASE_APP_ID=your-app-id
+`);
+
+  // .gitignore
+  createFile(dir, ".gitignore", `
+node_modules/
+dist/
+.env
+firebase-debug.log
+`);
+
+  // Example collection
+  createFile(dir, "cms/collections/posts.ts", `
+import { defineCollection, text, slug, richText, status } from "@blaze-cms/schema";
+
+export default defineCollection({
+  slug: "posts",
+  labels: { singular: "Post", plural: "Posts" },
+  admin: {
+    group: "Content",
+    useAsTitle: "title",
+  },
+  fields: [
+    text("title", { required: true }),
+    slug("slug", { sourceField: "title" }),
+    richText("content"),
+    status(),
+  ],
+});
+`);
+
+  // Example global
+  createFile(dir, "cms/globals/site-settings.ts", `
+import { defineGlobal, text, image } from "@blaze-cms/schema";
+
+export default defineGlobal({
+  slug: "site-settings",
+  label: "Site Settings",
+  fields: [
+    text("siteName"),
+    image("logo"),
+  ],
+});
+`);
+
+  console.warn(`\n  Project "${projectName}" created!\n`);
+  console.warn("  Next steps:");
+  console.warn(`    cd ${projectName}`);
+  console.warn("    npm install");
+  console.warn("    # Update .env with your Firebase config");
+  console.warn("    npx blaze dev\n");
 }
