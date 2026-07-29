@@ -12,7 +12,8 @@
     "packages/cms/src/server/**",
     "packages/create-app/explicit/cms/collections/posts.ts",
     "packages/create-app/my-cms/cms/collections/posts.ts",
-    "packages/create-app/my-value/cms/collections/posts.ts"
+    "packages/create-app/my-value/cms/collections/posts.ts",
+    "**/__generated__/**"
   ],
   "ignoreDependencies": [
     "@blazing-cms/types",
