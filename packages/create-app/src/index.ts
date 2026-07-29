@@ -14,7 +14,7 @@ export function scaffold(projectName: string): void {
     process.exit(1);
   }
 
-  console.warn(`\n  Creating Blaze CMS project: ${projectName}\n`);
+  console.warn(`\n  Creating Blazing CMS project: ${projectName}\n`);
 
   // Create directory structure
   mkdirSync(resolve(dir, "cms/collections"), { recursive: true });
@@ -35,7 +35,7 @@ export function scaffold(projectName: string): void {
     "scaffold": "blaze scaffold"
   },
   "dependencies": {
-    "@blaze-cms/cms": "latest",
+    "@blazing-cms/cms": "latest",
     "firebase": "^12"
   },
   "devDependencies": {
@@ -59,9 +59,9 @@ export function scaffold(projectName: string): void {
 }
 `);
 
-  // blaze-cms.config.ts
-  createFile(dir, "blaze-cms.config.ts", `
-import { defineConfig } from "@blaze-cms/cms";
+  // blazing-cms.config.ts
+  createFile(dir, "blazing-cms.config.ts", `
+import { defineConfig } from "@blazing-cms/cms";
 
 export default defineConfig({
   firebase: {
@@ -107,7 +107,7 @@ firebase-debug.log
 
   // Example collection
   createFile(dir, "cms/collections/posts.ts", `
-import { defineCollection, text, slug, richText, status } from "@blaze-cms/schema";
+import { defineCollection, text, slug, richText, status } from "@blazing-cms/schema";
 
 export default defineCollection({
   slug: "posts",
@@ -127,7 +127,7 @@ export default defineCollection({
 
   // Example global
   createFile(dir, "cms/globals/site-settings.ts", `
-import { defineGlobal, text, image } from "@blaze-cms/schema";
+import { defineGlobal, text, image } from "@blazing-cms/schema";
 
 export default defineGlobal({
   slug: "site-settings",

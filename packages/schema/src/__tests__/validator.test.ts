@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { SchemaValidator } from "../validator.js";
-import type { CollectionDefinition, GlobalDefinition, ComponentDefinition, FieldDefinition } from "@blaze-cms/types";
+import type { CollectionDefinition, GlobalDefinition, ComponentDefinition, FieldDefinition } from "@blazing-cms/types";
 
 const validator = new SchemaValidator();
 

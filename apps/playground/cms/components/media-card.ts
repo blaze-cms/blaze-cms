@@ -1,4 +1,4 @@
-import { defineComponent, text, media, select, textarea } from "@blaze-cms/schema";
+import { defineComponent, text, media, select, textarea } from "@blazing-cms/schema";
 
 export default defineComponent({
   fields: [

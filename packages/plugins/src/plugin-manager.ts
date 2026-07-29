@@ -1,4 +1,4 @@
-import type { PluginDefinition, PluginRegistration, FieldDefinition } from "@blaze-cms/types";
+import type { PluginDefinition, PluginRegistration, FieldDefinition } from "@blazing-cms/types";
 
 type HookHandler = (...args: unknown[]) => Promise<void>;
 

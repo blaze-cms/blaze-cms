@@ -1,4 +1,4 @@
-import { defineGlobal, media } from "@blaze-cms/schema";
+import { defineGlobal, media } from "@blazing-cms/schema";
 
 export default defineGlobal({
   fields: [media("field", { label: "Media Field" })],

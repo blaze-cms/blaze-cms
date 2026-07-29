@@ -14,12 +14,12 @@
       "packages/create-app/my-value/cms/collections/posts.ts"
     ],
   "ignoreDependencies": [
-    "@blaze-cms/types",
-    "@blaze-cms/core",
-    "@blaze-cms/database",
-    "@blaze-cms/schema",
-    "@blaze-cms/validation",
-    "@blaze-cms/cms",
+    "@blazing-cms/types",
+    "@blazing-cms/core",
+    "@blazing-cms/database",
+    "@blazing-cms/schema",
+    "@blazing-cms/validation",
+    "@blazing-cms/cms",
     "clsx",
     "lucide-react",
     "react",

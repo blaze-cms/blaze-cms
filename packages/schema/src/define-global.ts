@@ -1,4 +1,4 @@
-import type { GlobalDefinition, FieldDefinition } from "@blaze-cms/types";
+import type { GlobalDefinition, FieldDefinition } from "@blazing-cms/types";
 
 export function defineGlobal(config: {
   slug: string;

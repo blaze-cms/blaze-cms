@@ -1,4 +1,4 @@
-import { defineGlobal, date } from "@blaze-cms/schema";
+import { defineGlobal, date } from "@blazing-cms/schema";
 
 export default defineGlobal({
   fields: [date("field", { label: "Date Field" })],

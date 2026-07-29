@@ -1,4 +1,4 @@
-import { defineGlobal, checkbox } from "@blaze-cms/schema";
+import { defineGlobal, checkbox } from "@blazing-cms/schema";
 
 export default defineGlobal({
   fields: [checkbox("field", { label: "Checkbox Field" })],

@@ -24,13 +24,13 @@ function toLabel(slug: string): string {
 }
 
 const collectionTemplate = (slug: string, label: string) =>
-  `import { defineCollection, text, slug, richText, status } from "@blaze-cms/schema";\n\nexport default defineCollection({\n  slug: "${slug}",\n  label: "${label}",\n  admin: {\n    group: "Content",\n  },\n  fields: [\n    text("title", { required: true }),\n    slug("slug", { sourceField: "title" }),\n    richText("content"),\n    status(),\n  ],\n});\n`;
+  `import { defineCollection, text, slug, richText, status } from "@blazing-cms/schema";\n\nexport default defineCollection({\n  slug: "${slug}",\n  label: "${label}",\n  admin: {\n    group: "Content",\n  },\n  fields: [\n    text("title", { required: true }),\n    slug("slug", { sourceField: "title" }),\n    richText("content"),\n    status(),\n  ],\n});\n`;
 
 const globalTemplate = (slug: string, label: string) =>
-  `import { defineGlobal, text, richText } from "@blaze-cms/schema";\n\nexport default defineGlobal({\n  slug: "${slug}",\n  label: "${label}",\n  fields: [\n    text("title"),\n    richText("content"),\n  ],\n});\n`;
+  `import { defineGlobal, text, richText } from "@blazing-cms/schema";\n\nexport default defineGlobal({\n  slug: "${slug}",\n  label: "${label}",\n  fields: [\n    text("title"),\n    richText("content"),\n  ],\n});\n`;
 
 const componentTemplate = (slug: string, label: string) =>
-  `import { defineComponent, text } from "@blaze-cms/schema";\n\nexport default defineComponent({\n  slug: "${slug}",\n  label: "${label}",\n  fields: [\n    text("title"),\n  ],\n});\n`;
+  `import { defineComponent, text } from "@blazing-cms/schema";\n\nexport default defineComponent({\n  slug: "${slug}",\n  label: "${label}",\n  fields: [\n    text("title"),\n  ],\n});\n`;
 
 const templates: Record<SchemaType, (slug: string, label: string) => string> = {
   collection: collectionTemplate,

@@ -1,4 +1,4 @@
-import { defineGlobal, json } from "@blaze-cms/schema";
+import { defineGlobal, json } from "@blazing-cms/schema";
 
 export default defineGlobal({
   fields: [json("field", { label: "JSON Field" })],

@@ -16,7 +16,7 @@ function Dashboard() {
     <div>
       <div className="mb-8">
         <h1 className="text-3xl font-bold">Dashboard</h1>
-        <p className="text-muted-foreground mt-1">Welcome to Blaze CMS.</p>
+        <p className="text-muted-foreground mt-1">Welcome to Blazing CMS.</p>
       </div>
 
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

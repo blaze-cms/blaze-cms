@@ -15,6 +15,14 @@
       "dependsOn": ["^build"]
     },
     "test": {},
+    "docs:dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "docs:build": {
+      "outputs": [".vitepress/dist/**"],
+      "dependsOn": []
+    },
     "clean": {
       "cache": false
     }

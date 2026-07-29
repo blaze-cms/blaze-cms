@@ -24,7 +24,7 @@ export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       {import.meta.env.DEV && <ReactQueryDevtools />}
-      <ThemeProvider defaultTheme="system" storageKey="blaze-cms-theme">
+      <ThemeProvider defaultTheme="system" storageKey="blazing-cms-theme">
         <AuthProvider>
           <DataProviderWrapper>
             <ToastProvider>

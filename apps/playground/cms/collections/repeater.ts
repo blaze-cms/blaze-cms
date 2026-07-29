@@ -1,4 +1,4 @@
-import { defineCollection, text, repeater } from "@blaze-cms/schema";
+import { defineCollection, text, repeater } from "@blazing-cms/schema";
 
 export default defineCollection({
   fields: [

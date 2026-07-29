@@ -1,4 +1,4 @@
-import type { CollectionDefinition, FieldDefinition } from "@blaze-cms/types";
+import type { CollectionDefinition, FieldDefinition } from "@blazing-cms/types";
 
 export function defineCollection(config: {
   slug: string;

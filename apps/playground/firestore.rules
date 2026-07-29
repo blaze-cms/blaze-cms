@@ -9,46 +9,46 @@ service cloud.firestore {
     }
 
     // Per-collection content rules
-    match /array/{doc} {
+    match /collections_array/{doc} {
       allow read, write: if request.auth != null;
     }
-    match /boolean/{doc} {
+    match /collections_boolean/{doc} {
       allow read, write: if request.auth != null;
     }
-    match /component/{doc} {
+    match /collections_component/{doc} {
       allow read, write: if request.auth != null;
     }
-    match /date/{doc} {
+    match /collections_date/{doc} {
       allow read, write: if request.auth != null;
     }
-    match /dynamic-zone/{doc} {
+    match /collections_dynamic-zone/{doc} {
       allow read, write: if request.auth != null;
     }
-    match /group/{doc} {
+    match /collections_group/{doc} {
       allow read, write: if request.auth != null;
     }
-    match /media-test/{doc} {
+    match /collections_media-test/{doc} {
       allow read, write: if request.auth != null;
     }
-    match /number/{doc} {
+    match /collections_number/{doc} {
       allow read, write: if request.auth != null;
     }
-    match /posts/{doc} {
+    match /collections_posts/{doc} {
       allow read, write: if request.auth != null;
     }
-    match /relation/{doc} {
+    match /collections_relation/{doc} {
       allow read, write: if request.auth != null;
     }
-    match /repeater/{doc} {
+    match /collections_repeater/{doc} {
       allow read, write: if request.auth != null;
     }
-    match /rich-text/{doc} {
+    match /collections_rich-text/{doc} {
       allow read, write: if request.auth != null;
     }
-    match /select/{doc} {
+    match /collections_select/{doc} {
       allow read, write: if request.auth != null;
     }
-    match /text/{doc} {
+    match /collections_text/{doc} {
       allow read, write: if request.auth != null;
     }
 

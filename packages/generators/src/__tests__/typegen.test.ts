@@ -3,7 +3,7 @@ import { mkdtempSync, rmSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { TypeGenerator } from "../typegen.js";
-import type { CollectionDefinition, GlobalDefinition } from "@blaze-cms/types";
+import type { CollectionDefinition, GlobalDefinition } from "@blazing-cms/types";
 
 describe("TypeGenerator", () => {
   let outDir: string;

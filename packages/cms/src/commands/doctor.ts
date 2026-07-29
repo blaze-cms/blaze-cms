@@ -10,7 +10,7 @@ export async function doctor(options: DoctorOptions): Promise<void> {
   const errors: string[] = [];
   const warnings: string[] = [];
 
-  console.warn("Blaze CMS Health Check\n");
+  console.warn("Blazing CMS Health Check\n");
 
   // Node version
   const nodeVersion = process.version;
@@ -53,21 +53,21 @@ export async function doctor(options: DoctorOptions): Promise<void> {
   console.warn(`  Globals: ${globalCount} schema(s)`);
   console.warn(`  Components: ${compCount} schema(s)`);
 
-  // blaze-cms.config.ts
-  const configPath = resolve(process.cwd(), "blaze-cms.config.ts");
+  // blazing-cms.config.ts
+  const configPath = resolve(process.cwd(), "blazing-cms.config.ts");
   if (existsSync(configPath)) {
-    console.warn(`  ✓ blaze-cms.config.ts`);
+    console.warn(`  ✓ blazing-cms.config.ts`);
   } else {
-    warnings.push("blaze-cms.config.ts not found");
-    console.warn(`  ⚠ blaze-cms.config.ts missing`);
+    warnings.push("blazing-cms.config.ts not found");
+    console.warn(`  ⚠ blazing-cms.config.ts missing`);
   }
 
   // Package.json blaze scripts
   const pkgPath = resolve(process.cwd(), "package.json");
   if (existsSync(pkgPath)) {
     const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
-    const hasBlazeDep = !!(pkg.dependencies?.["@blaze-cms/cms"] || pkg.devDependencies?.["@blaze-cms/cms"]);
-    console.warn(`  ${hasBlazeDep ? "✓" : "⚠"} @blaze-cms/cms dependency`);
+    const hasBlazeDep = !!(pkg.dependencies?.["@blazing-cms/cms"] || pkg.devDependencies?.["@blazing-cms/cms"]);
+    console.warn(`  ${hasBlazeDep ? "✓" : "⚠"} @blazing-cms/cms dependency`);
   }
 
   console.warn("");

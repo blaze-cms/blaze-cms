@@ -38,7 +38,7 @@ let app: FirebaseApp;
 try {
   app = initializeApp(firebaseConfig);
 } catch {
-  app = initializeApp(firebaseConfig, "blaze-cms-provider");
+  app = initializeApp(firebaseConfig, "blazing-cms-provider");
 }
 
 const db: Firestore = getFirestore(app);

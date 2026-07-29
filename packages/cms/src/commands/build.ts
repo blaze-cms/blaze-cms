@@ -14,7 +14,7 @@ export interface BuildOptions {
 }
 
 export async function build(_options: BuildOptions): Promise<void> {
-  console.warn("\n  Blaze CMS Production Build\n");
+  console.warn("\n  Blazing CMS Production Build\n");
 
   console.warn("  [1/3] Generating schema registry...");
   await generate({ outDir: path.resolve(ADMIN_ROOT, "__generated__") });

@@ -1,8 +1,8 @@
 {
-  "name": "@blaze-cms/create-app",
+  "name": "@blazing-cms/create-app",
   "version": "0.1.0",
   "type": "module",
-  "bin": "bin/create-blaze-cms-app.js",
+  "bin": "bin/create-blazing-cms-app.js",
   "main": "dist/index.js",
   "files": [
     "dist",

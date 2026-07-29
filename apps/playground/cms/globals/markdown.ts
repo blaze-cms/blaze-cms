@@ -1,4 +1,4 @@
-import { defineGlobal, markdown } from "@blaze-cms/schema";
+import { defineGlobal, markdown } from "@blazing-cms/schema";
 
 export default defineGlobal({
   fields: [markdown("field", { label: "Markdown Field" })],

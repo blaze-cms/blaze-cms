@@ -10,3 +10,5 @@ playwright/.cache/
 
 # Generated schema files
 __generated__/
+
+graphify-out/

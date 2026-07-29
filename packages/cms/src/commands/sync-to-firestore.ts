@@ -1,8 +1,7 @@
 import { initializeApp, cert, getApps } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
-import { existsSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
-import type { CollectionDefinition, GlobalDefinition, ComponentDefinition } from "@blaze-cms/types";
+import { existsSync } from "node:fs";
+import type { CollectionDefinition, GlobalDefinition, ComponentDefinition } from "@blazing-cms/types";
 
 interface SyncPayload {
   collections: CollectionDefinition[];

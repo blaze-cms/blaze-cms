@@ -1,5 +1,5 @@
 {
-  "name": "@blaze-cms/types",
+  "name": "@blazing-cms/types",
   "version": "0.1.0",
   "type": "module",
   "main": "dist/index.js",

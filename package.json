@@ -1,17 +1,19 @@
 {
-  "name": "blaze-cms",
+  "name": "blazing-cms",
   "type": "module",
   "private": true,
   "packageManager": "pnpm@11.17.0",
   "scripts": {
     "dev": "turbo dev",
-    "dev:playground": "turbo dev --filter=@blaze-cms/playground",
+    "dev:playground": "turbo dev --filter=@blazing-cms/playground",
     "build": "turbo build",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
     "test": "turbo test",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
+    "docs:dev": "turbo docs:dev",
+    "docs:build": "turbo docs:build",
     "clean": "turbo clean && rm -rf node_modules",
     "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,json,md}\"",
@@ -49,6 +51,7 @@
     "vitest": "^3.1.0"
   },
   "dependencies": {
+    "@changesets/cli": "^2.31.1",
     "firebase-admin": "^13.2.0",
     "zod": "^4.4.3"
   },

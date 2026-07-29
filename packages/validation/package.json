@@ -1,5 +1,5 @@
 {
-  "name": "@blaze-cms/validation",
+  "name": "@blazing-cms/validation",
   "version": "0.1.0",
   "type": "module",
   "main": "dist/index.js",
@@ -22,7 +22,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@blaze-cms/types": "workspace:*",
+    "@blazing-cms/types": "workspace:*",
     "zod": "^4.4.3"
   }
 }

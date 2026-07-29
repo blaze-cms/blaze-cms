@@ -1,4 +1,4 @@
-import type { Config, FirebaseConfig } from "@blaze-cms/types";
+import type { Config, FirebaseConfig } from "@blazing-cms/types";
 
 import { readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";

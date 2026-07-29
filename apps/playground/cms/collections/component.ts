@@ -1,4 +1,4 @@
-import { defineCollection, text, component } from "@blaze-cms/schema";
+import { defineCollection, text, component } from "@blazing-cms/schema";
 
 export default defineCollection({
   fields: [

@@ -1,4 +1,4 @@
-import { defineComponent, text, select, boolean } from "@blaze-cms/schema";
+import { defineComponent, text, select, boolean } from "@blazing-cms/schema";
 
 export default defineComponent({
   fields: [

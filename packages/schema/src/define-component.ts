@@ -1,4 +1,4 @@
-import type { ComponentDefinition, FieldDefinition } from "@blaze-cms/types";
+import type { ComponentDefinition, FieldDefinition } from "@blazing-cms/types";
 
 export function defineComponent(config: {
   slug: string;

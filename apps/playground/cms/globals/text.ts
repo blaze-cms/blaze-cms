@@ -1,4 +1,4 @@
-import { defineGlobal, text } from "@blaze-cms/schema";
+import { defineGlobal, text } from "@blazing-cms/schema";
 
 export default defineGlobal({
   fields: [text("field", { label: "Text Field" })],

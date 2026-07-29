@@ -9,7 +9,7 @@ export interface DeployOptions {
 }
 
 export async function deploy(options: DeployOptions): Promise<void> {
-  console.warn("\n  Blaze CMS Deploy\n");
+  console.warn("\n  Blazing CMS Deploy\n");
 
   // Check for firebase.json
   const firebaseJson = resolve(process.cwd(), "firebase.json");

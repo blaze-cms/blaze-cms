@@ -1,6 +1,6 @@
 // Auto-generated Blaze CMS SDK — do not edit
 
-import { createClient } from "@blaze-cms/sdk";
+import { createClient } from "@blazing-cms/sdk";
 
 const api = createClient({ baseUrl: "/api" });
 

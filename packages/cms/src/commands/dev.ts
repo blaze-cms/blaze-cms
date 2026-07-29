@@ -18,7 +18,7 @@ export async function dev(options: DevOptions): Promise<void> {
   const port = options.port ?? 5173;
   const host = options.host ?? "localhost";
 
-  console.warn(`\n  Blaze CMS Dev Server\n`);
+  console.warn(`\n  Blazing CMS Dev Server\n`);
 
   console.warn("  [1/3] Generating schema registry...");
   const isFirebase = process.env.VITE_BACKEND_MODE === "firebase";

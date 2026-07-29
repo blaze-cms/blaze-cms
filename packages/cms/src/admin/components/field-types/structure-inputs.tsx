@@ -12,13 +12,17 @@ import type {
   RepeaterField,
   TabsField,
   SlugField,
-} from "@blaze-cms/types";
+} from "@blazing-cms/types";
 import type { ReactNode, ChangeEvent } from "react";
+import { lazy } from "react";
 
 import { Plus, X, GripVertical } from "lucide-react";
 
 import { getComponent } from "@/__generated__/schema-registry";
-import { FieldInput } from "@/components/field-input";
+
+const FieldInput = lazy(() =>
+  import("@/components/field-input").then((m) => ({ default: m.FieldInput })),
+);
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";

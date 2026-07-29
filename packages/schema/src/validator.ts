@@ -3,7 +3,7 @@ import type {
   GlobalDefinition,
   ComponentDefinition,
   FieldDefinition,
-} from "@blaze-cms/types";
+} from "@blazing-cms/types";
 
 export interface ValidationError {
   path: string;

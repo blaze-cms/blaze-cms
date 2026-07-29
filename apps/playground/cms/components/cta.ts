@@ -1,4 +1,4 @@
-import { defineComponent, text } from "@blaze-cms/schema";
+import { defineComponent, text } from "@blazing-cms/schema";
 
 export default defineComponent({
   fields: [

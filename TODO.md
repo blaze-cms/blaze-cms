@@ -1,4 +1,4 @@
-# Blaze CMS — TODO
+# Blazing CMS — TODO
 
 ## Current Milestone: Admin UI Polish
 

@@ -1,5 +1,5 @@
 {
-  "name": "@blaze-cms/schema",
+  "name": "@blazing-cms/schema",
   "version": "0.1.0",
   "type": "module",
   "main": "dist/index.js",
@@ -22,7 +22,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@blaze-cms/types": "workspace:*"
+    "@blazing-cms/types": "workspace:*"
   },
   "peerDependencies": {
     "zod": "^4.4.3"

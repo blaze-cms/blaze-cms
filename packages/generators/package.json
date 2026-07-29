@@ -1,5 +1,5 @@
 {
-  "name": "@blaze-cms/generators",
+  "name": "@blazing-cms/generators",
   "version": "0.1.0",
   "type": "module",
   "main": "dist/index.js",
@@ -22,8 +22,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@blaze-cms/types": "workspace:*",
-    "@blaze-cms/schema": "workspace:*",
-    "@blaze-cms/validation": "workspace:*"
+    "@blazing-cms/types": "workspace:*",
+    "@blazing-cms/schema": "workspace:*",
+    "@blazing-cms/validation": "workspace:*"
   }
 }
