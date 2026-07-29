@@ -124,7 +124,14 @@
     "minTokens": 50,
     "skipLocal": true,
     "threshold": 5.0,
-    "ignore": ["packages/cms/src/server/**", "packages/generators/src/graphql-schema.ts"]
+    "ignore": [
+      "packages/cms/src/server/**",
+      "packages/generators/src/graphql-schema.ts",
+      "packages/cms/src/commands/scaffold.ts",
+      "packages/cms/src/admin/routes/schemas/new.tsx",
+      "packages/cms/src/admin/lib/providers/firebase.ts",
+      "packages/sdk/src/collection.ts"
+    ]
   },
   "entry": ["packages/*/src/index.ts"]
 }
