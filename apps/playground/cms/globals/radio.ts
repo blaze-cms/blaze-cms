@@ -1,4 +1,4 @@
-import { defineGlobal, radio } from "@blaze-cms/schema";
+import { defineGlobal, radio } from "@blazing-cms/schema";
 
 export default defineGlobal({
   fields: [

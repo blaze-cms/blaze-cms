@@ -35,7 +35,7 @@ let app: FirebaseApp;
 try {
   app = initializeApp(firebaseConfig);
 } catch {
-  app = initializeApp(firebaseConfig, "blaze-cms");
+  app = initializeApp(firebaseConfig, "blazing-cms");
 }
 
 const auth = getAuth(app);

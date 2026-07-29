@@ -44,7 +44,7 @@ function Login() {
     <div className="flex min-h-screen items-center justify-center">
       <div className="w-full max-w-sm space-y-6">
         <div className="text-center">
-          <h1 className="text-2xl font-bold">Blaze CMS</h1>
+          <h1 className="text-2xl font-bold">Blazing CMS</h1>
           <p className="text-muted-foreground text-sm">Sign in to your dashboard</p>
         </div>
         <form className="space-y-4" onSubmit={handleSubmit}>

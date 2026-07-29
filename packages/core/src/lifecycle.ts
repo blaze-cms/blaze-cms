@@ -1,4 +1,4 @@
-import type { LifecycleHooks } from "@blaze-cms/types";
+import type { LifecycleHooks } from "@blazing-cms/types";
 
 export type LifecycleState = "init" | "ready" | "shutdown" | "error";
 

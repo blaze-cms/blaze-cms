@@ -1,4 +1,4 @@
-import type { Logger } from "@blaze-cms/types";
+import type { Logger } from "@blazing-cms/types";
 
 export function createLogger(prefix: string): Logger {
   function log(level: string, ...args: unknown[]): void {

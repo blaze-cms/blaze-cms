@@ -1,4 +1,4 @@
-import type { CollectionDefinition, GlobalDefinition, ComponentDefinition } from "@blaze-cms/types";
+import type { CollectionDefinition, GlobalDefinition, ComponentDefinition } from "@blazing-cms/types";
 
 import { writeFileSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
@@ -15,8 +15,8 @@ export class SdkGenerator implements Generator {
     outDir: string,
   ): Promise<void> {
     mkdirSync(outDir, { recursive: true });
-    let output = `// Auto-generated Blaze CMS SDK — do not edit\n\n`;
-    output += `import { createClient } from "@blaze-cms/sdk";\n\n`;
+    let output = `// Auto-generated Blazing CMS SDK — do not edit\n\n`;
+    output += `import { createClient } from "@blazing-cms/sdk";\n\n`;
     output += `const api = createClient({ baseUrl: "/api" });\n\n`;
 
     for (const collection of collections) {

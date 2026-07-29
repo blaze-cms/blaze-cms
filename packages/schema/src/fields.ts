@@ -30,7 +30,7 @@ import type {
   SlugField,
   FieldDefinition,
   FieldBase,
-} from "@blaze-cms/types";
+} from "@blazing-cms/types";
 
 type FieldOptions = Partial<Omit<FieldBase, "name" | "type">>;
 type SelectOption = { label: string; value: string };

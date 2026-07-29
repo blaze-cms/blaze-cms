@@ -1,4 +1,4 @@
-import { defineGlobal, url } from "@blaze-cms/schema";
+import { defineGlobal, url } from "@blazing-cms/schema";
 
 export default defineGlobal({
   fields: [url("field", { label: "URL Field" })],

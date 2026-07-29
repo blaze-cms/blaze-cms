@@ -1,4 +1,4 @@
-import { defineGlobal, select } from "@blaze-cms/schema";
+import { defineGlobal, select } from "@blazing-cms/schema";
 
 export default defineGlobal({
   fields: [

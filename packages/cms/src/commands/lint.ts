@@ -1,4 +1,4 @@
-import { SchemaLoader, SchemaValidator } from "@blaze-cms/schema";
+import { SchemaLoader, SchemaValidator } from "@blazing-cms/schema";
 import { resolve } from "node:path";
 
 export interface LintOptions {

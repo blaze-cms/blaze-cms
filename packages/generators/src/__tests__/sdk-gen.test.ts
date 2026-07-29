@@ -3,7 +3,7 @@ import { mkdtempSync, rmSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { SdkGenerator } from "../sdk.js";
-import type { CollectionDefinition, GlobalDefinition } from "@blaze-cms/types";
+import type { CollectionDefinition, GlobalDefinition } from "@blazing-cms/types";
 
 describe("SdkGenerator", () => {
   let outDir: string;
@@ -29,7 +29,7 @@ describe("SdkGenerator", () => {
     await gen.generate(collections, [], [], outDir);
 
     const output = readFileSync(join(outDir, "sdk.ts"), "utf-8");
-    expect(output).toContain('import { createClient } from "@blaze-cms/sdk"');
+    expect(output).toContain('import { createClient } from "@blazing-cms/sdk"');
     expect(output).toContain("export const posts = {");
     expect(output).toContain('api.findMany("posts"');
     expect(output).toContain('api.findOne("posts"');

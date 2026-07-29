@@ -1,4 +1,4 @@
-import type { FieldDefinition, FieldType } from "@blaze-cms/types";
+import type { FieldDefinition, FieldType } from "@blazing-cms/types";
 
 import { createRoute, useParams, Link } from "@tanstack/react-router";
 import {
@@ -83,12 +83,12 @@ function generateCode(schema: SchemaShape, type: SchemaType): string {
   const adminCode = adminParts.length > 0 ? `  admin: {\n${adminParts.join(",\n")},\n  },` : "";
 
   if (type === "collection") {
-    return `import { defineCollection, ${fieldImports(schema.fields).join(", ")} } from "@blaze-cms/schema";\n\nexport default defineCollection({\n  slug: ${JSON.stringify(schema.slug)},\n  labels: {\n    singular: ${JSON.stringify(schema.label || toPascal(schema.slug))},\n    plural: ${JSON.stringify(schema.label || toPascal(schema.slug))},\n  },${adminCode ? `\n${adminCode}` : ""}${extraParts.length > 0 ? `\n${extraParts.join("\n")}` : ""}\n  fields: [\n${fieldsCode},\n  ],\n});\n`;
+    return `import { defineCollection, ${fieldImports(schema.fields).join(", ")} } from "@blazing-cms/schema";\n\nexport default defineCollection({\n  slug: ${JSON.stringify(schema.slug)},\n  labels: {\n    singular: ${JSON.stringify(schema.label || toPascal(schema.slug))},\n    plural: ${JSON.stringify(schema.label || toPascal(schema.slug))},\n  },${adminCode ? `\n${adminCode}` : ""}${extraParts.length > 0 ? `\n${extraParts.join("\n")}` : ""}\n  fields: [\n${fieldsCode},\n  ],\n});\n`;
   }
   if (type === "global") {
-    return `import { defineGlobal, ${fieldImports(schema.fields).join(", ")} } from "@blaze-cms/schema";\n\nexport default defineGlobal({\n  slug: ${JSON.stringify(schema.slug)},\n  label: ${JSON.stringify(label)},${adminCode ? `\n${adminCode}` : ""}\n  fields: [\n${fieldsCode},\n  ],\n});\n`;
+    return `import { defineGlobal, ${fieldImports(schema.fields).join(", ")} } from "@blazing-cms/schema";\n\nexport default defineGlobal({\n  slug: ${JSON.stringify(schema.slug)},\n  label: ${JSON.stringify(label)},${adminCode ? `\n${adminCode}` : ""}\n  fields: [\n${fieldsCode},\n  ],\n});\n`;
   }
-  return `import { defineComponent, ${fieldImports(schema.fields).join(", ")} } from "@blaze-cms/schema";\n\nexport default defineComponent({\n  slug: ${JSON.stringify(schema.slug)},\n  label: ${JSON.stringify(label)},\n  fields: [\n${fieldsCode},\n  ],\n});\n`;
+  return `import { defineComponent, ${fieldImports(schema.fields).join(", ")} } from "@blazing-cms/schema";\n\nexport default defineComponent({\n  slug: ${JSON.stringify(schema.slug)},\n  label: ${JSON.stringify(label)},\n  fields: [\n${fieldsCode},\n  ],\n});\n`;
 }
 
 const FIELD_TYPE_MAP: Record<string, string> = {

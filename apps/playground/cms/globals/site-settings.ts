@@ -1,4 +1,4 @@
-import { defineGlobal, text, textarea, media, color, boolean } from "@blaze-cms/schema";
+import { defineGlobal, text, textarea, media, color, boolean } from "@blazing-cms/schema";
 
 export default defineGlobal({
   admin: { group: "Settings" },

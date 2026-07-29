@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 
-describe("@blaze-cms/types", () => {
+describe("@blazing-cms/types", () => {
   it("FieldType union includes all expected values", () => {
     const types = [
       "text", "textarea", "number", "boolean", "date", "datetime",

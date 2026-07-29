@@ -1,4 +1,4 @@
-import type { DatabaseAdapter, QueryOptions } from "@blaze-cms/types";
+import type { DatabaseAdapter, QueryOptions } from "@blazing-cms/types";
 
 export class FirestoreRepository {
   private adapter: DatabaseAdapter;

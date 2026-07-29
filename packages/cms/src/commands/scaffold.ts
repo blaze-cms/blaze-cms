@@ -9,7 +9,7 @@ export interface ScaffoldOptions {
 }
 
 const collectionTemplate = (slug: string, label: string) => `
-import { defineCollection, text, slug, richText, status } from "@blaze-cms/schema";
+import { defineCollection, text, slug, richText, status } from "@blazing-cms/schema";
 
 export default defineCollection({
   slug: "${slug}",
@@ -27,7 +27,7 @@ export default defineCollection({
 `;
 
 const globalTemplate = (slug: string, label: string) => `
-import { defineGlobal, text, richText } from "@blaze-cms/schema";
+import { defineGlobal, text, richText } from "@blazing-cms/schema";
 
 export default defineGlobal({
   slug: "${slug}",
@@ -40,7 +40,7 @@ export default defineGlobal({
 `;
 
 const componentTemplate = (slug: string, label: string) => `
-import { defineComponent, text } from "@blaze-cms/schema";
+import { defineComponent, text } from "@blazing-cms/schema";
 
 export default defineComponent({
   slug: "${slug}",

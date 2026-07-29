@@ -1,5 +1,5 @@
 {
-  "name": "@blaze-cms/storage",
+  "name": "@blazing-cms/storage",
   "version": "0.1.0",
   "type": "module",
   "main": "dist/index.js",

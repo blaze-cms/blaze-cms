@@ -1,4 +1,4 @@
-import { defineGlobal, text, boolean, relation } from "@blaze-cms/schema";
+import { defineGlobal, text, boolean, relation } from "@blazing-cms/schema";
 
 export default defineGlobal({
   admin: { group: "Content" },

@@ -113,7 +113,7 @@ export function Sidebar() {
         )}
       >
         <Flame className="h-5 w-5 shrink-0 text-orange-500" />
-        {!collapsed && <span className="text-base font-bold tracking-tight">Blaze CMS</span>}
+        {!collapsed && <span className="text-base font-bold tracking-tight">Blazing CMS</span>}
         <button
           onClick={() => setCollapsed(!collapsed)}
           className={cn(

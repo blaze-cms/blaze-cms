@@ -12,22 +12,28 @@ import type {
   RepeaterField,
   TabsField,
   SlugField,
-} from "@blaze-cms/types";
+} from "@blazing-cms/types";
 import type { ReactNode, ChangeEvent } from "react";
 
 import { Plus, X, GripVertical } from "lucide-react";
 
 import { getComponent } from "@/__generated__/schema-registry";
-import { FieldInput } from "@/components/field-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+
+export type RenderChild = (
+  field: FieldDefinition,
+  value: unknown,
+  onChange: (value: unknown) => void,
+) => ReactNode;
 
 export function renderStructureInput(
   field: FieldDefinition,
   value: unknown,
   onChange: (v: unknown) => void,
   id?: string,
+  renderChild?: RenderChild,
 ): ReactNode {
   switch (field.type) {
     case "select": {
@@ -145,21 +151,20 @@ export function renderStructureInput(
             <div key={idx} className="flex items-start gap-2">
               <GripVertical className="mt-2 h-4 w-4 shrink-0 text-muted-foreground" />
               <div className="flex-1">
-                {f.fields.map((subField) => (
-                  <FieldInput
-                    key={subField.name}
-                    field={subField}
-                    value={(item as Record<string, unknown>)?.[subField.name]}
-                    onChange={(v: unknown) => {
+                {f.fields.map((subField) =>
+                  renderChild?.(
+                    subField,
+                    (item as Record<string, unknown>)?.[subField.name],
+                    (v: unknown) => {
                       const newItems = [...items];
                       newItems[idx] = {
                         ...(newItems[idx] as Record<string, unknown>),
                         [subField.name]: v,
                       };
                       onChange(newItems);
-                    }}
-                  />
-                ))}
+                    },
+                  ) ?? null,
+                )}
               </div>
               <button onClick={() => onChange(items.filter((_, i) => i !== idx))}>
                 <X className="h-4 w-4 text-destructive" />
@@ -179,14 +184,13 @@ export function renderStructureInput(
       const current = (value ?? {}) as Record<string, unknown>;
       return (
         <div className="space-y-3 rounded-md border p-3">
-          {g.fields.map((subField) => (
-            <FieldInput
-              key={subField.name}
-              field={subField}
-              value={current[subField.name]}
-              onChange={(v: unknown) => onChange({ ...current, [subField.name]: v })}
-            />
-          ))}
+          {g.fields.map((subField) =>
+            renderChild?.(
+              subField,
+              current[subField.name],
+              (v: unknown) => onChange({ ...current, [subField.name]: v }),
+            ) ?? null,
+          )}
         </div>
       );
     }
@@ -204,18 +208,17 @@ export function renderStructureInput(
                   <X className="h-3 w-3 text-destructive" />
                 </button>
               </div>
-              {r.fields.map((subField) => (
-                <FieldInput
-                  key={subField.name}
-                  field={subField}
-                  value={item?.[subField.name]}
-                  onChange={(v: unknown) => {
+              {r.fields.map((subField) =>
+                renderChild?.(
+                  subField,
+                  item?.[subField.name],
+                  (v: unknown) => {
                     const newItems = [...items];
                     newItems[idx] = { ...(newItems[idx] ?? {}), [subField.name]: v };
                     onChange(newItems);
-                  }}
-                />
-              ))}
+                  },
+                ) ?? null,
+              )}
             </div>
           ))}
           <Button variant="outline" size="sm" onClick={() => onChange([...items, {}])}>
@@ -233,14 +236,13 @@ export function renderStructureInput(
           {t.tabs.map((tab) => (
             <div key={tab.label} className="space-y-3">
               <h4 className="text-sm font-semibold text-muted-foreground">{tab.label}</h4>
-              {tab.fields.map((subField) => (
-                <FieldInput
-                  key={subField.name}
-                  field={subField}
-                  value={vals[subField.name]}
-                  onChange={(v: unknown) => onChange({ ...vals, [subField.name]: v })}
-                />
-              ))}
+              {tab.fields.map((subField) =>
+                renderChild?.(
+                  subField,
+                  vals[subField.name],
+                  (v: unknown) => onChange({ ...vals, [subField.name]: v }),
+                ) ?? null,
+              )}
             </div>
           ))}
         </div>
@@ -264,18 +266,17 @@ export function renderStructureInput(
                     <X className="h-3 w-3 text-destructive" />
                   </button>
                 </div>
-                {compDef?.fields.map((subField) => (
-                  <FieldInput
-                    key={subField.name}
-                    field={subField}
-                    value={(item as Record<string, unknown>)?.[subField.name]}
-                    onChange={(v: unknown) => {
+                {compDef?.fields.map((subField) =>
+                  renderChild?.(
+                    subField,
+                    (item as Record<string, unknown>)?.[subField.name],
+                    (v: unknown) => {
                       const newItems = [...items];
                       newItems[idx] = { ...(newItems[idx] ?? {}), [subField.name]: v };
                       onChange(newItems);
-                    }}
-                  />
-                ))}
+                    },
+                  ) ?? null,
+                )}
               </div>
             );
           })}
@@ -342,12 +343,11 @@ export function renderStructureInput(
                   </button>
                 )}
               </div>
-              {compDef?.fields.map((subField) => (
-                <FieldInput
-                  key={subField.name}
-                  field={subField}
-                  value={(item as Record<string, unknown>)?.[subField.name]}
-                  onChange={(v: unknown) => {
+              {compDef?.fields.map((subField) =>
+                renderChild?.(
+                  subField,
+                  (item as Record<string, unknown>)?.[subField.name],
+                  (v: unknown) => {
                     if (!f.repeatable) {
                       onChange({ ...(item as Record<string, unknown>), [subField.name]: v });
                     } else {
@@ -355,9 +355,9 @@ export function renderStructureInput(
                       newItems[idx] = { ...(newItems[idx] ?? {}), [subField.name]: v };
                       onChange(newItems);
                     }
-                  }}
-                />
-              ))}
+                  },
+                ) ?? null,
+              )}
             </div>
           ))}
           {f.repeatable && (

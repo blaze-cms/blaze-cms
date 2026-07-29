@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { generateZodSchema } from "../generator.js";
-import type { FieldDefinition } from "@blaze-cms/types";
+import type { FieldDefinition } from "@blazing-cms/types";
 
 describe("generateZodSchema", () => {
   it("returns a ZodObject", () => {

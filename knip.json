@@ -2,12 +2,7 @@
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "exclude": ["files", "duplicates"],
   "ignoreDependencies": [
-    "@blaze-cms/*",
-    "@tailwindcss/vite",
-    "@tanstack/react-query",
-    "@types/react",
-    "@types/react-dom",
-    "@vitejs/plugin-react",
+    "@blazing-cms/*",
     "clsx",
     "dompurify",
     "firebase-admin",

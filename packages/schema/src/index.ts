@@ -66,4 +66,4 @@ export type {
   RepeaterField,
   SlugField,
   FieldDefinition,
-} from "@blaze-cms/types";
+} from "@blazing-cms/types";

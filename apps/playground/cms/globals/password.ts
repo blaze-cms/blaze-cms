@@ -1,4 +1,4 @@
-import { defineGlobal, password } from "@blaze-cms/schema";
+import { defineGlobal, password } from "@blazing-cms/schema";
 
 export default defineGlobal({
   fields: [password("field", { label: "Password Field" })],

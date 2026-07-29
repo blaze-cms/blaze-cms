@@ -1,4 +1,4 @@
-import { defineGlobal, boolean } from "@blaze-cms/schema";
+import { defineGlobal, boolean } from "@blazing-cms/schema";
 
 export default defineGlobal({
   fields: [boolean("field", { label: "Boolean Field" })],

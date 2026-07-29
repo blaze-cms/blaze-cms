@@ -1,4 +1,4 @@
-import type { DatabaseAdapter, QueryOptions } from "@blaze-cms/types";
+import type { DatabaseAdapter, QueryOptions } from "@blazing-cms/types";
 
 import { applicationDefault, initializeApp, getApps, cert } from "firebase-admin/app";
 import { getFirestore, Timestamp, type Firestore } from "firebase-admin/firestore";
@@ -17,7 +17,7 @@ function fieldPath(name: string): string {
 
 export class FirestoreAdapter implements DatabaseAdapter {
   private db: Firestore | null = null;
-  private appName = "blaze-cms";
+  private appName = "blazing-cms";
 
   async connect(config?: FirestoreConfig): Promise<void> {
     const existing = getApps().find((a) => a.name === this.appName);

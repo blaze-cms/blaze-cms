@@ -1,4 +1,4 @@
-import type { PluginDefinition } from "@blaze-cms/types";
+import type { PluginDefinition } from "@blazing-cms/types";
 
 import { readdirSync } from "node:fs";
 import { resolve } from "node:path";
@@ -9,7 +9,7 @@ export async function discoverPlugins(scope?: string): Promise<PluginDefinition[
 
   try {
     const entries = readdirSync(nodeModulesDir);
-    const prefix = scope ? `${scope}/blaze-cms-plugin-` : "blaze-cms-plugin-";
+    const prefix = scope ? `${scope}/blazing-cms-plugin-` : "blazing-cms-plugin-";
 
     for (const entry of entries) {
       if (!entry.startsWith(prefix)) continue;

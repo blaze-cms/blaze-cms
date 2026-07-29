@@ -1,4 +1,4 @@
-import { defineConfig } from "@blaze-cms/cms";
+import { defineConfig } from "@blazing-cms/cms";
 
 export default defineConfig({
   firebase: {

@@ -1,4 +1,4 @@
-import type { FieldDefinition } from "@blaze-cms/types";
+import type { FieldDefinition } from "@blazing-cms/types";
 import type { ReactNode } from "react";
 
 import { CodeEditor } from "@/components/field-types/code-editor";

@@ -3,7 +3,7 @@ import { mkdtempSync, rmSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { ValidationGenerator } from "../validation.js";
-import type { CollectionDefinition } from "@blaze-cms/types";
+import type { CollectionDefinition } from "@blazing-cms/types";
 
 describe("ValidationGenerator", () => {
   let outDir: string;

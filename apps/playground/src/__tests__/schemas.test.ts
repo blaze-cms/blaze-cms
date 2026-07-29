@@ -1,4 +1,4 @@
-import { SchemaValidator } from "@blaze-cms/schema";
+import { SchemaValidator } from "@blazing-cms/schema";
 import { describe, it, expect } from "vitest";
 
 import arrayCollection from "../../cms/collections/array.js";

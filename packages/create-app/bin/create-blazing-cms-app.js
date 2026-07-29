@@ -5,9 +5,9 @@ const args = process.argv.slice(2);
 
 if (args.length === 0 || args[0] === "--help") {
   console.warn(`
-Usage: npx @blaze-cms/create-app <project-name>
+Usage: npx @blazing-cms/create-app <project-name>
 
-Creates a new Blaze CMS project with:
+Creates a new Blazing CMS project with:
   - Firebase config
   - Example collections and globals
   - Build/dev/deploy scripts

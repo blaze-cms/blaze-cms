@@ -80,7 +80,7 @@ function PluginsSettings() {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Plugins</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Extend Blaze CMS with plugins.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Extend Blazing CMS with plugins.</p>
         </div>
       </div>
 
@@ -100,7 +100,7 @@ function PluginsSettings() {
             <Puzzle className="h-10 w-10 text-muted-foreground" />
             <CardTitle className="text-base">Plugin SDK</CardTitle>
             <CardDescription className="max-w-sm">
-              Blaze CMS plugins are npm packages that register routes, extend the sidebar, and hook
+              Blazing CMS plugins are npm packages that register routes, extend the sidebar, and hook
               into content operations.
             </CardDescription>
             <Button variant="outline" size="sm" disabled>

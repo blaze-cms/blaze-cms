@@ -7,7 +7,7 @@ import {
   select,
   relation,
   slug,
-} from "@blaze-cms/schema";
+} from "@blazing-cms/schema";
 
 export default defineCollection({
   admin: { defaultSort: "-createdAt", useAsTitle: "title" },

@@ -1,7 +1,7 @@
 {
-  "name": "@blaze-cms/sdk",
+  "name": "@blazing-cms/sdk",
   "version": "0.1.0",
-  "description": "Browser SDK for Blaze CMS — wraps Firebase client SDK for typed content consumption",
+  "description": "Browser SDK for Blazing CMS — wraps Firebase client SDK for typed content consumption",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

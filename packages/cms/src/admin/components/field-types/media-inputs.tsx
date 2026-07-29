@@ -1,4 +1,4 @@
-import type { FieldDefinition } from "@blaze-cms/types";
+import type { FieldDefinition } from "@blazing-cms/types";
 import type { ReactNode, ChangeEvent } from "react";
 
 import { Input } from "@/components/ui/input";

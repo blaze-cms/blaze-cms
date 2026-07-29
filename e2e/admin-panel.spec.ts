@@ -18,7 +18,7 @@ async function login(page: import("@playwright/test").Page) {
 test.describe("Auth", () => {
   test("login page loads and shows sign-in form", async ({ page }) => {
     await page.goto("login");
-    await expect(page.getByText("Blaze CMS")).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText("Blazing CMS")).toBeVisible({ timeout: 10000 });
     await expect(page.getByText("Sign in to your dashboard")).toBeVisible();
     await expect(page.getByLabel("Email")).toBeVisible();
     await expect(page.getByLabel("Password")).toBeVisible();
@@ -33,7 +33,7 @@ test.describe("Auth", () => {
 
   test("page has correct document title", async ({ page }) => {
     await page.goto("login");
-    expect(await page.title()).toBe("Blaze CMS");
+    expect(await page.title()).toBe("Blazing CMS");
   });
 
   test("unauthenticated users are redirected to login", async ({ page }) => {

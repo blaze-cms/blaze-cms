@@ -1,4 +1,4 @@
-import type { CollectionDefinition, GlobalDefinition, ComponentDefinition } from "@blaze-cms/types";
+import type { CollectionDefinition, GlobalDefinition, ComponentDefinition } from "@blazing-cms/types";
 
 import type { Generator } from "./generator.js";
 

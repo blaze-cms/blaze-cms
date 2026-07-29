@@ -1,4 +1,4 @@
-import { defineGlobal, multiSelect } from "@blaze-cms/schema";
+import { defineGlobal, multiSelect } from "@blazing-cms/schema";
 
 export default defineGlobal({
   fields: [

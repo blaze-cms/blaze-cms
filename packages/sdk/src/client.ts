@@ -30,7 +30,7 @@ export function createBlazeClient(config: BlazeClientConfig): BlazeClient {
       appSingleton = initializeApp(config);
     }
   } catch {
-    appSingleton = initializeApp(config, "blaze-cms-sdk");
+    appSingleton = initializeApp(config, "blazing-cms-sdk");
   }
 
   const app = appSingleton;
