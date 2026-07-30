@@ -63,10 +63,20 @@ function pluralize(type: string): string {
   return "collections";
 }
 
+async function resolveInput(type: string | undefined, name: string | undefined): Promise<{ type: string; slug: string; label: string }> {
+  const resolvedType = type || await prompt("Type? (collection/global/component): ");
+  const slug = name || await prompt("Slug (e.g. my-collection): ");
+  return { label: toLabel(slug), slug, type: resolvedType };
+}
+
+const TEMPLATES: Record<string, (slug: string, label: string) => string> = {
+  collection: collectionTemplate,
+  global: globalTemplate,
+  component: componentTemplate,
+};
+
 export async function scaffold(options: ScaffoldOptions): Promise<void> {
-  const type = options.type || await prompt("Type? (collection/global/component): ");
-  const slug = options.name || await prompt("Slug (e.g. my-collection): ");
-  const label = toLabel(slug);
+  const { type, slug, label } = await resolveInput(options.type, options.name);
 
   const cmsDir = resolve(process.cwd(), "cms");
   const dir = resolve(cmsDir, pluralize(type));
@@ -81,13 +91,7 @@ export async function scaffold(options: ScaffoldOptions): Promise<void> {
     process.exit(1);
   }
 
-  const templates: Record<string, (slug: string, label: string) => string> = {
-    collection: collectionTemplate,
-    global: globalTemplate,
-    component: componentTemplate,
-  };
-
-  const template = templates[type];
+  const template = TEMPLATES[type];
   if (!template) {
     console.error(`  ✗ Unknown type "${type}". Use: collection, global, or component`);
     process.exit(1);

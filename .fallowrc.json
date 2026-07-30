@@ -82,5 +82,5 @@
       "packages/sdk/src/collection.ts"
     ]
   },
-  "entry": ["packages/*/src/index.ts"]
+  "entry": ["packages/*/src/index.ts", "scripts/serve-spa.mjs"]
 }
