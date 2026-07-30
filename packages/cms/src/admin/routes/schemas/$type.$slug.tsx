@@ -376,9 +376,12 @@ function SchemaDetail() {
 
   async function handleSave() {
     const code = generateCode(schema, type as SchemaType);
-    const dir = type === "collection" ? "collections" : "globals";
-    const filename =
-      type === "component" ? `components/${schema.slug}.ts` : `${dir}/${schema.slug}.ts`;
+    const dirMap: Record<string, string> = {
+      collection: "collections",
+      component: "components",
+      global: "globals",
+    };
+    const filename = `${dirMap[type]}/${schema.slug}.ts`;
     setSaving(true);
     try {
       const res = await fetch("/__dev-api/save-schema", {
@@ -391,7 +394,7 @@ function SchemaDetail() {
         addToast({ description: `Saved to ${data.path}`, title: "Schema Saved!" });
       } else {
         addToast({
-          description: String(data.error ?? "Unknown error"),
+          description: data.error || "Unknown error",
           title: "Save failed",
           variant: "destructive",
         });
