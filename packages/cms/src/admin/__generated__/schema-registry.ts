@@ -25,7 +25,7 @@ export const collections: CollectionDefinition[] = [
       },
       {
         name: "field3",
-        type: "text",
+        type: "date",
       },
     ],
     labels: {

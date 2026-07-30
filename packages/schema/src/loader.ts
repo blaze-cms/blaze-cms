@@ -7,7 +7,6 @@ import type {
 import { readdirSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
-
 export interface SchemaResult {
   collections: CollectionDefinition[];
   globals: GlobalDefinition[];
@@ -16,9 +15,11 @@ export interface SchemaResult {
 
 export class SchemaLoader {
   private schemaDir: string;
+  private forceReload: boolean;
 
-  constructor(schemaDir?: string) {
+  constructor(schemaDir?: string, forceReload?: boolean) {
     this.schemaDir = schemaDir ?? resolve(process.cwd(), "cms");
+    this.forceReload = forceReload ?? false;
   }
 
   setSchemaDir(dir: string): void {
@@ -40,7 +41,9 @@ export class SchemaLoader {
     for (const entry of entries) {
       if (!entry.isFile() || (!entry.name.endsWith(".ts") && !entry.name.endsWith(".js"))) continue;
       const filePath = resolve(dir, entry.name);
-      const items = await tryLoadFile<T>(filePath);
+      const items = await (this.forceReload
+        ? tryLoadFileFresh<T>(filePath)
+        : tryLoadFile<T>(filePath));
       results.push(...items);
     }
     return results;
@@ -48,6 +51,23 @@ export class SchemaLoader {
 }
 
 export async function tryLoadFile<T>(filePath: string): Promise<T[]> {
+  try {
+    const mod = (await import(filePath)) as Record<string, unknown>;
+    const exported = Object.values(mod);
+    const results: T[] = [];
+    for (const val of exported) {
+      if (val && typeof val === "object" && "slug" in val) {
+        results.push(val as T);
+      }
+    }
+    return results;
+  } catch (err) {
+    console.error(`Error loading schema file ${filePath}:`, err);
+    return [];
+  }
+}
+
+async function tryLoadFileFresh<T>(filePath: string): Promise<T[]> {
   try {
     const url = pathToFileURL(filePath);
     url.searchParams.set("t", String(Date.now()));

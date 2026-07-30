@@ -61,7 +61,7 @@ async function handleSaveSchema(
   writeFileSync(fullPath, parsed.content, "utf-8");
 
   try {
-    await generate({});
+    await generate({ forceReload: true });
     send(res, 200, { ok: true, path: `cms/${parsed.filename}` });
     server.ws.send({ type: "full-reload" });
   } catch (err) {

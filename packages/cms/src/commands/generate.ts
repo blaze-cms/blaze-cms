@@ -12,6 +12,7 @@ export interface GenerateOptions {
   type?: string;
   dir?: string;
   outDir?: string;
+  forceReload?: boolean;
 }
 
 async function generateSchemaRegistry(
@@ -123,7 +124,7 @@ export async function generate(options: GenerateOptions): Promise<void> {
   }
 
   console.warn(`  Loading schemas from ${schemaDir}...`);
-  const loader = new SchemaLoader(schemaDir);
+  const loader = new SchemaLoader(schemaDir, options.forceReload);
   const schema = await loader.load();
 
   console.warn(
