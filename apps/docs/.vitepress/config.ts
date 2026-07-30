@@ -34,7 +34,7 @@ export default defineConfig({
       ],
     },
     socialLinks: [
-      { icon: "github", link: "https://github.com/blaze-cms/blaze-cms" },
+      { icon: "github", link: "https://github.com/blazing-cms/blazing-cms" },
     ],
   },
 });
