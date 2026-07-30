@@ -26,17 +26,13 @@ function parseBody(body: string): { error: string } | ValidSave {
 
   const { content, filename } = parsed;
 
-  if (typeof filename !== "string" || typeof content !== "string") {
-    return { error: "filename and content are required" };
+  if (typeof filename !== "string" || typeof content !== "string" || filename.includes("..")) {
+    return { error: "Invalid filename or content" };
   }
 
   const dir = filename.split("/")[0];
   if (!dir || !VALID_DIRS.includes(dir)) {
     return { error: `Invalid directory: ${dir}` };
-  }
-
-  if (filename.includes("..")) {
-    return { error: "Path traversal not allowed" };
   }
 
   return { content, filename };
