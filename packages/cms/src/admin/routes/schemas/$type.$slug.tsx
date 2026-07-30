@@ -288,6 +288,7 @@ function SchemaDetail() {
   const { addToast } = useToast();
   const { slug, type } = useParams({ from: schemaDetailRoute.id });
   const [copied, setCopied] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   if (import.meta.env.PROD) {
     return (
@@ -373,6 +374,38 @@ function SchemaDetail() {
     }
   }
 
+  async function handleSave() {
+    const code = generateCode(schema, type as SchemaType);
+    setSaving(true);
+    try {
+      const dir =
+        type === "collection" ? "collections" : type === "global" ? "globals" : "components";
+      const res = await fetch("/__dev-api/save-schema", {
+        body: JSON.stringify({ content: code, filename: `${dir}/${schema.slug}.ts` }),
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+      });
+      const data = await res.json();
+      if (res.ok) {
+        addToast({ description: `Saved to ${data.path}`, title: "Schema Saved!" });
+      } else {
+        addToast({
+          description: data.error ?? "Unknown error",
+          title: "Save failed",
+          variant: "destructive",
+        });
+      }
+    } catch {
+      addToast({
+        description: "Could not reach dev server",
+        title: "Save failed",
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
+    }
+  }
+
   const code = generateCode(schema, type as SchemaType);
 
   return (
@@ -391,10 +424,15 @@ function SchemaDetail() {
             </p>
           </div>
         </div>
-        <Button variant="outline" size="sm" onClick={handleCopy}>
-          {copied ? <Check className="mr-1 h-4 w-4" /> : <Copy className="mr-1 h-4 w-4" />}
-          {copied ? "Copied!" : "Copy Code"}
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={handleCopy}>
+            {copied ? <Check className="mr-1 h-4 w-4" /> : <Copy className="mr-1 h-4 w-4" />}
+            {copied ? "Copied!" : "Copy Code"}
+          </Button>
+          <Button variant="default" size="sm" onClick={handleSave} disabled={saving}>
+            {saving ? "Saving..." : "Save Schema"}
+          </Button>
+        </div>
       </div>
 
       <div className="grid gap-8 lg:grid-cols-2">
