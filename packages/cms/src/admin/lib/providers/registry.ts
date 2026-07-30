@@ -13,10 +13,8 @@ export function getProvider(): DataProvider {
   const mode = getBackendMode();
   if (mode === "firebase") {
     currentProvider = firebaseProvider;
-  } else if (mode === "mock") {
-    currentProvider = mockProvider;
   } else {
-    throw new Error("Server mode provider not implemented yet");
+    currentProvider = mockProvider;
   }
 
   return currentProvider;

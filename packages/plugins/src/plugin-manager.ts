@@ -14,12 +14,6 @@ export class PluginManager {
     if (plugin.hooks?.afterSchemaLoad) {
       this.addHook("afterSchemaLoad", plugin.hooks.afterSchemaLoad as HookHandler);
     }
-    if (plugin.hooks?.beforeRouteRegister) {
-      this.addHook("beforeRouteRegister", plugin.hooks.beforeRouteRegister as HookHandler);
-    }
-    if (plugin.hooks?.afterRouteRegister) {
-      this.addHook("afterRouteRegister", plugin.hooks.afterRouteRegister as HookHandler);
-    }
   }
 
   unregister(slug: string): void {

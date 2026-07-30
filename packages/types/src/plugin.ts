@@ -10,10 +10,6 @@ export interface PluginHooks {
         components: unknown[];
       }) => Promise<void>)
     | undefined;
-  beforeRequest?: ((request: unknown) => Promise<void>) | undefined;
-  afterRequest?: ((request: unknown, response: unknown) => Promise<void>) | undefined;
-  beforeRouteRegister?: ((fastify: unknown) => Promise<void>) | undefined;
-  afterRouteRegister?: ((fastify: unknown) => Promise<void>) | undefined;
 }
 
 export interface PluginDefinition {

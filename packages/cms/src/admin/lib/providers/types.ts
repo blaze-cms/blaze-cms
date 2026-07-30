@@ -14,10 +14,13 @@ export interface PaginatedResult<T> {
 
 export interface DataProvider {
   name: string;
-  type: "firebase" | "server" | "mock";
+  type: "firebase" | "mock";
 
   findOne(collection: string, id: string): Promise<Record<string, unknown> | null>;
-  findMany(collection: string, options?: QueryOptions): Promise<PaginatedResult<Record<string, unknown>>>;
+  findMany(
+    collection: string,
+    options?: QueryOptions,
+  ): Promise<PaginatedResult<Record<string, unknown>>>;
   create(collection: string, data: Record<string, unknown>): Promise<string>;
   update(collection: string, id: string, data: Record<string, unknown>): Promise<void>;
   delete(collection: string, id: string): Promise<void>;

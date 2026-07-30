@@ -1,64 +1,78 @@
 # CLI Reference
 
-The `cms` CLI is available via `@blazing-cms/cms`.
+The `blaze` CLI is available via `@blazing-cms/cms`.
 
 ```bash
-cms <command> [options]
+blaze <command> [options]
 ```
 
 ## Commands
 
-### `cms dev`
+### `blaze dev`
 
 Start the development server.
 
 ```bash
-cms dev [--port <port>] [--host <host>]
+blaze dev [--port <port>] [--host <host>] [--emulator]
 ```
 
 - `--port` — Port number (default: 5173)
 - `--host` — Host address (default: localhost)
+- `--emulator` — Start Firebase Emulator alongside the dev server
 
-When `VITE_BACKEND_MODE=firebase`, schemas are auto-synced to Firestore on startup.
+On startup, schemas are loaded from the `cms/` directory, code generation runs, and the admin panel is served via Vite at `http://localhost:5173/`.
 
-### `cms build`
+### `blaze build`
 
 Build the admin panel for production.
 
 ```bash
-cms build
+blaze build
 ```
 
-### `cms generate`
+### `blaze generate`
 
-Generate types, SDK, validation schemas, and API docs from your schema files.
+Generate types, SDK, validation schemas, Firestore rules, and indexes from your schema files.
 
 ```bash
-cms generate [--types] [--sdk] [--validation] [--openapi] [--graphql]
+blaze generate [type]
 ```
 
-If no flags are given, all outputs are generated.
+Where `type` is one of: `types`, `sdk`, `validation`, `registry`, `rules`, `indexes`. If omitted, all outputs are generated.
 
-### `cms lint`
+### `blaze deploy`
+
+Deploy the admin panel to Firebase Hosting.
+
+```bash
+blaze deploy --project <project-id>
+```
+
+- `--project` — Firebase project ID
+
+### `blaze scaffold`
+
+Scaffold a new collection, global, or component.
+
+```bash
+blaze scaffold <type> --name <slug>
+```
+
+- `type` — `collection`, `global`, or `component`
+- `--name` — Schema slug
+
+### `blaze lint`
 
 Validate schema files for correctness.
 
 ```bash
-cms lint
+blaze lint
 ```
 
-### `cms doctor`
+### `blaze doctor`
 
 Check project health — verifies configuration, dependencies, and schema integrity.
 
 ```bash
-cms doctor
-```
-
-### `cms sync`
-
-Sync schemas to Firestore security rules.
-
-```bash
-cms sync
+blaze doctor
 ```

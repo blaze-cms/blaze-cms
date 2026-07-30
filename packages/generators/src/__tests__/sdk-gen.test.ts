@@ -1,9 +1,11 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { mkdtempSync, rmSync, readFileSync, existsSync } from "node:fs";
-import { join } from "node:path";
-import { tmpdir } from "node:os";
-import { SdkGenerator } from "../sdk.js";
 import type { CollectionDefinition, GlobalDefinition } from "@blazing-cms/types";
+
+import { mkdtempSync, rmSync, readFileSync, existsSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+
+import { SdkGenerator } from "../sdk.js";
 
 describe("SdkGenerator", () => {
   let outDir: string;
@@ -13,15 +15,15 @@ describe("SdkGenerator", () => {
   });
 
   afterEach(() => {
-    rmSync(outDir, { recursive: true, force: true });
+    rmSync(outDir, { force: true, recursive: true });
   });
 
   it("generates SDK code for collections", async () => {
     const collections: CollectionDefinition[] = [
       {
-        slug: "posts",
-        labels: { singular: "Post", plural: "Posts" },
         fields: [{ name: "title", type: "text" }],
+        labels: { plural: "Posts", singular: "Post" },
+        slug: "posts",
       },
     ];
 
@@ -29,21 +31,21 @@ describe("SdkGenerator", () => {
     await gen.generate(collections, [], [], outDir);
 
     const output = readFileSync(join(outDir, "sdk.ts"), "utf-8");
-    expect(output).toContain('import { createClient } from "@blazing-cms/sdk"');
+    expect(output).toContain('import { createBlazeClient } from "@blazing-cms/sdk"');
     expect(output).toContain("export const posts = {");
-    expect(output).toContain('api.findMany("posts"');
-    expect(output).toContain('api.findOne("posts"');
-    expect(output).toContain('api.create("posts"');
-    expect(output).toContain('api.update("posts"');
-    expect(output).toContain('api.delete("posts"');
+    expect(output).toContain('client.collection("posts").findMany(');
+    expect(output).toContain('client.collection("posts").findById(');
+    expect(output).toContain('client.collection("posts").create(');
+    expect(output).toContain('client.collection("posts").update(');
+    expect(output).toContain('client.collection("posts").delete(');
   });
 
   it("generates SDK code for globals", async () => {
     const globals: GlobalDefinition[] = [
       {
-        slug: "homepage",
-        label: "Homepage",
         fields: [{ name: "title", type: "text" }],
+        label: "Homepage",
+        slug: "homepage",
       },
     ];
 
@@ -52,8 +54,8 @@ describe("SdkGenerator", () => {
 
     const output = readFileSync(join(outDir, "sdk.ts"), "utf-8");
     expect(output).toContain("export const homepage = {");
-    expect(output).toContain('api.findOne("globals_homepage"');
-    expect(output).toContain('api.update("globals_homepage"');
+    expect(output).toContain('client.globals.get("homepage")');
+    expect(output).toContain('client.globals.upsert("homepage"');
   });
 
   it("creates the output file", async () => {

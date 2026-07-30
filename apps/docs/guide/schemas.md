@@ -74,6 +74,7 @@ export const seo = defineComponent({
 | `json` | JSON editor |
 | `color` | Color picker |
 | `media` | Media/file picker |
+| `upload` | File upload |
 | `select` | Dropdown select |
 | `multiSelect` | Multi-select |
 | `radio` | Radio buttons |

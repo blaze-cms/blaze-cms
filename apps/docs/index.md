@@ -1,6 +1,6 @@
 # Blazing CMS
 
-**Schema-defined CMS for Firebase.** Define your content models in TypeScript — get a full admin panel, REST API, GraphQL API, typed SDK, and Firestore sync, all generated automatically.
+**Schema-defined CMS for Firebase.** Define your content models in TypeScript — get a full admin panel, typed SDK, and Firestore sync, all generated automatically.
 
 ```ts
 import { defineCollection, text, slug, richText } from "@blazing-cms/schema";
@@ -19,9 +19,8 @@ export const posts = defineCollection({
 
 - **Schema-as-source-of-truth** — collections, globals, and components defined in TypeScript
 - **Auto-generated admin panel** — full CRUD with rich text, code, and markdown editors
-- **Auto-generated APIs** — REST, GraphQL, OpenAPI docs
-- **Typed SDK** — browser SDK with full TypeScript inference from your schemas
-- **Firebase backend** — Firestore storage, Firebase Auth, auto-sync to security rules
+- **Auto-generated client SDK** — typed browser SDK for content consumption
+- **Firebase backend** — Firestore storage, Firebase Auth, generated security rules
 - **Plugin system** — extend with custom plugins
 
 ## Quick Start

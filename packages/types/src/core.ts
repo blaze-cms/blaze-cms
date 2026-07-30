@@ -21,16 +21,8 @@ export interface FirebaseConfig {
 }
 
 export interface Config {
-  port: number;
-  host: string;
   firebase: FirebaseConfig;
-  auth: {
-    secret: string;
-    expiresIn: string;
-  };
   storage: {
-    adapter: string;
-    baseDir: string;
     bucket?: string | undefined;
   };
   plugins: Record<string, unknown>;
@@ -48,9 +40,7 @@ export interface EventMap {
   "auth:login": { userId: string };
   "auth:logout": { userId: string };
   "plugin:registered": { slug: string };
-  "server:start": { port: number };
-  "server:stop": Record<string, never>;
-  "migration:run": { name: string };
+
   [key: string]: unknown;
 }
 

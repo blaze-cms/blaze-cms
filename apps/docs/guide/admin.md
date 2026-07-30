@@ -1,14 +1,13 @@
 # Admin Panel
 
-The admin panel is auto-generated from your schema files. Access it at `/admin` when the dev server is running.
+The admin panel is auto-generated from your schema files. Access it at `http://localhost:5173/` when the dev server is running.
 
 ## Features
 
-- **Dashboard** — overview of collections, globals, and components
 - **Content management** — create, edit, delete entries for each collection
 - **Global editors** — edit singleton content
 - **Media library** — upload and manage media files
-- **Schema viewer** — browse and edit schema definitions
+- **Schema viewer and editor** — browse and edit schema definitions
 - **User management** — manage admin users and roles
 - **Plugin settings** — configure installed plugins
 

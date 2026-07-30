@@ -1,7 +1,7 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "exclude": ["files", "duplicates"],
-  "ignoreDependencies": ["@blazing-cms/*", "firebase-admin", "zod"],
+  "ignoreDependencies": ["@blazing-cms/*", "zod"],
   "ignoreFiles": [
     "**/test/**",
     "**/__generated__/**",
