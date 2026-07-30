@@ -1,6 +1,9 @@
 import { defineConfig } from "vitepress";
 
+const isDev = process.env.NODE_ENV === "development";
+
 export default defineConfig({
+  base: isDev ? "/" : "/blazing-cms/",
   title: "Blazing CMS",
   description: "Schema-defined CMS for Firebase",
   themeConfig: {
