@@ -5,6 +5,7 @@
     "**/dist/**",
     "**/.turbo/**",
     "**/coverage/**",
+    "**/__tests__/**",
     "packages/create-app/bin/*.js",
     "packages/generators/test/**",
     "apps/playground/cms/collections/posts.ts",
