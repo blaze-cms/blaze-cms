@@ -41,7 +41,7 @@ Options:
 
 Config:
   .env              Loaded via dotenv. Set VITE_FIREBASE_* variables for
-                    project config and VITE_BACKEND_MODE (firebase|mock|server).
+                     project config and VITE_BACKEND_MODE (firebase|mock).
                     See .env.example for required vars.
 
 Schema Sync Flow:

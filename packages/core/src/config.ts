@@ -23,10 +23,6 @@ export async function createFirebaseConfigLoader(overrides?: Partial<Config>): P
   const creds = loadFirebaseCredentials(credPath);
 
   return {
-    auth: {
-      expiresIn: env("AUTH_EXPIRES_IN", "7d"),
-      secret: env("AUTH_SECRET", "change-me-in-production"),
-    },
     firebase: {
       clientEmail: env("FIREBASE_CLIENT_EMAIL", creds?.clientEmail ?? undefined),
       databaseURL: env("FIREBASE_DATABASE_URL", undefined),
@@ -37,12 +33,8 @@ export async function createFirebaseConfigLoader(overrides?: Partial<Config>): P
         creds?.projectId ? `${creds.projectId}.appspot.com` : undefined,
       ),
     },
-    host: env("HOST", "0.0.0.0"),
     plugins: {},
-    port: Number(env("PORT", "3000")),
     storage: {
-      adapter: env("STORAGE_ADAPTER", "firebase"),
-      baseDir: env("STORAGE_BASE_DIR", "./uploads"),
       bucket: env("STORAGE_BUCKET", undefined),
     },
     ...overrides,

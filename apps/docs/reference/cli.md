@@ -31,10 +31,10 @@ cms build
 
 ### `cms generate`
 
-Generate types, SDK, validation schemas, and API docs from your schema files.
+Generate types, SDK, and validation schemas from your schema files.
 
 ```bash
-cms generate [--types] [--sdk] [--validation] [--openapi] [--graphql]
+cms generate [--types] [--sdk] [--validation]
 ```
 
 If no flags are given, all outputs are generated.
@@ -53,12 +53,4 @@ Check project health — verifies configuration, dependencies, and schema integr
 
 ```bash
 cms doctor
-```
-
-### `cms sync`
-
-Sync schemas to Firestore security rules.
-
-```bash
-cms sync
 ```

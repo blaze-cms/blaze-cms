@@ -1,4 +1,6 @@
-import type { CollectionDefinition, GlobalDefinition, ComponentDefinition } from "@blazing-cms/types";
+/* eslint-disable no-secrets/no-secrets */
+
+import type { CollectionDefinition, GlobalDefinition } from "@blazing-cms/types";
 
 import { writeFileSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
@@ -11,28 +13,36 @@ export class SdkGenerator implements Generator {
   async generate(
     collections: CollectionDefinition[],
     globals: GlobalDefinition[],
-    _components: ComponentDefinition[],
+    _components: unknown[],
     outDir: string,
   ): Promise<void> {
     mkdirSync(outDir, { recursive: true });
     let output = `// Auto-generated Blazing CMS SDK — do not edit\n\n`;
-    output += `import { createClient } from "@blazing-cms/sdk";\n\n`;
-    output += `const api = createClient({ baseUrl: "/api" });\n\n`;
+    output += `import { createBlazeClient } from "@blazing-cms/sdk";\n\n`;
+    output += `const client = createBlazeClient({\n`;
+    output += `  apiKey: import.meta.env.VITE_FIREBASE_API_KEY ?? "",\n`;
+    output += `  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN ?? "",\n`;
+    output += `  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID ?? "",\n`;
+    output += `  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET ?? "",\n`;
+    output += `  appId: import.meta.env.VITE_FIREBASE_APP_ID ?? "",\n`;
+    output += `});\n\n`;
 
     for (const collection of collections) {
-      output += `export const ${camelCase(collection.slug)} = {\n`;
-      output += `  findMany: (params?: Record<string, unknown>) => api.findMany("${collection.slug}", params),\n`;
-      output += `  findOne: (id: string) => api.findOne("${collection.slug}", id),\n`;
-      output += `  create: (data: Record<string, unknown>) => api.create("${collection.slug}", data),\n`;
-      output += `  update: (id: string, data: Record<string, unknown>) => api.update("${collection.slug}", id, data),\n`;
-      output += `  delete: (id: string) => api.delete("${collection.slug}", id),\n`;
+      const slug = collection.slug;
+      output += `export const ${camelCase(slug)} = {\n`;
+      output += `  findMany: (options?: Parameters<ReturnType<typeof client.collection>["findMany"]>[0]) =>\n`;
+      output += `    client.collection("${slug}").findMany(options),\n`;
+      output += `  findById: (id: string) => client.collection("${slug}").findById(id),\n`;
+      output += `  create: (data: Record<string, unknown>) => client.collection("${slug}").create(data),\n`;
+      output += `  update: (id: string, data: Record<string, unknown>) => client.collection("${slug}").update(id, data),\n`;
+      output += `  delete: (id: string) => client.collection("${slug}").delete(id),\n`;
       output += `};\n\n`;
     }
 
     for (const global of globals) {
       output += `export const ${camelCase(global.slug)} = {\n`;
-      output += `  get: () => api.findOne("globals_${global.slug}", "default"),\n`;
-      output += `  update: (data: Record<string, unknown>) => api.update("globals_${global.slug}", "default", data),\n`;
+      output += `  get: () => client.globals.get("${global.slug}"),\n`;
+      output += `  upsert: (data: Record<string, unknown>) => client.globals.upsert("${global.slug}", data),\n`;
       output += `};\n\n`;
     }
 

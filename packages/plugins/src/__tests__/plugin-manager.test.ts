@@ -155,29 +155,21 @@ describe("PluginManager", () => {
     expect(pm.get("no-hooks")).toBeDefined();
   });
 
-  it("registers all four hook types", async () => {
+  it("registers both schema hook types", async () => {
     const pm = new PluginManager();
     const h1 = vi.fn();
     const h2 = vi.fn();
-    const h3 = vi.fn();
-    const h4 = vi.fn();
     pm.register(
       makePlugin("full", {
         hooks: {
-          afterRouteRegister: h4,
           afterSchemaLoad: h2,
-          beforeRouteRegister: h3,
           beforeSchemaLoad: h1,
         },
       }),
     );
     await pm.runHook("beforeSchemaLoad");
     await pm.runHook("afterSchemaLoad");
-    await pm.runHook("beforeRouteRegister");
-    await pm.runHook("afterRouteRegister");
     expect(h1).toHaveBeenCalledOnce();
     expect(h2).toHaveBeenCalledOnce();
-    expect(h3).toHaveBeenCalledOnce();
-    expect(h4).toHaveBeenCalledOnce();
   });
 });

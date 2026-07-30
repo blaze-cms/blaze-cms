@@ -23,28 +23,7 @@ afterEach(() => {
 describe("createFirebaseConfigLoader", () => {
   it("returns defaults when no env vars are set", async () => {
     const config = await createFirebaseConfigLoader();
-    expect(config.host).toBe("0.0.0.0");
-    expect(config.port).toBe(3000);
-    expect(config.auth.secret).toBe("change-me-in-production");
-    expect(config.auth.expiresIn).toBe("7d");
-    expect(config.storage.adapter).toBe("firebase");
-    expect(config.storage.baseDir).toBe("./uploads");
-  });
-
-  it("reads host and port from env", async () => {
-    vi.stubEnv("HOST", "127.0.0.1");
-    vi.stubEnv("PORT", "4000");
-    const config = await createFirebaseConfigLoader();
-    expect(config.host).toBe("127.0.0.1");
-    expect(config.port).toBe(4000);
-  });
-
-  it("reads auth config from env", async () => {
-    vi.stubEnv("AUTH_SECRET", "super-secret");
-    vi.stubEnv("AUTH_EXPIRES_IN", "24h");
-    const config = await createFirebaseConfigLoader();
-    expect(config.auth.secret).toBe("super-secret");
-    expect(config.auth.expiresIn).toBe("24h");
+    expect(config.plugins).toEqual({});
   });
 
   it("reads firebase config from env", async () => {
@@ -73,19 +52,14 @@ describe("createFirebaseConfigLoader", () => {
   });
 
   it("reads storage config from env", async () => {
-    vi.stubEnv("STORAGE_ADAPTER", "local");
-    vi.stubEnv("STORAGE_BASE_DIR", "/data/uploads");
     vi.stubEnv("STORAGE_BUCKET", "custom-bucket");
     const config = await createFirebaseConfigLoader();
-    expect(config.storage.adapter).toBe("local");
-    expect(config.storage.baseDir).toBe("/data/uploads");
     expect(config.storage.bucket).toBe("custom-bucket");
   });
 
   it("merges overrides", async () => {
-    const config = await createFirebaseConfigLoader({ host: "10.0.0.1", port: 8080 });
-    expect(config.port).toBe(8080);
-    expect(config.host).toBe("10.0.0.1");
+    const config = await createFirebaseConfigLoader({ plugins: { test: true } });
+    expect(config.plugins).toEqual({ test: true });
   });
 
   it("handles missing credential file gracefully", async () => {

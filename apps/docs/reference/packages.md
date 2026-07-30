@@ -2,21 +2,18 @@
 
 Blazing CMS is organized as a monorepo with the following packages:
 
-| Package | Description |
-|---------|-------------|
-| `@blazing-cms/cms` | Admin panel + CLI (dev, build, generate) |
-| `@blazing-cms/schema` | Schema definition DSL |
-| `@blazing-cms/core` | Core container, event bus, lifecycle |
-| `@blazing-cms/database` | Database adapters (SQLite, Firestore) |
-| `@blazing-cms/auth` | Authentication (Firebase Auth, JWT) |
-| `@blazing-cms/permissions` | Role-based access control |
-| `@blazing-cms/generators` | Code generation engine |
-| `@blazing-cms/validation` | Zod-based schema validation |
-| `@blazing-cms/storage` | File storage adapters |
-| `@blazing-cms/plugins` | Plugin registry |
-| `@blazing-cms/sdk` | Browser SDK for content consumption |
-| `@blazing-cms/types` | Shared TypeScript types |
-| `@blazing-cms/create-app` | Project scaffolding CLI |
+| Package                    | Description                              |
+| -------------------------- | ---------------------------------------- |
+| `@blazing-cms/cms`         | Admin panel + CLI (dev, build, generate) |
+| `@blazing-cms/schema`      | Schema definition DSL                    |
+| `@blazing-cms/core`        | Core container, event bus, lifecycle     |
+| `@blazing-cms/permissions` | Role-based access control                |
+| `@blazing-cms/generators`  | Code generation (types, SDK, validation) |
+| `@blazing-cms/validation`  | Zod-based schema validation              |
+| `@blazing-cms/plugins`     | Plugin registry                          |
+| `@blazing-cms/sdk`         | Browser SDK for content consumption      |
+| `@blazing-cms/types`       | Shared TypeScript types                  |
+| `@blazing-cms/create-app`  | Project scaffolding CLI                  |
 
 ## @blazing-cms/cms
 
@@ -47,6 +44,6 @@ Browser SDK for consuming CMS content. Auto-generated from your schemas.
 ```ts
 import { createClient } from "@blazing-cms/sdk";
 
-const client = createClient({ apiUrl: "..." });
+const client = createClient();
 const posts = await client.posts.findMany();
 ```

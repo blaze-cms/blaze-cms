@@ -9,8 +9,6 @@
     "packages/create-app/bin/*.js",
     "packages/generators/test/**",
     "apps/playground/cms/collections/posts.ts",
-    "packages/cms/src/commands/start.ts",
-    "packages/cms/src/server/**",
     "packages/create-app/explicit/cms/collections/posts.ts",
     "packages/create-app/my-cms/cms/collections/posts.ts",
     "packages/create-app/my-value/cms/collections/posts.ts",
@@ -19,7 +17,6 @@
   "ignoreDependencies": [
     "@blazing-cms/types",
     "@blazing-cms/core",
-    "@blazing-cms/database",
     "@blazing-cms/schema",
     "@blazing-cms/validation",
     "@blazing-cms/cms",
@@ -45,16 +42,6 @@
     "ignore": ["packages/*/test/**/*.test.ts", "apps/*/test/**/*.test.ts"],
     "thresholdOverrides": [
       {
-        "files": ["packages/cms/src/server/routes/schemas.ts"],
-        "maxUnitSize": 500,
-        "reason": "auto-generated route registration"
-      },
-      {
-        "files": ["packages/cms/src/server/routes/media.ts"],
-        "maxUnitSize": 350,
-        "reason": "media route handler with DB queries"
-      },
-      {
         "files": ["packages/cms/src/index.ts"],
         "maxUnitSize": 250,
         "maxCyclomatic": 70,
@@ -70,47 +57,11 @@
         "reason": "field-to-Zod mapping with regex validation for each field type"
       },
       {
-        "files": ["packages/generators/src/admin-forms.ts"],
-        "maxCyclomatic": 35,
-        "maxCrap": 100,
-        "reason": "field-to-input-type mapping with many type branches"
-      },
-      {
         "files": ["packages/generators/src/sdk.ts"],
         "maxCrap": 300,
         "maxCyclomatic": 20,
         "maxCognitive": 20,
         "reason": "field-to-TS-type mapping with many type branches"
-      },
-      {
-        "files": ["packages/generators/src/openapi.ts"],
-        "maxCrap": 50,
-        "reason": "OpenAPI schema generation with field type mappings"
-      },
-      {
-        "files": ["packages/cms/src/server/routes/collections.ts"],
-        "maxCognitive": 90,
-        "maxCyclomatic": 25,
-        "maxCrap": 120,
-        "reason": "collection CRUD route registration with relations, versions, permissions, and bulk operations"
-      },
-      {
-        "files": ["packages/cms/src/server/routes/webhooks.ts"],
-        "maxUnitSize": 300,
-        "reason": "webhook CRUD route registration"
-      },
-      {
-        "files": ["packages/cms/src/server/plugins/auth.ts"],
-        "maxUnitSize": 250,
-        "reason": "auth plugin with JWT, API key, and session management"
-      },
-      {
-        "files": ["packages/generators/src/hooks.ts"],
-        "maxCrap": 250,
-        "maxCyclomatic": 15,
-        "maxCognitive": 15,
-        "maxUnitSize": 350,
-        "reason": "React hooks generator with field-to-hook-type mapping and query client setup"
       },
       {
         "files": ["packages/cms/src/admin/components/field-input.tsx"],
@@ -125,8 +76,6 @@
     "skipLocal": true,
     "threshold": 5.0,
     "ignore": [
-      "packages/cms/src/server/**",
-      "packages/generators/src/graphql-schema.ts",
       "packages/cms/src/commands/scaffold.ts",
       "packages/cms/src/admin/routes/schemas/new.tsx",
       "packages/cms/src/admin/lib/providers/firebase.ts",
