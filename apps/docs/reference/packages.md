@@ -22,11 +22,13 @@ The main package containing the admin panel UI and CLI commands.
 ### CLI Commands
 
 ```bash
-cms dev          # Start dev server
-cms build        # Build for production
-cms generate     # Generate types, SDK, validation
-cms lint         # Lint schema files
-cms doctor       # Check project health
+blaze dev          # Start dev server
+blaze build        # Build for production
+blaze generate     # Generate types, SDK, validation, rules, indexes
+blaze deploy       # Deploy to Firebase Hosting
+blaze scaffold     # Scaffold a new collection, global, or component
+blaze lint         # Lint schema files
+blaze doctor       # Check project health
 ```
 
 ## @blazing-cms/schema
@@ -39,11 +41,20 @@ import { defineCollection, text } from "@blazing-cms/schema";
 
 ## @blazing-cms/sdk
 
-Browser SDK for consuming CMS content. Auto-generated from your schemas.
+Browser SDK for consuming CMS content directly from Firestore.
 
 ```ts
-import { createClient } from "@blazing-cms/sdk";
+import { createBlazeClient } from "@blazing-cms/sdk";
 
-const client = createClient();
-const posts = await client.posts.findMany();
+const client = createBlazeClient({
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+});
+
+// Access collections by name
+const posts = await client.collection("posts").findMany();
+const post = await client.collection("posts").findById("abc123");
+
+// Access globals
+const settings = await client.globals.get("site-settings");
 ```

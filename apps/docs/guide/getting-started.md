@@ -27,9 +27,8 @@ my-cms/
     collections/     # Collection schema files
     globals/         # Global schema files
     components/      # Component schema files
-    config.ts        # CMS config
-  src/
-    admin/           # Admin panel (auto-generated)
+  blazing-cms.config.ts   # Firebase project config
+  .env                     # Firebase credentials
 ```
 
 ## Define Your First Collection
@@ -37,7 +36,7 @@ my-cms/
 Create `cms/collections/posts.ts`:
 
 ```ts
-import { defineCollection, text, slug, richText, status } from "@blazing-cms/schema";
+import { defineCollection, text, slug, richText } from "@blazing-cms/schema";
 
 export const posts = defineCollection({
   slug: "posts",
@@ -50,7 +49,6 @@ export const posts = defineCollection({
     text("title", { required: true }),
     slug("slug", { sourceField: "title" }),
     richText("content"),
-    status(),
   ],
 });
 ```
@@ -62,6 +60,6 @@ pnpm dev
 ```
 
 This starts the CMS dev server with:
-- Admin panel at `http://localhost:5173/admin`
-- Auto-generated REST API
+- Admin panel at `http://localhost:5173/`
+- Auto-generated types, SDK, and validation on every startup
 - Auto-sync to Firestore (when configured)

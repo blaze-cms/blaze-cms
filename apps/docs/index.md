@@ -20,8 +20,7 @@ export const posts = defineCollection({
 - **Schema-as-source-of-truth** — collections, globals, and components defined in TypeScript
 - **Auto-generated admin panel** — full CRUD with rich text, code, and markdown editors
 - **Auto-generated client SDK** — typed browser SDK for content consumption
-- **Typed SDK** — browser SDK with full TypeScript inference from your schemas
-- **Firebase backend** — Firestore storage, Firebase Auth, auto-sync to security rules
+- **Firebase backend** — Firestore storage, Firebase Auth, generated security rules
 - **Plugin system** — extend with custom plugins
 
 ## Quick Start

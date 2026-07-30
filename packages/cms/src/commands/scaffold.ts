@@ -9,7 +9,7 @@ export interface ScaffoldOptions {
 }
 
 const collectionTemplate = (slug: string, label: string) => `
-import { defineCollection, text, slug, richText, status } from "@blazing-cms/schema";
+import { defineCollection, text, slug, richText } from "@blazing-cms/schema";
 
 export default defineCollection({
   slug: "${slug}",
@@ -21,7 +21,6 @@ export default defineCollection({
     text("title", { required: true }),
     slug("slug", { sourceField: "title" }),
     richText("content"),
-    status(),
   ],
 });
 `;
