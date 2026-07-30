@@ -3,6 +3,8 @@ import type { Plugin } from "vite";
 import { writeFileSync, existsSync, mkdirSync } from "fs";
 import { resolve } from "path";
 
+import { generate } from "../../commands/generate.js";
+
 const SCHEMA_ROOT = "cms";
 const VALID_DIRS = ["collections", "globals", "components"];
 
@@ -38,7 +40,11 @@ function parseBody(body: string): { error: string } | ValidSave {
   return { content, filename };
 }
 
-async function writeSchema(body: string, res: import("http").ServerResponse) {
+async function handleSaveSchema(
+  body: string,
+  res: import("http").ServerResponse,
+  server: import("vite").ViteDevServer,
+) {
   const parsed = parseBody(body);
   if ("error" in parsed) {
     send(res, 400, { error: parsed.error });
@@ -53,7 +59,14 @@ async function writeSchema(body: string, res: import("http").ServerResponse) {
   }
 
   writeFileSync(fullPath, parsed.content, "utf-8");
-  send(res, 200, { ok: true, path: `cms/${parsed.filename}` });
+
+  try {
+    await generate({});
+    send(res, 200, { ok: true, path: `cms/${parsed.filename}` });
+    server.ws.send({ type: "full-reload" });
+  } catch (err) {
+    send(res, 500, { error: String(err) });
+  }
 }
 
 export function schemaWriterPlugin(): Plugin {
@@ -70,7 +83,9 @@ export function schemaWriterPlugin(): Plugin {
           body += chunk;
         });
         req.on("end", () => {
-          void writeSchema(body, res);
+          handleSaveSchema(body, res, server).catch(() => {
+            if (!res.headersSent) send(res, 500, { error: "Unexpected error" });
+          });
         });
       });
     },
