@@ -1,60 +1,63 @@
 import type { Plugin } from "vite";
 
+import { writeFileSync, existsSync, mkdirSync } from "fs";
+import { resolve } from "path";
+
 const SCHEMA_ROOT = "cms";
-
 const VALID_DIRS = ["collections", "globals", "components"];
-
-interface SaveSchemaBody {
-  filename: unknown;
-  content: unknown;
-}
 
 function send(res: import("http").ServerResponse, status: number, data: Record<string, unknown>) {
   res.statusCode = status;
   res.end(JSON.stringify(data));
 }
 
-async function writeSchema(body: string, res: import("http").ServerResponse) {
-  let parsed: SaveSchemaBody;
+interface ValidSave {
+  content: string;
+  filename: string;
+}
+
+function parseBody(body: string): { error: string } | ValidSave {
+  let parsed: { content?: unknown; filename?: unknown };
   try {
-    parsed = JSON.parse(body) as SaveSchemaBody;
+    parsed = JSON.parse(body) as { content?: unknown; filename?: unknown };
   } catch {
-    send(res, 400, { error: "Invalid JSON" });
-    return;
+    return { error: "Invalid JSON" };
   }
 
   const { content, filename } = parsed;
 
   if (typeof filename !== "string" || typeof content !== "string") {
-    send(res, 400, { error: "filename and content are required" });
-    return;
+    return { error: "filename and content are required" };
   }
 
-  const parts = filename.split("/");
-  const dir = parts[0];
+  const dir = filename.split("/")[0];
   if (!dir || !VALID_DIRS.includes(dir)) {
-    send(res, 400, { error: `Invalid directory: ${dir}` });
-    return;
+    return { error: `Invalid directory: ${dir}` };
   }
 
   if (filename.includes("..")) {
-    send(res, 400, { error: "Path traversal not allowed" });
+    return { error: "Path traversal not allowed" };
+  }
+
+  return { content, filename };
+}
+
+async function writeSchema(body: string, res: import("http").ServerResponse) {
+  const parsed = parseBody(body);
+  if ("error" in parsed) {
+    send(res, 400, { error: parsed.error });
     return;
   }
 
-  const { existsSync, mkdirSync, writeFileSync } = await import("fs");
-  const { resolve } = await import("path");
-
-  const fullPath = resolve(process.cwd(), SCHEMA_ROOT, filename);
+  const fullPath = resolve(process.cwd(), SCHEMA_ROOT, parsed.filename);
   const parentDir = resolve(fullPath, "..");
 
   if (!existsSync(parentDir)) {
     mkdirSync(parentDir, { recursive: true });
   }
 
-  writeFileSync(fullPath, content, "utf-8");
-
-  send(res, 200, { ok: true, path: `cms/${filename}` });
+  writeFileSync(fullPath, parsed.content, "utf-8");
+  send(res, 200, { ok: true, path: `cms/${parsed.filename}` });
 }
 
 export function schemaWriterPlugin(): Plugin {
