@@ -16,6 +16,7 @@ describe("FirestoreRepository", () => {
     findMany: vi.fn(),
     findOne: vi.fn(),
     transaction: vi.fn(),
+    update: vi.fn(),
   } as unknown as Mocked<DatabaseAdapter>;
 
   const repo = new FirestoreRepository(mockAdapter, "posts");
