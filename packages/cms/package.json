@@ -22,7 +22,7 @@
     "dev:admin": "vite --config src/admin/vite.config.ts",
     "lint": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "clean": "rm -rf dist"
   },
   "dependencies": {
@@ -55,7 +55,6 @@
     "codemirror": "^6.0.2",
     "dotenv": "^17.4.2",
     "firebase": "^12.16.0",
-    "firebase-admin": "^13.10.0",
     "lowlight": "^3.3.0",
     "lucide-react": "^1.27.0",
     "react": "^19.2.8",

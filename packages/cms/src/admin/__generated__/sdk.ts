@@ -1,4 +1,4 @@
-// Auto-generated Blaze CMS SDK — do not edit
+// Auto-generated Blazing CMS SDK — do not edit
 
 import { createClient } from "@blazing-cms/sdk";
 
@@ -116,13 +116,113 @@ export const text = {
   delete: (id: string) => api.delete("text", id),
 };
 
+export const boolean = {
+  get: () => api.findOne("globals_boolean", "default"),
+  update: (data: Record<string, unknown>) => api.update("globals_boolean", "default", data),
+};
+
+export const checkbox = {
+  get: () => api.findOne("globals_checkbox", "default"),
+  update: (data: Record<string, unknown>) => api.update("globals_checkbox", "default", data),
+};
+
+export const code = {
+  get: () => api.findOne("globals_code", "default"),
+  update: (data: Record<string, unknown>) => api.update("globals_code", "default", data),
+};
+
+export const color = {
+  get: () => api.findOne("globals_color", "default"),
+  update: (data: Record<string, unknown>) => api.update("globals_color", "default", data),
+};
+
+export const date = {
+  get: () => api.findOne("globals_date", "default"),
+  update: (data: Record<string, unknown>) => api.update("globals_date", "default", data),
+};
+
+export const datetime = {
+  get: () => api.findOne("globals_datetime", "default"),
+  update: (data: Record<string, unknown>) => api.update("globals_datetime", "default", data),
+};
+
+export const email = {
+  get: () => api.findOne("globals_email", "default"),
+  update: (data: Record<string, unknown>) => api.update("globals_email", "default", data),
+};
+
 export const homepage = {
   get: () => api.findOne("globals_homepage", "default"),
   update: (data: Record<string, unknown>) => api.update("globals_homepage", "default", data),
 };
 
+export const json = {
+  get: () => api.findOne("globals_json", "default"),
+  update: (data: Record<string, unknown>) => api.update("globals_json", "default", data),
+};
+
+export const markdown = {
+  get: () => api.findOne("globals_markdown", "default"),
+  update: (data: Record<string, unknown>) => api.update("globals_markdown", "default", data),
+};
+
+export const mediaSettings = {
+  get: () => api.findOne("globals_media-settings", "default"),
+  update: (data: Record<string, unknown>) => api.update("globals_media-settings", "default", data),
+};
+
+export const multiSelect = {
+  get: () => api.findOne("globals_multi-select", "default"),
+  update: (data: Record<string, unknown>) => api.update("globals_multi-select", "default", data),
+};
+
+export const number = {
+  get: () => api.findOne("globals_number", "default"),
+  update: (data: Record<string, unknown>) => api.update("globals_number", "default", data),
+};
+
+export const password = {
+  get: () => api.findOne("globals_password", "default"),
+  update: (data: Record<string, unknown>) => api.update("globals_password", "default", data),
+};
+
+export const radio = {
+  get: () => api.findOne("globals_radio", "default"),
+  update: (data: Record<string, unknown>) => api.update("globals_radio", "default", data),
+};
+
+export const richText = {
+  get: () => api.findOne("globals_rich-text", "default"),
+  update: (data: Record<string, unknown>) => api.update("globals_rich-text", "default", data),
+};
+
+export const select = {
+  get: () => api.findOne("globals_select", "default"),
+  update: (data: Record<string, unknown>) => api.update("globals_select", "default", data),
+};
+
 export const siteSettings = {
   get: () => api.findOne("globals_site-settings", "default"),
   update: (data: Record<string, unknown>) => api.update("globals_site-settings", "default", data),
+};
+
+export const slug = {
+  get: () => api.findOne("globals_slug", "default"),
+  update: (data: Record<string, unknown>) => api.update("globals_slug", "default", data),
+};
+
+export const text = {
+  get: () => api.findOne("globals_text", "default"),
+  update: (data: Record<string, unknown>) => api.update("globals_text", "default", data),
+};
+
+export const textarea = {
+  get: () => api.findOne("globals_textarea", "default"),
+  update: (data: Record<string, unknown>) => api.update("globals_textarea", "default", data),
+};
+
+export const url = {
+  get: () => api.findOne("globals_url", "default"),
+  update: (data: Record<string, unknown>) => api.update("globals_url", "default", data),
 };
 

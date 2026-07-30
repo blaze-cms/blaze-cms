@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node ../../packages/cms/bin/cms.js dev",
-    "build": "node ../../packages/cms/bin/cms.js build",
-    "generate": "node ../../packages/cms/bin/cms.js generate",
+    "dev": "cms dev",
+    "build": "cms build",
+    "generate": "cms generate",
     "test": "vitest run"
   },
   "dependencies": {

@@ -1,0 +1,17 @@
+schema: spec-driven
+
+context: |
+  Tech stack: pnpm monorepo, TypeScript, React 19, Node.js 22+, Vite, Tailwind CSS v4, Firebase
+  Packages: blaze-cms/packages (cms, core, auth, database, storage, schema, plugins, permissions, validation, generators, sdk, types, create-app)
+  Testing: vitest, ~474 tests across all packages
+  Commits: conventional commits
+  Domain: headless CMS with Firebase backend
+  
+  Architecture constraints (applies to all specs):
+    - Client-side only: No backend server, no custom REST/gRPC API layer, no server-side rendering
+    - Firebase Firestore is the sole data store — accessed exclusively via the Firebase client SDK
+    - Firebase Auth for authentication (client SDK)
+    - Firebase Storage for file/media storage (client SDK)
+    - Firestore Security Rules are the definitive enforcement layer for auth and data access
+    - Admin UI is a React 19 SPA — all data fetching uses TanStack Query with direct Firestore queries
+    - The generated SDK wraps Firestore client SDK calls; no API endpoints or middleware

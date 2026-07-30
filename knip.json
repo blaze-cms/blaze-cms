@@ -1,18 +1,7 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "exclude": ["files", "duplicates"],
-  "ignoreDependencies": [
-    "@blazing-cms/*",
-    "clsx",
-    "dompurify",
-    "firebase-admin",
-    "lucide-react",
-    "react",
-    "react-dom",
-    "tailwind-merge",
-    "tailwindcss",
-    "zod"
-  ],
+  "ignoreDependencies": ["@blazing-cms/*", "firebase-admin", "zod"],
   "ignoreFiles": [
     "**/test/**",
     "**/__generated__/**",
@@ -28,13 +17,10 @@
 
     "packages/schema/src/watcher.ts": ["exports", "types"],
     "packages/sdk/src/client.ts": ["exports", "types"],
-    "packages/types/src/schema.ts": ["types"]
-  },
-  "workspaces": {
-    ".": {
-      "entry": [
-        "packages/*/src/index.{ts,tsx}"
-      ]
-    }
+    "packages/types/src/schema.ts": ["types"],
+
+    "packages/cms/src/admin/__generated__/schema-registry.ts": ["exports"],
+
+    "packages/cms/src/admin/lib/providers/types.ts": ["types"]
   }
 }

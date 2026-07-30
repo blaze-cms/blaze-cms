@@ -1,9 +1,11 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { mkdtempSync, rmSync, readFileSync, existsSync } from "node:fs";
-import { join } from "node:path";
-import { tmpdir } from "node:os";
-import { TypeGenerator } from "../typegen.js";
 import type { CollectionDefinition, GlobalDefinition } from "@blazing-cms/types";
+
+import { mkdtempSync, rmSync, readFileSync, existsSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+
+import { TypeGenerator } from "../typegen.js";
 
 describe("TypeGenerator", () => {
   let outDir: string;
@@ -13,27 +15,27 @@ describe("TypeGenerator", () => {
   });
 
   afterEach(() => {
-    rmSync(outDir, { recursive: true, force: true });
+    rmSync(outDir, { force: true, recursive: true });
   });
 
   it("generates TypeScript interfaces for collections", async () => {
     const collections: CollectionDefinition[] = [
       {
-        slug: "posts",
-        labels: { singular: "Post", plural: "Posts" },
         fields: [
           { name: "title", type: "text" },
           { name: "views", type: "number" },
           { name: "published", type: "boolean" },
         ],
+        labels: { plural: "Posts", singular: "Post" },
+        slug: "posts",
       },
       {
-        slug: "users",
-        labels: { singular: "User", plural: "Users" },
         fields: [
           { name: "email", type: "email" },
           { name: "name", type: "text" },
         ],
+        labels: { plural: "Users", singular: "User" },
+        slug: "users",
       },
     ];
 
@@ -52,9 +54,9 @@ describe("TypeGenerator", () => {
   it("generates TypeScript interfaces for globals", async () => {
     const globals: GlobalDefinition[] = [
       {
-        slug: "homepage",
-        label: "Homepage",
         fields: [{ name: "heroTitle", type: "text" }],
+        label: "Homepage",
+        slug: "homepage",
       },
     ];
 
@@ -69,14 +71,14 @@ describe("TypeGenerator", () => {
   it("converts kebab-case slugs to PascalCase", async () => {
     const collections: CollectionDefinition[] = [
       {
-        slug: "rich-text",
-        labels: { singular: "R", plural: "Rs" },
         fields: [{ name: "body", type: "richText" }],
+        labels: { plural: "Rs", singular: "R" },
+        slug: "rich-text",
       },
       {
-        slug: "media-test",
-        labels: { singular: "M", plural: "Ms" },
         fields: [{ name: "file", type: "media" }],
+        labels: { plural: "Ms", singular: "M" },
+        slug: "media-test",
       },
     ];
 
@@ -91,8 +93,6 @@ describe("TypeGenerator", () => {
   it("maps all field types to correct TypeScript types", async () => {
     const collections: CollectionDefinition[] = [
       {
-        slug: "all-types",
-        labels: { singular: "T", plural: "Ts" },
         fields: [
           { name: "a", type: "text" },
           { name: "b", type: "textarea" },
@@ -101,8 +101,10 @@ describe("TypeGenerator", () => {
           { name: "e", type: "date" },
           { name: "f", type: "email" },
           { name: "g", type: "json" },
-          { name: "h", type: "multiSelect", options: [{ label: "A", value: "a" }] },
+          { name: "h", options: [{ label: "A", value: "a" }], type: "multiSelect" },
         ],
+        labels: { plural: "Ts", singular: "T" },
+        slug: "all-types",
       },
     ];
 
@@ -118,9 +120,39 @@ describe("TypeGenerator", () => {
     expect(output).toContain("g: unknown");
   });
 
+  it("uses safeName to avoid globals collision", async () => {
+    const collections: CollectionDefinition[] = [
+      { fields: [], labels: { plural: "Ss", singular: "S" }, slug: "string" },
+      { fields: [], labels: { plural: "Ns", singular: "N" }, slug: "number" },
+      { fields: [], labels: { plural: "Bs", singular: "B" }, slug: "boolean" },
+    ];
+
+    const gen = new TypeGenerator();
+    await gen.generate(collections, [], [], outDir);
+
+    const output = readFileSync(join(outDir, "types.ts"), "utf-8");
+    expect(output).toContain("export interface StringEntry");
+    expect(output).toContain("export interface NumberEntry");
+    expect(output).toContain("export interface BooleanEntry");
+  });
+
   it("creates the output file", async () => {
     const gen = new TypeGenerator();
     await gen.generate([], [], [], outDir);
     expect(existsSync(join(outDir, "types.ts"))).toBe(true);
+  });
+
+  it("falls back to string for unknown field type", async () => {
+    const collections: CollectionDefinition[] = [
+      {
+        fields: [{ name: "weird", type: "unknown-type" as never }],
+        labels: { plural: "Ts", singular: "T" },
+        slug: "test",
+      },
+    ];
+    const gen = new TypeGenerator();
+    await gen.generate(collections, [], [], outDir);
+    const output = readFileSync(join(outDir, "types.ts"), "utf-8");
+    expect(output).toContain("weird: string");
   });
 });

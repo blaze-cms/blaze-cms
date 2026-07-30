@@ -1,5 +1,4 @@
-import { collections, globals, components } from "@/__generated__/schema-registry";
-import type { DataProvider, QueryOptions, PaginatedResult } from "./types";
+import type { DataProvider, QueryOptions } from "./types";
 
 const store: Map<string, Map<string, Record<string, unknown>>> = new Map();
 const globalStore: Map<string, Record<string, unknown>> = new Map();
@@ -12,18 +11,6 @@ function getCollection(col: string): Map<string, Record<string, unknown>> {
 export const mockProvider: DataProvider = {
   name: "mock",
   type: "mock",
-
-  async getCollections() {
-    return collections;
-  },
-
-  async getGlobals() {
-    return globals;
-  },
-
-  async getComponents() {
-    return components;
-  },
 
   async findOne(collectionName: string, id: string) {
     return getCollection(collectionName).get(id) ?? null;
@@ -54,7 +41,7 @@ export const mockProvider: DataProvider = {
 
   async create(collectionName: string, data: Record<string, unknown>) {
     const id = (data.id as string) ?? crypto.randomUUID();
-    getCollection(collectionName).set(id, { ...data, id });
+    getCollection(collectionName).set(id, { ...data, id, updatedAt: new Date().toISOString() });
     return id;
   },
 
@@ -63,7 +50,7 @@ export const mockProvider: DataProvider = {
     const existing = col.get(id);
     if (!existing) throw new Error(`Document ${id} not found in ${collectionName}`);
     const { id: _, ...rest } = data;
-    col.set(id, { ...existing, ...rest });
+    col.set(id, { ...existing, ...rest, updatedAt: new Date().toISOString() });
   },
 
   async delete(collectionName: string, id: string) {
@@ -76,6 +63,6 @@ export const mockProvider: DataProvider = {
 
   async upsertGlobal(slug: string, data: Record<string, unknown>) {
     const existing = globalStore.get(slug) ?? {};
-    globalStore.set(slug, { ...existing, ...data });
+    globalStore.set(slug, { ...existing, ...data, updatedAt: new Date().toISOString() });
   },
 };

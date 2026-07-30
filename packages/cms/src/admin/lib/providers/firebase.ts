@@ -16,13 +16,6 @@ import {
   type Firestore,
   type DocumentSnapshot,
 } from "firebase/firestore";
-import {
-  getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  type FirebaseStorage,
-} from "firebase/storage";
 
 import type { DataProvider, QueryOptions } from "./types";
 
@@ -42,7 +35,6 @@ try {
 }
 
 const db: Firestore = getFirestore(app);
-const storage: FirebaseStorage = getStorage(app);
 const PAGE_SIZE = 25;
 
 function docToData(d: DocumentSnapshot): Record<string, unknown> | null {
@@ -53,11 +45,12 @@ function docToData(d: DocumentSnapshot): Record<string, unknown> | null {
 export const firebaseProvider: DataProvider = {
   async create(collectionName: string, data: Record<string, unknown>) {
     const col = collection(db, `collections_${collectionName}`);
+    const docData = { ...data, updatedAt: new Date().toISOString() };
     if (data.id) {
-      await setDoc(doc(col, data.id as string), data);
+      await setDoc(doc(col, data.id as string), docData);
       return data.id as string;
     }
-    const docRef = await addDoc(col, data);
+    const docRef = await addDoc(col, docData);
     return docRef.id;
   },
   async delete(collectionName: string, id: string) {
@@ -98,27 +91,9 @@ export const firebaseProvider: DataProvider = {
     return docToData(snap);
   },
 
-  async getCollections() {
-    const snap = await getDocs(collection(db, "_schemas", "collections"));
-    const docs = snap.docs.map(docToData).filter(Boolean) as Record<string, unknown>[];
-    return docs.filter((d) => !d.deprecated) as never;
-  },
-
-  async getComponents() {
-    const snap = await getDocs(collection(db, "_schemas", "components"));
-    const docs = snap.docs.map(docToData).filter(Boolean) as Record<string, unknown>[];
-    return docs.filter((d) => !d.deprecated) as never;
-  },
-
   async getGlobal(slug: string) {
     const snap = await getDoc(doc(db, `globals_${slug}`, "value"));
     return docToData(snap);
-  },
-
-  async getGlobals() {
-    const snap = await getDocs(collection(db, "_schemas", "globals"));
-    const docs = snap.docs.map(docToData).filter(Boolean) as Record<string, unknown>[];
-    return docs.filter((d) => !d.deprecated) as never;
   },
 
   name: "firebase",
@@ -127,12 +102,17 @@ export const firebaseProvider: DataProvider = {
 
   async update(collectionName: string, id: string, data: Record<string, unknown>) {
     const { id: _, ...updateData } = data;
-    await updateDoc(doc(db, `collections_${collectionName}`, id), updateData);
+    await updateDoc(doc(db, `collections_${collectionName}`, id), {
+      ...updateData,
+      updatedAt: new Date().toISOString(),
+    });
   },
 
   async upsertGlobal(slug: string, data: Record<string, unknown>) {
-    await setDoc(doc(db, `globals_${slug}`, "value"), data, { merge: true });
+    await setDoc(
+      doc(db, `globals_${slug}`, "value"),
+      { ...data, updatedAt: new Date().toISOString() },
+      { merge: true },
+    );
   },
 };
-
-export { db, storage, ref, uploadBytes, getDownloadURL };

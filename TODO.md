@@ -33,6 +33,28 @@
 - [x] **Plugins page** — searchable directory of known plugins, SDK overview card, status badges (built-in/available/coming-soon)
 - [x] **Vite build optimizations** — `manualChunks` splitting into react-vendor, router, firebase, editor-rich (Tiptap), editor-code (CodeMirror), editor-markdown, icons, and vendor chunks; `optimizeDeps` includes for all editor libs
 
+### Pending
+
+- [x] **Set up OpenSpec** — installed `@fission-ai/openspec@1.7.0`, ran `openspec init --tools opencode`, configured project context in `openspec/config.yaml`
+- [x] **Create initial specs** — wrote main specs for auth, schema, content, and plugins capabilities
+- [ ] **Use `/opsx-propose` for next feature** — try the spec‑driven workflow on the next change
+
+## Test Coverage
+
+### Done
+
+- [x] **core package** — config.ts, event-bus.ts, lifecycle.ts, logger.ts, container.ts all at 100/100/100/100
+- [x] **database/firestore.ts** — 100/95.45/100/100 (4 mock‑setup branches remaining that need beforeEach restructure)
+- [x] **permissions/access-control.ts** — 100/100/100/100
+- [x] **plugins package** — discovery.ts 100/92.3/100/100 (line 29 `?? null` coverage tool quirk), plugin-manager.ts 100/100/100/100
+- [x] **schema package** — loader.ts, validator.ts, define-collection.ts, define-global.ts, define-component.ts, index.ts all 100/100/100/100; fields.ts 99.25/100/79.31/99.25 (type‑only function quirk), watcher.ts 97.05/100/100/97.05 (catch‑block quirk)
+- [x] **sdk package** — auth.ts, client.ts, collection.ts, errors.ts, global.ts all 100/100/100/100
+- [x] **storage/firebase-storage.ts** — 100/100/100/100
+- [x] **validation/generator.ts** — 100/100/100/100
+- [x] **generators package** — pipeline.ts, sdk.ts, typegen.ts, validation.ts all 100/100/100/100
+- [x] **auth package** — middleware.ts, service.ts all 100/100/100/100
+- [x] **cms package** — 6 test files, 48 tests written: index.ts, generate.ts, lint.ts, scaffold.ts, doctor.ts, prompt.ts all 100/100/100/100
+
 ## Previous Work (Done)
 
 - [x] Schema sync: Firestore writer

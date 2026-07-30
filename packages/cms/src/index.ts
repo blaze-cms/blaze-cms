@@ -2,6 +2,7 @@ import { config } from "dotenv";
 config();
 
 export interface BlazeUserConfig {
+  projectName?: string;
   firebase: {
     projectId: string;
     apiKey?: string;
@@ -92,7 +93,6 @@ export async function main(): Promise<void> {
       const m = await import("./commands/generate.js");
       await m.generate({
         dir: getFlag(args, "--dir"),
-        sync: args.includes("--sync"),
         type: args[1],
       });
       break;
