@@ -376,12 +376,13 @@ function SchemaDetail() {
 
   async function handleSave() {
     const code = generateCode(schema, type as SchemaType);
+    const dir = type === "collection" ? "collections" : "globals";
+    const filename =
+      type === "component" ? `components/${schema.slug}.ts` : `${dir}/${schema.slug}.ts`;
     setSaving(true);
     try {
-      const dir =
-        type === "collection" ? "collections" : type === "global" ? "globals" : "components";
       const res = await fetch("/__dev-api/save-schema", {
-        body: JSON.stringify({ content: code, filename: `${dir}/${schema.slug}.ts` }),
+        body: JSON.stringify({ content: code, filename }),
         headers: { "Content-Type": "application/json" },
         method: "POST",
       });
@@ -390,7 +391,7 @@ function SchemaDetail() {
         addToast({ description: `Saved to ${data.path}`, title: "Schema Saved!" });
       } else {
         addToast({
-          description: data.error ?? "Unknown error",
+          description: data.error || "Unknown error",
           title: "Save failed",
           variant: "destructive",
         });
