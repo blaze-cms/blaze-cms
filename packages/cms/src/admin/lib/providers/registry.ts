@@ -21,13 +21,3 @@ export function getProvider(): DataProvider {
 
   return currentProvider;
 }
-
-export function setProvider(provider: DataProvider) {
-  currentProvider = provider;
-}
-
-export function resetProvider() {
-  currentProvider = null;
-}
-
-export { firebaseProvider, mockProvider };

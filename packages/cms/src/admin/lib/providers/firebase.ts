@@ -16,13 +16,6 @@ import {
   type Firestore,
   type DocumentSnapshot,
 } from "firebase/firestore";
-import {
-  getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  type FirebaseStorage,
-} from "firebase/storage";
 
 import type { DataProvider, QueryOptions } from "./types";
 
@@ -42,7 +35,6 @@ try {
 }
 
 const db: Firestore = getFirestore(app);
-const storage: FirebaseStorage = getStorage(app);
 const PAGE_SIZE = 25;
 
 function docToData(d: DocumentSnapshot): Record<string, unknown> | null {
@@ -110,12 +102,17 @@ export const firebaseProvider: DataProvider = {
 
   async update(collectionName: string, id: string, data: Record<string, unknown>) {
     const { id: _, ...updateData } = data;
-    await updateDoc(doc(db, `collections_${collectionName}`, id), { ...updateData, updatedAt: new Date().toISOString() });
+    await updateDoc(doc(db, `collections_${collectionName}`, id), {
+      ...updateData,
+      updatedAt: new Date().toISOString(),
+    });
   },
 
   async upsertGlobal(slug: string, data: Record<string, unknown>) {
-    await setDoc(doc(db, `globals_${slug}`, "value"), { ...data, updatedAt: new Date().toISOString() }, { merge: true });
+    await setDoc(
+      doc(db, `globals_${slug}`, "value"),
+      { ...data, updatedAt: new Date().toISOString() },
+      { merge: true },
+    );
   },
 };
-
-export { db, storage, ref, uploadBytes, getDownloadURL };
