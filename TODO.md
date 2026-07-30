@@ -36,7 +36,7 @@
 ### Pending
 
 - [x] **Set up OpenSpec** — installed `@fission-ai/openspec@1.7.0`, ran `openspec init --tools opencode`, configured project context in `openspec/config.yaml`
-- [ ] **Create initial specs** — write specs for auth, schema, content, and plugins capabilities
+- [x] **Create initial specs** — wrote main specs for auth, schema, content, and plugins capabilities
 - [ ] **Use `/opsx-propose` for next feature** — try the spec‑driven workflow on the next change
 
 ## Test Coverage
