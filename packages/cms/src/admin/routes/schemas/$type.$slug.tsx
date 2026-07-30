@@ -391,7 +391,7 @@ function SchemaDetail() {
         addToast({ description: `Saved to ${data.path}`, title: "Schema Saved!" });
       } else {
         addToast({
-          description: data.error || "Unknown error",
+          description: String(data.error ?? "Unknown error"),
           title: "Save failed",
           variant: "destructive",
         });
