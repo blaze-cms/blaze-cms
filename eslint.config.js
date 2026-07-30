@@ -93,6 +93,12 @@ export default tseslint.config(
     },
     rules: {
       ...vitest.configs.recommended.rules,
+      "@typescript-eslint/no-non-null-assertion": "off",
+      "@typescript-eslint/no-unsafe-argument": "off",
+      "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/no-unsafe-call": "off",
+      "@typescript-eslint/no-unsafe-member-access": "off",
+      "@typescript-eslint/no-unsafe-return": "off",
       "vitest/expect-expect": "warn",
       "vitest/no-disabled-tests": "warn",
       "vitest/no-focused-tests": "error",
