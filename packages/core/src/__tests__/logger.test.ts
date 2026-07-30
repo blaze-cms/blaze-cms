@@ -67,4 +67,13 @@ describe("createLogger", () => {
     expect(spy).toHaveBeenCalledWith(expect.any(String), "a", { b: 1 }, [2]);
     spy.mockRestore();
   });
+
+  it("works with empty prefix", () => {
+    const spy = vi.spyOn(console, "info").mockImplementation(() => {});
+    const log = createLogger("");
+    log.info("no-prefix");
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining("[INFO]"), "no-prefix");
+    expect(spy.mock.calls[0]![0]).not.toContain("[]");
+    spy.mockRestore();
+  });
 });

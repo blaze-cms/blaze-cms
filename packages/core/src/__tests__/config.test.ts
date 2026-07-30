@@ -1,9 +1,17 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
+vi.mock("node:fs", () => ({
+  existsSync: vi.fn(),
+  readFileSync: vi.fn(),
+}));
+
+import { existsSync, readFileSync } from "node:fs";
+
 import { createFirebaseConfigLoader } from "../config.js";
 
 beforeEach(() => {
   vi.resetModules();
+  vi.clearAllMocks();
   vi.stubEnv("FIREBASE_CREDENTIALS", "");
   vi.stubEnv("GOOGLE_APPLICATION_CREDENTIALS", "");
 });
@@ -83,8 +91,32 @@ describe("createFirebaseConfigLoader", () => {
   it("handles missing credential file gracefully", async () => {
     vi.stubEnv("FIREBASE_CREDENTIALS", "/nonexistent/path.json");
     const config = await createFirebaseConfigLoader();
-    // Should not throw, should use env values or defaults
     expect(config.firebase.projectId).toBe("");
     expect(config.firebase.clientEmail).toBe("");
+  });
+
+  it("handles invalid JSON in credential file gracefully", async () => {
+    vi.mocked(existsSync).mockReturnValue(true);
+    vi.mocked(readFileSync).mockReturnValue("not valid json");
+    vi.stubEnv("FIREBASE_CREDENTIALS", "/path/to/invalid.json");
+    const config = await createFirebaseConfigLoader();
+    expect(config.firebase.projectId).toBe("");
+    expect(config.firebase.clientEmail).toBe("");
+  });
+
+  it("reads firebase config from credential file", async () => {
+    vi.mocked(existsSync).mockReturnValue(true);
+    vi.mocked(readFileSync).mockReturnValue(
+      JSON.stringify({
+        clientEmail: "file@test.iam.gserviceaccount.com",
+        privateKey: "file-key",
+        projectId: "file-project",
+      }),
+    );
+    vi.stubEnv("FIREBASE_CREDENTIALS", "/path/to/valid.json");
+    const config = await createFirebaseConfigLoader();
+    expect(config.firebase.clientEmail).toBe("file@test.iam.gserviceaccount.com");
+    expect(config.firebase.privateKey).toBe("file-key");
+    expect(config.firebase.projectId).toBe("file-project");
   });
 });

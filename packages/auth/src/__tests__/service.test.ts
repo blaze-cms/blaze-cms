@@ -151,4 +151,21 @@ describe("FirebaseAuthService", () => {
     const link = await svc.generateResetLink("user@test.com");
     expect(link).toBe("https://reset-link");
   });
+
+  it("mapUser handles null displayName, email, photoURL", async () => {
+    mockVerifyIdToken.mockResolvedValue({ uid: "user-123" });
+    mockGetUser.mockResolvedValue(
+      makeUserRecord({
+        displayName: null,
+        email: null,
+        photoURL: null,
+      }),
+    );
+    const svc = new FirebaseAuthService();
+    const user = await svc.verifyToken("token");
+    expect(user.displayName).toBeUndefined();
+    expect(user.email).toBeUndefined();
+    expect(user.photoURL).toBeUndefined();
+    expect(user.uid).toBe("user-123");
+  });
 });

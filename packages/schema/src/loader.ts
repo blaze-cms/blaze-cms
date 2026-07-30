@@ -1,4 +1,8 @@
-import type { CollectionDefinition, GlobalDefinition, ComponentDefinition } from "@blazing-cms/types";
+import type {
+  CollectionDefinition,
+  GlobalDefinition,
+  ComponentDefinition,
+} from "@blazing-cms/types";
 
 import { readdirSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
@@ -42,7 +46,7 @@ export class SchemaLoader {
   }
 }
 
-async function tryLoadFile<T>(filePath: string): Promise<T[]> {
+export async function tryLoadFile<T>(filePath: string): Promise<T[]> {
   try {
     const mod = (await import(filePath)) as Record<string, unknown>;
     const exported = Object.values(mod);

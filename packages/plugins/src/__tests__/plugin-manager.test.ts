@@ -135,6 +135,12 @@ describe("PluginManager", () => {
     expect(panels[1]?.icon).toBe("Chart");
   });
 
+  it("getAdminPanels returns empty when no admin panels", () => {
+    const pm = new PluginManager();
+    pm.register(makePlugin("no-panels"));
+    expect(pm.getAdminPanels()).toEqual([]);
+  });
+
   it("stores options with registration", () => {
     const pm = new PluginManager();
     pm.register(makePlugin("seo"), { apiKey: "xyz" });
@@ -147,5 +153,31 @@ describe("PluginManager", () => {
     // No hooks should be registered
     // This should not throw
     expect(pm.get("no-hooks")).toBeDefined();
+  });
+
+  it("registers all four hook types", async () => {
+    const pm = new PluginManager();
+    const h1 = vi.fn();
+    const h2 = vi.fn();
+    const h3 = vi.fn();
+    const h4 = vi.fn();
+    pm.register(
+      makePlugin("full", {
+        hooks: {
+          afterRouteRegister: h4,
+          afterSchemaLoad: h2,
+          beforeRouteRegister: h3,
+          beforeSchemaLoad: h1,
+        },
+      }),
+    );
+    await pm.runHook("beforeSchemaLoad");
+    await pm.runHook("afterSchemaLoad");
+    await pm.runHook("beforeRouteRegister");
+    await pm.runHook("afterRouteRegister");
+    expect(h1).toHaveBeenCalledOnce();
+    expect(h2).toHaveBeenCalledOnce();
+    expect(h3).toHaveBeenCalledOnce();
+    expect(h4).toHaveBeenCalledOnce();
   });
 });

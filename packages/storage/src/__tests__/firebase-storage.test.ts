@@ -10,6 +10,12 @@ const buildBucketMock = () => ({
   name: "test-bucket",
 });
 
+const buildBucketMockNoSize = () => ({
+  file: mockFile,
+  getFiles: vi.fn().mockResolvedValue([[{ metadata: {}, name: "nosize.txt" }]]),
+  name: "test-bucket",
+});
+
 let currentBucketMock = buildBucketMock();
 
 vi.mock("firebase-admin/storage", () => ({
@@ -92,6 +98,15 @@ describe("FirebaseStorageAdapter", () => {
     expect(files[0]?.name).toBe("file1.txt");
     expect(files[0]?.size).toBe(512);
     expect(files[0]?.url).toContain("test-bucket");
+  });
+
+  it("list handles undefined metadata.size", async () => {
+    currentBucketMock = buildBucketMockNoSize();
+    const adapter = new FirebaseStorageAdapter();
+    await adapter.connect();
+    const files = await adapter.list();
+    expect(files).toHaveLength(1);
+    expect(files[0]?.size).toBe(0);
   });
 
   it("list supports prefix filtering", async () => {

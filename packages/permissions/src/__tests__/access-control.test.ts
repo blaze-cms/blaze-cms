@@ -1,4 +1,5 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
+
 import { AccessControl } from "../access-control.js";
 
 describe("AccessControl", () => {
@@ -86,6 +87,13 @@ describe("AccessControl", () => {
       expect(ac.can("viewer", "create", "anything").allowed).toBe(false);
     });
 
+    it("denies without collection uses wildcard in reason", () => {
+      const ac = createAC();
+      const result = ac.can("viewer", "create");
+      expect(result.allowed).toBe(false);
+      expect(result.reason).toContain("*");
+    });
+
     it("returns not-allowed for unknown role", () => {
       const ac = createAC();
       const result = ac.can("unknown", "read");
@@ -126,6 +134,45 @@ describe("AccessControl", () => {
         permissions: [{ action: "read", collection: "*" }],
       });
       expect(ac.filterAllowedFields("wild", "read", "anything", ["a", "b"])).toEqual(["a", "b"]);
+    });
+
+    it("returns all fields when role has field-level but matching permission", () => {
+      const ac = new AccessControl();
+      ac.registerRole({
+        name: "restricted",
+        permissions: [{ action: "update", collection: "posts", fields: ["title"] }],
+      });
+      const fields = ac.filterAllowedFields("restricted", "update", "posts", [
+        "title",
+        "content",
+        "secret",
+      ]);
+      expect(fields).toEqual(["title", "content", "secret"]);
+    });
+
+    it("returns empty when no permission matches action", () => {
+      const ac = new AccessControl();
+      ac.registerRole({
+        name: "restricted",
+        permissions: [{ action: "update", collection: "posts", fields: ["title"] }],
+      });
+      const fields = ac.filterAllowedFields("restricted", "delete", "posts", ["title", "content"]);
+      expect(fields).toEqual([]);
+    });
+
+    it("filters fields when field-level permission restricts access", () => {
+      const ac = new AccessControl();
+      ac.registerRole({
+        name: "restricted",
+        permissions: [{ action: "read", collection: "posts", fields: ["title"] }],
+      });
+      vi.spyOn(ac, "can").mockReturnValue({ allowed: false });
+      const fields = ac.filterAllowedFields("restricted", "read", "posts", [
+        "title",
+        "content",
+        "secret",
+      ]);
+      expect(fields).toEqual(["title"]);
     });
   });
 });

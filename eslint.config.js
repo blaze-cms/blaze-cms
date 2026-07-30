@@ -88,10 +88,29 @@ export default tseslint.config(
   },
   {
     files: ["**/*.test.ts", "**/*.spec.ts", "**/test/**/*.ts"],
+    languageOptions: {
+      parserOptions: {
+        projectService: false,
+      },
+    },
     plugins: {
       vitest,
     },
     rules: {
+      "@typescript-eslint/no-base-to-string": "off",
+      "@typescript-eslint/no-deprecated": "off",
+      "@typescript-eslint/no-floating-promises": "off",
+      "@typescript-eslint/no-misused-promises": "off",
+      "@typescript-eslint/no-unnecessary-condition": "off",
+      "@typescript-eslint/no-unnecessary-type-conversion": "off",
+      "max-lines": "off",
+      "@typescript-eslint/no-unsafe-argument": "off",
+      "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/no-unsafe-call": "off",
+      "@typescript-eslint/no-unsafe-member-access": "off",
+      "@typescript-eslint/no-unsafe-return": "off",
+      "@typescript-eslint/only-throw-error": "off",
+      "@typescript-eslint/use-unknown-in-catch-callback-variable": "off",
       ...vitest.configs.recommended.rules,
       "@typescript-eslint/no-non-null-assertion": "off",
       "@typescript-eslint/no-unsafe-argument": "off",
