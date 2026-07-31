@@ -10,6 +10,7 @@ import type {
   GlobalApi,
   AuthApi,
   MediaApi,
+  RbacApi,
 } from "./types.js";
 
 import { createAnalyticsApi } from "./analytics.js";
@@ -17,6 +18,7 @@ import { createAuthApi } from "./auth.js";
 import { createCollectionApi } from "./collection.js";
 import { createGlobalApi } from "./global.js";
 import { createMediaApi } from "./media.js";
+import { createRbacApi } from "./rbac.js";
 
 export interface BlazeClient {
   /** Access a Firestore collection by name */
@@ -29,6 +31,8 @@ export interface BlazeClient {
   analytics: AnalyticsApi;
   /** Media library: uploads, metadata, folders, usage */
   media: MediaApi;
+  /** Roles, user-role assignments, and precomputed grants */
+  rbac: RbacApi;
   /** Raw Firebase instances for advanced use */
   app: FirebaseApp;
   db: Firestore;
@@ -68,6 +72,7 @@ export function createBlazeClient(config: BlazeClientConfig): BlazeClient {
     db,
     globals: createGlobalApi(db),
     media: createMediaApi(db, storage, config.media),
+    rbac: createRbacApi(db),
     storage,
   };
 }

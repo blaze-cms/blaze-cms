@@ -4,11 +4,13 @@ import { ArrowLeft, Save } from "lucide-react";
 import { useState, useEffect, type FormEvent } from "react";
 
 import { collections } from "@/__generated__/schema-registry";
+import { DeniedNotice } from "@/components/denied-notice";
 import { FieldInput } from "@/components/field-input";
 import { useToast } from "@/components/toast-provider";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDataProvider } from "@/lib/providers/context";
+import { usePermissions } from "@/lib/rbac";
 import { appLayoutRoute } from "@/routes/app-layout";
 
 export const editEntryRoute = createRoute({
@@ -23,9 +25,12 @@ function EditEntry() {
   const provider = useDataProvider();
   const { addToast } = useToast();
   const queryClient = useQueryClient();
+  const { can } = usePermissions();
   const col = collections.find((c) => c.slug === slug);
   const [values, setValues] = useState<Record<string, unknown>>({});
   const [saving, setSaving] = useState(false);
+
+  const canUpdate = can("update", slug);
 
   const { data: entry, isLoading } = useQuery({
     queryFn: async () => provider.findOne(slug, id),
@@ -51,6 +56,10 @@ function EditEntry() {
   }
 
   const label = col?.labels?.singular ?? slug;
+
+  if (!canUpdate) {
+    return <DeniedNotice action="update" resource={slug} />;
+  }
 
   return (
     <div>

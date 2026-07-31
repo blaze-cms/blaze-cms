@@ -1,4 +1,10 @@
 import { measureImage, pick, validateMediaFile } from "@/lib/media/validation";
+import {
+  emptyPermissions,
+  expandRolePermissions,
+  mergeGrants,
+  setCollectionAction,
+} from "@/lib/rbac/permissions";
 
 import type {
   AnalyticsQuery,
@@ -22,6 +28,8 @@ import { isFilterValue } from "./types";
 
 const MEDIA = "media";
 const USERS = "users";
+const ROLES = "roles";
+const USER_ROLES = "user_roles";
 const PAGE_SIZE = 25;
 
 const store: Map<string, Map<string, Record<string, unknown>>> = new Map();
@@ -111,6 +119,62 @@ function seedMockMedia(): void {
 }
 
 seedMockMedia();
+
+function seedMockRbac(): void {
+  const roles = getCollection(ROLES);
+  if (roles.size > 0) return;
+
+  const admin = emptyPermissions();
+  admin.system.superAdmin = true;
+  roles.set("role-admin", {
+    createdAt: new Date().toISOString(),
+    description: "Full access to every resource.",
+    id: "role-admin",
+    name: "Admin",
+    permissions: admin,
+  });
+
+  const editor = emptyPermissions();
+  setCollectionAction(editor, "posts", "create", true);
+  setCollectionAction(editor, "posts", "read", true);
+  setCollectionAction(editor, "posts", "update", true);
+  setCollectionAction(editor, "posts", "publish", true);
+  roles.set("role-editor", {
+    createdAt: new Date().toISOString(),
+    description: "Write and publish posts.",
+    id: "role-editor",
+    name: "Editor",
+    permissions: editor,
+  });
+
+  const viewer = emptyPermissions();
+  setCollectionAction(viewer, "*", "read", true);
+  roles.set("role-viewer", {
+    createdAt: new Date().toISOString(),
+    description: "Read-only access to content.",
+    id: "role-viewer",
+    name: "Viewer",
+    permissions: viewer,
+  });
+
+  const users = getCollection(USERS);
+  users.set("user-admin", {
+    createdAt: new Date().toISOString(),
+    email: "admin@example.com",
+    id: "user-admin",
+    name: "Admin User",
+  });
+
+  const userRoles = getCollection(USER_ROLES);
+  userRoles.set("user-admin", {
+    grants: mergeGrants(expandRolePermissions(admin)),
+    roleIds: ["role-admin"],
+    updatedAt: new Date().toISOString(),
+    userId: "user-admin",
+  });
+}
+
+seedMockRbac();
 
 function pushEntryActivity(
   entries: Iterable<Record<string, unknown>>,

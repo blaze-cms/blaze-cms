@@ -225,3 +225,52 @@ export interface MediaApi {
   usage(id: string, collections: string[]): Promise<MediaUsage[]>;
   folders: MediaFoldersApi;
 }
+
+export type RbacCollectionAction = "create" | "read" | "update" | "delete" | "publish";
+
+export type RbacSystemAction =
+  "manageUsers" | "manageRoles" | "manageMedia" | "manageSettings" | "superAdmin";
+
+export interface RbacCollectionPermissions {
+  create?: boolean;
+  read?: boolean;
+  update?: boolean;
+  delete?: boolean;
+  publish?: boolean;
+}
+
+export interface RbacPermissions {
+  collections: Record<string, RbacCollectionPermissions>;
+  system: Partial<Record<RbacSystemAction, boolean>>;
+}
+
+export interface RbacRole {
+  id: string;
+  name: string;
+  description?: string;
+  permissions?: RbacPermissions;
+}
+
+export interface UserRoleAssignment {
+  userId: string;
+  roleIds: string[];
+  grants: string[];
+  updatedAt?: string;
+}
+
+export interface RbacApi {
+  listRoles(): Promise<RbacRole[]>;
+  getRole(id: string): Promise<RbacRole | null>;
+  createRole(data: {
+    name: string;
+    description?: string;
+    permissions?: RbacPermissions;
+  }): Promise<string>;
+  updateRole(
+    id: string,
+    data: { name?: string; description?: string; permissions?: RbacPermissions },
+  ): Promise<void>;
+  deleteRole(id: string): Promise<void>;
+  getUserRoles(userId: string): Promise<UserRoleAssignment | null>;
+  assignRoles(userId: string, roleIds: string[]): Promise<void>;
+}

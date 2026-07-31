@@ -3,10 +3,12 @@ import { ArrowLeft, Save } from "lucide-react";
 import { useState, type FormEvent } from "react";
 
 import { collections } from "@/__generated__/schema-registry";
+import { DeniedNotice } from "@/components/denied-notice";
 import { FieldInput } from "@/components/field-input";
 import { useToast } from "@/components/toast-provider";
 import { Button } from "@/components/ui/button";
 import { useDataProvider } from "@/lib/providers/context";
+import { usePermissions } from "@/lib/rbac";
 import { appLayoutRoute } from "@/routes/app-layout";
 
 export const newEntryRoute = createRoute({
@@ -20,9 +22,14 @@ function NewEntry() {
   const router = useRouter();
   const provider = useDataProvider();
   const { addToast } = useToast();
+  const { can } = usePermissions();
   const col = collections.find((c) => c.slug === slug);
   const [values, setValues] = useState<Record<string, unknown>>({});
   const [saving, setSaving] = useState(false);
+
+  if (!can("create", slug)) {
+    return <DeniedNotice action="create" resource={slug} />;
+  }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();

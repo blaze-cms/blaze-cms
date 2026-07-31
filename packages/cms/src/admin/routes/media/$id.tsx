@@ -15,6 +15,7 @@ import { formatBytes, isImage, type MediaFolder, type MediaRecord } from "@/lib/
 import { resetFileInput } from "@/lib/media/upload";
 import { findMediaUsage, type MediaReference } from "@/lib/media/usage";
 import { useDataProvider } from "@/lib/providers/context";
+import { logDenied, usePermissions } from "@/lib/rbac";
 import { appLayoutRoute } from "@/routes/app-layout";
 
 export const mediaDetailRoute = createRoute({
@@ -181,6 +182,7 @@ function MediaDetail() {
   const provider = useDataProvider();
   const { addToast } = useToast();
   const queryClient = useQueryClient();
+  const { canSystem } = usePermissions();
   const replaceInputRef = useRef<HTMLInputElement>(null);
   const confirmDelete = useConfirmDelete();
   const [altText, setAltText] = useState("");
@@ -190,6 +192,16 @@ function MediaDetail() {
   const [saving, setSaving] = useState(false);
   const [replacing, setReplacing] = useState(false);
   const [progress, setProgress] = useState(0);
+
+  const canManage = canSystem("manageMedia");
+
+  function deny(action: string) {
+    void logDenied(provider, {
+      action,
+      reason: "missing manageMedia permission",
+      resource: "media",
+    });
+  }
 
   const { data: media, isLoading } = useQuery({
     queryFn: async () => provider.findOne("media", id) as Promise<MediaRecord | null>,
@@ -224,6 +236,10 @@ function MediaDetail() {
 
   async function handleSave(e: FormEvent) {
     e.preventDefault();
+    if (!canManage) {
+      deny("update");
+      return;
+    }
     setSaving(true);
     try {
       await provider.update("media", id, {
@@ -247,6 +263,11 @@ function MediaDetail() {
   async function handleReplace(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (!canManage) {
+      deny("replace");
+      resetFileInput(replaceInputRef);
+      return;
+    }
     setReplacing(true);
     setProgress(0);
     try {
@@ -263,6 +284,10 @@ function MediaDetail() {
   }
 
   async function handleDelete() {
+    if (!canManage) {
+      deny("delete");
+      return;
+    }
     const deleted = await confirmDelete({
       description: "Media item deleted.",
       id,
@@ -305,12 +330,16 @@ function MediaDetail() {
           <Button variant="outline" onClick={handleCopyUrl}>
             <Copy className="mr-1 h-4 w-4" /> Copy URL
           </Button>
-          <Button variant="destructive" onClick={handleDelete}>
-            <Trash2 className="mr-1 h-4 w-4" /> Delete
-          </Button>
-          <Button onClick={handleSave} disabled={saving}>
-            <Save className="mr-1 h-4 w-4" /> {saving ? "Saving..." : "Save"}
-          </Button>
+          {canManage && (
+            <>
+              <Button variant="destructive" onClick={handleDelete}>
+                <Trash2 className="mr-1 h-4 w-4" /> Delete
+              </Button>
+              <Button onClick={handleSave} disabled={saving}>
+                <Save className="mr-1 h-4 w-4" /> {saving ? "Saving..." : "Save"}
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
@@ -318,14 +347,21 @@ function MediaDetail() {
         <div className="space-y-6">
           <PreviewImage media={media} />
 
-          <div>
-            <input ref={replaceInputRef} type="file" className="hidden" onChange={handleReplace} />
-            <ReplaceButton
-              onReplace={() => replaceInputRef.current?.click()}
-              progress={progress}
-              replacing={replacing}
-            />
-          </div>
+          {canManage && (
+            <div>
+              <input
+                ref={replaceInputRef}
+                type="file"
+                className="hidden"
+                onChange={handleReplace}
+              />
+              <ReplaceButton
+                onReplace={() => replaceInputRef.current?.click()}
+                progress={progress}
+                replacing={replacing}
+              />
+            </div>
+          )}
 
           <UsageSection usage={usage} />
         </div>

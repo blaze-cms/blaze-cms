@@ -42,6 +42,7 @@ import {
   type AddToast,
 } from "@/lib/media/upload";
 import { useDataProvider } from "@/lib/providers/context";
+import { logDenied, usePermissions } from "@/lib/rbac";
 import { cn } from "@/lib/utils";
 import { appLayoutRoute } from "@/routes/app-layout";
 
@@ -338,12 +339,14 @@ function UploadProgress({ progress }: { progress: number }) {
 }
 
 function MediaToolbar({
+  canManage,
   fileInputRef,
   onNewFolder,
   onUpload,
   progress,
   uploading,
 }: {
+  canManage: boolean;
   fileInputRef: { current: HTMLInputElement | null };
   onNewFolder: () => void;
   onUpload: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -354,17 +357,21 @@ function MediaToolbar({
     <div className="mb-6 flex items-center justify-between">
       <h1 className="text-3xl font-bold">Media Library</h1>
       <div className="flex items-center gap-2">
-        <span className="hidden text-xs text-muted-foreground sm:block">
-          Drag &amp; drop to upload
-        </span>
-        <Button variant="outline" onClick={onNewFolder}>
-          <FolderPlus className="mr-1 h-4 w-4" /> New Folder
-        </Button>
-        <input ref={fileInputRef} type="file" multiple className="hidden" onChange={onUpload} />
-        <Button onClick={() => fileInputRef.current?.click()} disabled={uploading}>
-          <Upload className="mr-1 h-4 w-4" />
-          {uploading ? `Uploading… ${Math.round(progress)}%` : "Upload"}
-        </Button>
+        {canManage && (
+          <>
+            <span className="hidden text-xs text-muted-foreground sm:block">
+              Drag &amp; drop to upload
+            </span>
+            <Button variant="outline" onClick={onNewFolder}>
+              <FolderPlus className="mr-1 h-4 w-4" /> New Folder
+            </Button>
+            <input ref={fileInputRef} type="file" multiple className="hidden" onChange={onUpload} />
+            <Button onClick={() => fileInputRef.current?.click()} disabled={uploading}>
+              <Upload className="mr-1 h-4 w-4" />
+              {uploading ? `Uploading… ${Math.round(progress)}%` : "Upload"}
+            </Button>
+          </>
+        )}
       </div>
     </div>
   );
@@ -374,6 +381,7 @@ function MediaLibrary() {
   const provider = useDataProvider();
   const { addToast } = useToast();
   const queryClient = useQueryClient();
+  const { canSystem } = usePermissions();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeFolder, setActiveFolder] = useState<string | null>(null);
   const [search, setSearch] = useState("");
@@ -397,9 +405,18 @@ function MediaLibrary() {
 
   const items = mediaItems ?? [];
   const visible = filterMedia(items, activeFolder, search);
+  const canManage = canSystem("manageMedia");
 
   async function runUpload(files: File[]) {
     if (files.length === 0) return;
+    if (!canManage) {
+      void logDenied(provider, {
+        action: "upload",
+        reason: "missing manageMedia permission",
+        resource: "media",
+      });
+      return;
+    }
     setUploading(true);
     setProgress(0);
     const results = await uploadSequence(provider, files, activeFolder, setProgress);
@@ -430,6 +447,14 @@ function MediaLibrary() {
 
   async function handleCreateFolder(e: FormEvent) {
     e.preventDefault();
+    if (!canManage) {
+      void logDenied(provider, {
+        action: "create",
+        reason: "missing manageMedia permission",
+        resource: "media_folders",
+      });
+      return;
+    }
     const name = folderName.trim();
     if (!name) return;
     setCreatingFolder(true);
@@ -451,6 +476,7 @@ function MediaLibrary() {
       {dragActive && <DropOverlay />}
 
       <MediaToolbar
+        canManage={canSystem("manageMedia")}
         fileInputRef={fileInputRef}
         onNewFolder={() => setFolderDialogOpen(true)}
         onUpload={handleUpload}

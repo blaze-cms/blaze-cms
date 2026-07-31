@@ -21,6 +21,7 @@ import {
   globals as registryGlobals,
 } from "@/__generated__/schema-registry";
 import { isDevMode } from "@/lib/backend-mode";
+import { usePermissions } from "@/lib/rbac";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -34,8 +35,13 @@ interface NavSection {
   items: NavItem[];
 }
 
-function navSections(): NavSection[] {
-  const collections = registryCollections.map((c) => ({
+function navSections(
+  can: (action: string, resource: string) => boolean,
+  canSystem: (action: string) => boolean,
+): NavSection[] {
+  const readableCollections = registryCollections.filter((c) => can("read", c.slug));
+
+  const collections = readableCollections.map((c) => ({
     group: (c as { admin?: { group?: string } }).admin?.group ?? "Collections",
     href: `/collections/${c.slug}`,
     icon: FileText,
@@ -49,13 +55,19 @@ function navSections(): NavSection[] {
     label: g.label ?? g.slug,
   }));
 
-  const contentItems: (NavItem & { group?: string })[] = [
-    { group: "Collections", href: "/collections", icon: FileText, label: "All Collections" },
-    ...collections,
-    { group: "Globals", href: "/globals", icon: Globe, label: "All Globals" },
-    ...globals,
-    { group: "Media", href: "/media", icon: Image, label: "Media" },
-  ];
+  const contentItems: (NavItem & { group?: string })[] = [];
+  if (readableCollections.length > 0) {
+    contentItems.push({
+      group: "Collections",
+      href: "/collections",
+      icon: FileText,
+      label: "All Collections",
+    });
+  }
+  contentItems.push(...collections);
+  contentItems.push({ group: "Globals", href: "/globals", icon: Globe, label: "All Globals" });
+  contentItems.push(...globals);
+  contentItems.push({ group: "Media", href: "/media", icon: Image, label: "Media" });
 
   const groups = new Map<string, (NavItem & { group?: string })[]>();
   const ungrouped: (NavItem & { group?: string })[] = [];
@@ -89,8 +101,8 @@ function navSections(): NavSection[] {
     ...dynamicSections,
     {
       items: [
-        { href: "/users", icon: Users, label: "Users" },
-        { href: "/roles", icon: Shield, label: "Roles" },
+        ...(canSystem("manageUsers") ? [{ href: "/users", icon: Users, label: "Users" }] : []),
+        ...(canSystem("manageRoles") ? [{ href: "/roles", icon: Shield, label: "Roles" }] : []),
         ...(isDevMode() ? [{ href: "/schemas", icon: FileJson, label: "Schemas" }] : []),
         { href: "/settings", icon: Settings, label: "Settings" },
       ],
@@ -101,7 +113,8 @@ function navSections(): NavSection[] {
 
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
-  const sections = navSections();
+  const { can, canSystem } = usePermissions();
+  const sections = navSections(can, canSystem);
 
   return (
     <aside

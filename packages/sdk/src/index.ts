@@ -26,10 +26,17 @@ export type {
   PaginatedResult,
   QueryFilter,
   QueryOptions,
+  RbacApi,
+  RbacCollectionAction,
+  RbacCollectionPermissions,
+  RbacPermissions,
+  RbacRole,
+  RbacSystemAction,
   StorageByType,
   StorageUsage,
   TopContributor,
   UserActivity,
+  UserRoleAssignment,
 } from "./types.js";
 
 export { BlazeError, NotFoundError, ValidationError } from "./errors.js";
@@ -55,3 +62,12 @@ export {
   safeFileName,
   validateMediaFile,
 } from "./media.js";
+
+export {
+  createRbacApi,
+  expandPermissions,
+  mergeGrants,
+  ROLES_COLLECTION,
+  SYSTEM_ACTIONS,
+  USER_ROLES_COLLECTION,
+} from "./rbac.js";

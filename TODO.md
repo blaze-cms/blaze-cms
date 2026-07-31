@@ -93,17 +93,17 @@
 
 ## Current Milestone: RBAC
 
-- [ ] **RBAC data models** — roles and user_roles Firestore collections
-- [ ] **Role CRUD** — create/edit/delete roles with permission flags
-- [ ] **User-role assignment** — multiple roles per user, merged union
-- [ ] **Permission cache** — React context, refreshed on auth state change
-- [ ] **Security Rules enforcement** — deny unauthorized writes (definitive layer)
-- [ ] **UI-side enforcement** — hide/disable restricted actions
-- [ ] **Field-level permissions** — read-only or hidden per field group
-- [ ] **Deny logging** — denied access logged to `access_logs` collection
-- [ ] **Migration** — existing access control patterns → RBAC
-- [ ] **SDK methods** — role/user-role CRUD
-- [ ] **Tests** — RBAC enforcement, Security Rules, UI integration
+- [x] **RBAC data models** — roles and user_roles Firestore collections
+- [x] **Role CRUD** — create/edit/delete roles with permission flags
+- [x] **User-role assignment** — multiple roles per user, merged union
+- [x] **Permission cache** — React context, refreshed on auth state change
+- [x] **Security Rules enforcement** — deny unauthorized writes (definitive layer)
+- [x] **UI-side enforcement** — hide/disable restricted actions
+- [x] **Field-level permissions** — read-only or hidden per field group
+- [x] **Deny logging** — denied access logged to `access_logs` collection
+- [x] **Migration** — existing access control patterns → RBAC
+- [x] **SDK methods** — role/user-role CRUD
+- [x] **Tests** — RBAC enforcement, Security Rules, UI integration
 
 ---
 
