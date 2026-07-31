@@ -7,7 +7,6 @@ export default defineCollection({
       fields: [text("item")],
       label: "Array Field",
     }),
-    text("field3"),
   ],
   labels: {
     plural: "Array Field",

@@ -143,7 +143,7 @@ export function renderStructureInput(
     }
 
     case "array": {
-      const f = field as ArrayField;
+      const f = field as ArrayField & { fields?: FieldDefinition[] };
       const items = Array.isArray(value) ? (value as unknown[]) : [];
       return (
         <div className="space-y-2 rounded-md border p-3">
@@ -151,19 +151,20 @@ export function renderStructureInput(
             <div key={idx} className="flex items-start gap-2">
               <GripVertical className="mt-2 h-4 w-4 shrink-0 text-muted-foreground" />
               <div className="flex-1">
-                {f.fields.map((subField) =>
-                  renderChild?.(
-                    subField,
-                    (item as Record<string, unknown>)?.[subField.name],
-                    (v: unknown) => {
-                      const newItems = [...items];
-                      newItems[idx] = {
-                        ...(newItems[idx] as Record<string, unknown>),
-                        [subField.name]: v,
-                      };
-                      onChange(newItems);
-                    },
-                  ) ?? null,
+                {(f.fields ?? []).map(
+                  (subField) =>
+                    renderChild?.(
+                      subField,
+                      (item as Record<string, unknown>)?.[subField.name],
+                      (v: unknown) => {
+                        const newItems = [...items];
+                        newItems[idx] = {
+                          ...(newItems[idx] as Record<string, unknown>),
+                          [subField.name]: v,
+                        };
+                        onChange(newItems);
+                      },
+                    ) ?? null,
                 )}
               </div>
               <button onClick={() => onChange(items.filter((_, i) => i !== idx))}>
@@ -180,16 +181,15 @@ export function renderStructureInput(
 
     case "object":
     case "group": {
-      const g = field as ObjectField | GroupField;
+      const g = field as (ObjectField | GroupField) & { fields?: FieldDefinition[] };
       const current = (value ?? {}) as Record<string, unknown>;
       return (
         <div className="space-y-3 rounded-md border p-3">
-          {g.fields.map((subField) =>
-            renderChild?.(
-              subField,
-              current[subField.name],
-              (v: unknown) => onChange({ ...current, [subField.name]: v }),
-            ) ?? null,
+          {(g.fields ?? []).map(
+            (subField) =>
+              renderChild?.(subField, current[subField.name], (v: unknown) =>
+                onChange({ ...current, [subField.name]: v }),
+              ) ?? null,
           )}
         </div>
       );
@@ -208,16 +208,13 @@ export function renderStructureInput(
                   <X className="h-3 w-3 text-destructive" />
                 </button>
               </div>
-              {r.fields.map((subField) =>
-                renderChild?.(
-                  subField,
-                  item?.[subField.name],
-                  (v: unknown) => {
+              {r.fields.map(
+                (subField) =>
+                  renderChild?.(subField, item?.[subField.name], (v: unknown) => {
                     const newItems = [...items];
                     newItems[idx] = { ...(newItems[idx] ?? {}), [subField.name]: v };
                     onChange(newItems);
-                  },
-                ) ?? null,
+                  }) ?? null,
               )}
             </div>
           ))}
@@ -236,12 +233,11 @@ export function renderStructureInput(
           {t.tabs.map((tab) => (
             <div key={tab.label} className="space-y-3">
               <h4 className="text-sm font-semibold text-muted-foreground">{tab.label}</h4>
-              {tab.fields.map((subField) =>
-                renderChild?.(
-                  subField,
-                  vals[subField.name],
-                  (v: unknown) => onChange({ ...vals, [subField.name]: v }),
-                ) ?? null,
+              {tab.fields.map(
+                (subField) =>
+                  renderChild?.(subField, vals[subField.name], (v: unknown) =>
+                    onChange({ ...vals, [subField.name]: v }),
+                  ) ?? null,
               )}
             </div>
           ))}
@@ -266,16 +262,17 @@ export function renderStructureInput(
                     <X className="h-3 w-3 text-destructive" />
                   </button>
                 </div>
-                {compDef?.fields.map((subField) =>
-                  renderChild?.(
-                    subField,
-                    (item as Record<string, unknown>)?.[subField.name],
-                    (v: unknown) => {
-                      const newItems = [...items];
-                      newItems[idx] = { ...(newItems[idx] ?? {}), [subField.name]: v };
-                      onChange(newItems);
-                    },
-                  ) ?? null,
+                {compDef?.fields.map(
+                  (subField) =>
+                    renderChild?.(
+                      subField,
+                      (item as Record<string, unknown>)?.[subField.name],
+                      (v: unknown) => {
+                        const newItems = [...items];
+                        newItems[idx] = { ...(newItems[idx] ?? {}), [subField.name]: v };
+                        onChange(newItems);
+                      },
+                    ) ?? null,
                 )}
               </div>
             );
@@ -343,20 +340,21 @@ export function renderStructureInput(
                   </button>
                 )}
               </div>
-              {compDef?.fields.map((subField) =>
-                renderChild?.(
-                  subField,
-                  (item as Record<string, unknown>)?.[subField.name],
-                  (v: unknown) => {
-                    if (!f.repeatable) {
-                      onChange({ ...(item as Record<string, unknown>), [subField.name]: v });
-                    } else {
-                      const newItems = [...items];
-                      newItems[idx] = { ...(newItems[idx] ?? {}), [subField.name]: v };
-                      onChange(newItems);
-                    }
-                  },
-                ) ?? null,
+              {compDef?.fields.map(
+                (subField) =>
+                  renderChild?.(
+                    subField,
+                    (item as Record<string, unknown>)?.[subField.name],
+                    (v: unknown) => {
+                      if (!f.repeatable) {
+                        onChange({ ...(item as Record<string, unknown>), [subField.name]: v });
+                      } else {
+                        const newItems = [...items];
+                        newItems[idx] = { ...(newItems[idx] ?? {}), [subField.name]: v };
+                        onChange(newItems);
+                      }
+                    },
+                  ) ?? null,
               )}
             </div>
           ))}

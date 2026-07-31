@@ -23,14 +23,10 @@ export const collections: CollectionDefinition[] = [
         ],
         label: "Array Field",
       },
-      {
-        name: "field3",
-        type: "text",
-      },
     ],
     labels: {
-      plural: "Array Field",
       singular: "Array Field",
+      plural: "Array Field",
     },
     slug: "array",
   },

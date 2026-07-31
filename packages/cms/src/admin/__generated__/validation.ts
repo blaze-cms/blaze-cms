@@ -4,7 +4,6 @@ export const ArraySchema = z.object({
   id: z.string().optional(),
   title: z.string().optional(),
   field: z.unknown().optional(),
-  field3: z.string().optional(),
 });
 
 export type ArrayInput = z.infer<typeof ArraySchema>;
