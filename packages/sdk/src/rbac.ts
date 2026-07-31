@@ -32,20 +32,27 @@ function normalizedRaw(raw: unknown): Record<string, unknown> {
 
 export function expandPermissions(permissions: unknown): string[] {
   const source = normalizedRaw(permissions);
-  const grants = new Set<string>();
   const system = normalizedRaw(source.system);
-  if (system.superAdmin === true) grants.add(SUPER_ADMIN_GRANT);
-  const collections = normalizedRaw(source.collections);
-  for (const [slug, rawFlags] of Object.entries(collections)) {
-    const flags = normalizedRaw(rawFlags);
-    for (const action of RBAC_ACTIONS) {
-      if (flags[action] === true) grants.add(`collections:${slug}:${action}`);
-    }
-  }
-  for (const action of SYSTEM_ACTIONS) {
-    if (system[action] === true) grants.add(`system:${action}`);
-  }
+  const grants = new Set<string>(systemGrants(system));
+  for (const grant of collectionGrants(normalizedRaw(source.collections))) grants.add(grant);
   return [...grants].sort();
+}
+
+function systemGrants(system: Record<string, unknown>): string[] {
+  const grants = SYSTEM_ACTIONS.filter((action) => system[action] === true).map(
+    (action) => `system:${action}`,
+  );
+  if (system.superAdmin === true) grants.push(SUPER_ADMIN_GRANT);
+  return grants;
+}
+
+function collectionGrants(collections: Record<string, unknown>): string[] {
+  return Object.entries(collections).flatMap(([slug, rawFlags]) => {
+    const flags = normalizedRaw(rawFlags);
+    return RBAC_ACTIONS.filter((action) => flags[action] === true).map(
+      (action) => `collections:${slug}:${action}`,
+    );
+  });
 }
 
 export function mergeGrants(...lists: string[][]): string[] {
