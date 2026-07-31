@@ -73,21 +73,21 @@
 
 ---
 
-## Current Milestone: Media Library
+## Current Milestone: Media Library ✅
 
-- [ ] **Firestore schema + indexes** — folders, tags, metadata model
-- [ ] **Storage bucket rules** — upload security, file type/max-size enforcement
-- [ ] **Upload implementation** — `uploadBytesResumable` with progress, drag-drop + click
-- [ ] **Media CRUD** — list, detail, rename, replace, delete (Storage + Firestore)
-- [ ] **Folder & tag organization** — Firestore-based folder tree, tags as array
-- [ ] **Search** — by filename, alt text, caption, tags
-- [ ] **Usage tracking** — find references across collections
-- [ ] **Admin UI: media grid/list view** — thumbnail grid + list toggle
-- [ ] **Admin UI: detail page** — metadata, preview, replace/delete actions
-- [ ] **Admin UI: folder tree** — sidebar folder navigation
-- [ ] **Admin UI: media picker** — reusable component for field-level media selection
-- [ ] **SDK methods** — media CRUD, search, usage queries
-- [ ] **Tests** — upload, CRUD, search, usage tracking
+- [x] **Firestore schema + indexes** — folders, tags, metadata model
+- [x] **Storage bucket rules** — upload security, file type/max-size enforcement
+- [x] **Upload implementation** — `uploadBytesResumable` with progress, drag-drop + click
+- [x] **Media CRUD** — list, detail, rename, replace, delete (Storage + Firestore)
+- [x] **Folder & tag organization** — Firestore-based folder tree, tags as array
+- [x] **Search** — by filename, alt text, caption, tags
+- [x] **Usage tracking** — find references across collections
+- [x] **Admin UI: media grid/list view** — thumbnail grid + list toggle
+- [x] **Admin UI: detail page** — metadata, preview, replace/delete actions
+- [x] **Admin UI: folder tree** — sidebar folder navigation
+- [x] **Admin UI: media picker** — reusable component for field-level media selection
+- [x] **SDK methods** — media CRUD, search, usage queries
+- [x] **Tests** — upload, CRUD, search, usage tracking
 
 ---
 

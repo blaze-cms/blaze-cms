@@ -8,6 +8,12 @@ export interface BlazeClientConfig {
   appId: string;
   measurementId?: string;
   analytics?: AnalyticsConfig;
+  media?: MediaConfig;
+}
+
+export interface MediaConfig {
+  /** Max upload size in bytes. Defaults to 20MB. */
+  maxFileSize?: number;
 }
 
 export interface AnalyticsConfig {
@@ -149,4 +155,73 @@ export interface AnalyticsApi {
   getUserActivity(options?: AnalyticsQueryOptions): Promise<UserActivity>;
   /** Combined summary for the dashboard. */
   getSummary(options?: AnalyticsQueryOptions): Promise<AnalyticsSummary>;
+}
+
+export interface MediaItem {
+  id: string;
+  name: string;
+  url: string;
+  storagePath: string;
+  mimeType: string;
+  size: number;
+  folder: string | null;
+  tags: string[];
+  altText?: string;
+  caption?: string;
+  width?: number;
+  height?: number;
+  createdAt: string;
+  updatedAt: string;
+  createdBy?: string;
+}
+
+export interface MediaFolder {
+  id: string;
+  name: string;
+  parent: string | null;
+  createdAt: string;
+}
+
+export interface MediaQueryOptions {
+  /** Filter by folder id; pass `null` for root-level assets. */
+  folder?: string | null;
+  /** Filter by a tag using Firestore `array-contains`. */
+  tag?: string;
+  /** Client-side substring match on name, alt text, caption, and tags. */
+  search?: string;
+  limit?: number;
+}
+
+export interface MediaUploadOptions {
+  folder?: string | null;
+  tags?: string[];
+  altText?: string;
+  caption?: string;
+  onProgress?: (percent: number) => void;
+}
+
+export interface MediaUsage {
+  collection: string;
+  count: number;
+}
+
+export interface MediaFoldersApi {
+  list(): Promise<MediaFolder[]>;
+  create(name: string, parent?: string | null): Promise<MediaFolder>;
+  rename(id: string, name: string): Promise<void>;
+  remove(id: string): Promise<void>;
+}
+
+export interface MediaApi {
+  list(options?: MediaQueryOptions): Promise<MediaItem[]>;
+  get(id: string): Promise<MediaItem | null>;
+  upload(file: File, options?: MediaUploadOptions): Promise<MediaItem>;
+  update(
+    id: string,
+    data: Partial<Pick<MediaItem, "altText" | "caption" | "folder" | "name" | "tags">>,
+  ): Promise<void>;
+  replace(id: string, file: File, onProgress?: (percent: number) => void): Promise<MediaItem>;
+  remove(id: string): Promise<void>;
+  usage(id: string, collections: string[]): Promise<MediaUsage[]>;
+  folders: MediaFoldersApi;
 }

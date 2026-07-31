@@ -9,6 +9,7 @@ import { globalDetailRoute } from "@/routes/globals/$slug";
 import { globalsIndexRoute } from "@/routes/globals/index";
 import { indexRoute } from "@/routes/index";
 import { loginRoute } from "@/routes/login";
+import { mediaDetailRoute } from "@/routes/media/$id";
 import { mediaRoute } from "@/routes/media/index";
 import { notFoundRoute } from "@/routes/not-found";
 import { roleDetailRoute } from "@/routes/roles/$id";
@@ -36,6 +37,7 @@ export const routeTree = rootRoute.addChildren([
     globalsIndexRoute,
     globalDetailRoute,
     mediaRoute,
+    mediaDetailRoute,
     usersIndexRoute,
     newUserRoute,
     userDetailRoute,

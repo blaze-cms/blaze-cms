@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useConfirmDelete } from "@/lib/hooks/use-confirm-delete";
 import { useDataProvider } from "@/lib/providers/context";
 import { appLayoutRoute } from "@/routes/app-layout";
 
@@ -32,6 +33,8 @@ function UserDetail() {
     queryKey: ["users", id],
   });
 
+  const confirmDelete = useConfirmDelete();
+
   useEffect(() => {
     if (!user) return;
     if (user.name) setName(user.name as string);
@@ -53,14 +56,15 @@ function UserDetail() {
   }
 
   async function handleDelete() {
-    if (!window.confirm("Delete this user? This action cannot be undone.")) return;
-    try {
-      await provider.delete("users", id);
-      addToast({ description: "User has been deleted.", title: "Deleted" });
-      router.navigate({ to: "/users" });
-    } catch (err) {
-      addToast({ description: String(err), title: "Error", variant: "destructive" });
-    }
+    const deleted = await confirmDelete({
+      description: "User has been deleted.",
+      id,
+      message: "Delete this user? This action cannot be undone.",
+      onDelete: (itemId) => provider.delete("users", itemId),
+      queryKey: "users",
+      toastTitle: "Deleted",
+    });
+    if (deleted) router.navigate({ to: "/users" });
   }
 
   return (

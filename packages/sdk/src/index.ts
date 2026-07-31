@@ -15,6 +15,14 @@ export type {
   ContentCounts,
   GlobalApi,
   AuthApi,
+  MediaApi,
+  MediaConfig,
+  MediaFolder,
+  MediaFoldersApi,
+  MediaItem,
+  MediaQueryOptions,
+  MediaUploadOptions,
+  MediaUsage,
   PaginatedResult,
   QueryFilter,
   QueryOptions,
@@ -38,3 +46,12 @@ export {
   toISOString,
   USERS_COLLECTION,
 } from "./analytics.js";
+
+export { createMediaApi } from "./media.js";
+export {
+  measureImage,
+  mediaItemFromData,
+  referencesValue,
+  safeFileName,
+  validateMediaFile,
+} from "./media.js";

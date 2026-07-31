@@ -1,4 +1,14 @@
-import type { AnalyticsQuery, AnalyticsSummary, DataProvider, QueryOptions } from "./types";
+import { measureImage, pick, validateMediaFile } from "@/lib/media/validation";
+
+import type {
+  AnalyticsQuery,
+  AnalyticsSummary,
+  DataProvider,
+  MediaUploadOptions,
+  MediaUploadResult,
+  PaginatedResult,
+  QueryOptions,
+} from "./types";
 
 import {
   aggregateAuthors,
@@ -8,9 +18,11 @@ import {
   sumMediaUsage,
   toISOString,
 } from "./analytics-helpers";
+import { isFilterValue } from "./types";
 
 const MEDIA = "media";
 const USERS = "users";
+const PAGE_SIZE = 25;
 
 const store: Map<string, Map<string, Record<string, unknown>>> = new Map();
 const globalStore: Map<string, Record<string, unknown>> = new Map();
@@ -19,6 +31,86 @@ function getCollection(col: string): Map<string, Record<string, unknown>> {
   if (!store.has(col)) store.set(col, new Map());
   return store.get(col) ?? new Map<string, Record<string, unknown>>();
 }
+
+function contentTypeFor(name: string): string {
+  if (name.endsWith(".jpg")) return "image/jpeg";
+  if (name.endsWith(".svg")) return "image/svg+xml";
+  return "application/pdf";
+}
+
+function urlFor(name: string): string {
+  if (name.endsWith(".jpg")) return `https://picsum.photos/seed/${name}/400/300`;
+  return "https://example.com/docs/overview-deck.pdf";
+}
+
+function seedFolders(): void {
+  const folders = getCollection("media_folders");
+  const names = ["Brand", "Blog", "Heroes"];
+  names.forEach((name) => {
+    folders.set(name.toLowerCase(), {
+      createdAt: new Date().toISOString(),
+      id: name.toLowerCase(),
+      name,
+    });
+  });
+}
+
+function seedRecord(
+  seed: { altText: string; folder: string; name: string; tags: string[] },
+  now: number,
+  index: number,
+): Record<string, unknown> {
+  const isImage = seed.name.endsWith(".jpg");
+  return {
+    ...seed,
+    contentType: contentTypeFor(seed.name),
+    createdAt: new Date(now - index * 86_400_000).toISOString(),
+    height: isImage ? 300 : null,
+    size: 120_000 + index * 17_000,
+    updatedAt: new Date(now - index * 86_400_000).toISOString(),
+    url: urlFor(seed.name),
+    width: isImage ? 400 : null,
+  };
+}
+
+function seedMockMedia(): void {
+  const media = getCollection(MEDIA);
+  if (media.size > 0) return;
+  seedFolders();
+
+  const now = Date.now();
+  const seeds = [
+    {
+      altText: "Blazing hero banner",
+      folder: "heroes",
+      name: "hero-banner.jpg",
+      tags: ["hero", "landing"],
+    },
+    { altText: "Brand logo mark", folder: "brand", name: "logo-mark.svg", tags: ["brand"] },
+    { altText: "Team photo", folder: "brand", name: "team-2026.jpg", tags: ["team", "brand"] },
+    {
+      altText: "Product shot on teal",
+      folder: "blog",
+      name: "product-teal.jpg",
+      tags: ["product"],
+    },
+    {
+      altText: "Company overview deck",
+      folder: "brand",
+      name: "overview-deck.pdf",
+      tags: ["document", "brand"],
+    },
+    { altText: "Launch teaser", folder: "blog", name: "launch-teaser.jpg", tags: ["launch"] },
+    { altText: "Office interior", folder: "heroes", name: "office.jpg", tags: ["culture"] },
+    { altText: "Community meetup", folder: "blog", name: "meetup.jpg", tags: ["community"] },
+  ];
+  seeds.forEach((seed, index) => {
+    const id = `seed-${index + 1}`;
+    media.set(id, { ...seedRecord(seed, now, index), id, path: `media/${seed.name}` });
+  });
+}
+
+seedMockMedia();
 
 function pushEntryActivity(
   entries: Iterable<Record<string, unknown>>,
@@ -84,9 +176,132 @@ async function getAnalytics(queryOpts: AnalyticsQuery): Promise<AnalyticsSummary
   };
 }
 
+type Matcher = (actual: unknown, value: unknown) => boolean;
+
+const MATCHERS: Record<string, Matcher> = {
+  "!=": (actual, value) => actual !== value,
+  "<": (actual, value) => (actual as number) < (value as number),
+  "<=": (actual, value) => (actual as number) <= (value as number),
+  "==": (actual, value) => actual === value,
+  ">": (actual, value) => (actual as number) > (value as number),
+  ">=": (actual, value) => (actual as number) >= (value as number),
+  "array-contains": (actual, value) => (actual as unknown[]).includes(value),
+  "array-contains-any": (actual, value) =>
+    (value as unknown[]).some((item) => (actual as unknown[]).includes(item)),
+  in: (actual, value) => (value as unknown[]).includes(actual),
+  "not-in": (actual, value) => !(value as unknown[]).includes(actual),
+};
+
+function matchesFilter(item: Record<string, unknown>, key: string, val: unknown): boolean {
+  if (isFilterValue(val)) {
+    const matcher = MATCHERS[val.op];
+    if (matcher) return matcher(item[key], val.value);
+    return true;
+  }
+  return item[key] === val;
+}
+
+function applyFilters(
+  items: Array<Record<string, unknown>>,
+  filter?: Record<string, unknown>,
+): Array<Record<string, unknown>> {
+  if (!filter) return items;
+  for (const [key, val] of Object.entries(filter)) {
+    items = items.filter((item) => matchesFilter(item, key, val));
+  }
+  return items;
+}
+
+function compareValues(a: unknown, b: unknown, dir: number): number {
+  const av = a as string | number;
+  const bv = b as string | number;
+  if (av < bv) return dir;
+  if (av > bv) return -dir;
+  return 0;
+}
+
+function applySort(
+  items: Array<Record<string, unknown>>,
+  sort?: string,
+  order?: "asc" | "desc",
+): Array<Record<string, unknown>> {
+  if (!sort) return items;
+  const dir = order === "desc" ? 1 : -1;
+  return [...items].sort((a, b) => compareValues(a[sort], b[sort], dir));
+}
+
+function limitSize(limit?: number): number {
+  return limit === undefined ? PAGE_SIZE : limit;
+}
+
+function paginate<T>(items: T[], limit?: number): PaginatedResult<T> {
+  const size = limitSize(limit);
+  const hasMore = items.length > size;
+  return { data: hasMore ? items.slice(0, size) : items, hasMore };
+}
+
+function mockMediaRecord(
+  file: File,
+  options: MediaUploadOptions,
+  dims: { width?: number; height?: number },
+  id: string,
+  url: string,
+): Record<string, unknown> {
+  const now = new Date().toISOString();
+  return {
+    altText: pick(options.altText, file.name),
+    caption: pick(options.caption, ""),
+    contentType: file.type,
+    createdAt: now,
+    folder: pick(options.folder, null),
+    height: dims.height === undefined ? null : dims.height,
+    id,
+    name: file.name,
+    path: `media/${id}_${file.name}`,
+    size: file.size,
+    tags: pick(options.tags, []),
+    updatedAt: now,
+    url,
+    width: dims.width === undefined ? null : dims.width,
+  };
+}
+
+function mockPatch(
+  existing: Record<string, unknown>,
+  file: File,
+  dims: { width?: number; height?: number },
+  id: string,
+  url: string,
+  options: MediaUploadOptions,
+): Record<string, unknown> {
+  const now = new Date().toISOString();
+  return {
+    altText: pick(options.altText, pick(existing.altText as string, file.name)),
+    caption: pick(options.caption, pick(existing.caption as string, "")),
+    contentType: file.type,
+    height: dims.height === undefined ? null : dims.height,
+    name: file.name,
+    path: `media/${id}_${file.name}`,
+    size: file.size,
+    tags: pick(options.tags, pick(existing.tags as string[], [])),
+    updatedAt: now,
+    url,
+    width: dims.width === undefined ? null : dims.width,
+  };
+}
+
+async function uploadMedia(file: File, options?: MediaUploadOptions): Promise<MediaUploadResult> {
+  validateMediaFile(file);
+  const dims = await measureImage(file);
+  const id = crypto.randomUUID();
+  const url = URL.createObjectURL(file);
+  getCollection(MEDIA).set(id, mockMediaRecord(file, options ?? {}, dims, id, url));
+  return { id, name: file.name, url };
+}
+
 export const mockProvider: DataProvider = {
   async create(collectionName: string, data: Record<string, unknown>) {
-    const id = (data.id as string) ?? crypto.randomUUID();
+    const id = typeof data.id === "string" ? data.id : crypto.randomUUID();
     getCollection(collectionName).set(id, { ...data, id, updatedAt: new Date().toISOString() });
     return id;
   },
@@ -94,28 +309,16 @@ export const mockProvider: DataProvider = {
     getCollection(collectionName).delete(id);
   },
 
+  async deleteMedia(id: string) {
+    getCollection(MEDIA).delete(id);
+  },
+
   async findMany(collectionName: string, options?: QueryOptions) {
-    const col = getCollection(collectionName);
-    let items = [...col.values()];
-    if (options?.filter) {
-      for (const [key, val] of Object.entries(options.filter)) {
-        items = items.filter((item) => item[key] === val);
-      }
-    }
-    const sortKey = options?.sort;
-    if (sortKey) {
-      items.sort((a, b) => {
-        const av = a[sortKey] as string | number;
-        const bv = b[sortKey] as string | number;
-        if (av < bv) return options?.order === "desc" ? 1 : -1;
-        if (av > bv) return options?.order === "desc" ? -1 : 1;
-        return 0;
-      });
-    }
-    const pageSize = options?.limit ?? 25;
-    const hasMore = items.length > pageSize;
-    if (hasMore) items = items.slice(0, pageSize);
-    return { data: items, hasMore };
+    const opts = options ?? {};
+    const all = [...getCollection(collectionName).values()];
+    const filtered = applyFilters(all, opts.filter);
+    const sorted = applySort(filtered, opts.sort, opts.order);
+    return paginate(sorted, opts.limit);
   },
 
   async findOne(collectionName: string, id: string) {
@@ -132,6 +335,19 @@ export const mockProvider: DataProvider = {
 
   name: "mock",
 
+  async replaceMedia(id: string, file: File, options?: MediaUploadOptions) {
+    validateMediaFile(file);
+    const existing = getCollection(MEDIA).get(id);
+    if (!existing) throw new Error(`Media item not found: ${id}`);
+    const dims = await measureImage(file);
+    const url = URL.createObjectURL(file);
+    getCollection(MEDIA).set(id, {
+      ...existing,
+      ...mockPatch(existing, file, dims, id, url, options ?? {}),
+    });
+    return { url };
+  },
+
   type: "mock",
 
   async update(collectionName: string, id: string, data: Record<string, unknown>) {
@@ -140,6 +356,10 @@ export const mockProvider: DataProvider = {
     if (!existing) throw new Error(`Document ${id} not found in ${collectionName}`);
     const { id: _, ...rest } = data;
     col.set(id, { ...existing, ...rest, updatedAt: new Date().toISOString() });
+  },
+
+  async uploadMedia(file: File, options?: MediaUploadOptions) {
+    return uploadMedia(file, options);
   },
 
   async upsertGlobal(slug: string, data: Record<string, unknown>) {
