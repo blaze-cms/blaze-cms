@@ -104,7 +104,7 @@ The system SHALL display where a media asset is referenced across collections.
 
 ### Requirement: Media serves with CDN caching
 
-Firebase Storage URLs are served via a CDN by default with appropriate cache headers; no custom API layer is needed.
+Firebase Storage URLs SHALL be served via a CDN by default with appropriate cache headers; no custom API layer is needed.
 
 #### Scenario: CDN-cached URLs
 
