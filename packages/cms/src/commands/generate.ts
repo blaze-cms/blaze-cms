@@ -4,7 +4,7 @@ import {
   SdkGenerator,
   GenerationPipeline,
 } from "@blazing-cms/generators";
-import { SchemaLoader } from "@blazing-cms/schema";
+import { SchemaLoader, type SchemaResult } from "@blazing-cms/schema";
 import { writeFileSync, mkdirSync, existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -61,33 +61,95 @@ export const projectName = ${JSON.stringify(projectName)};
   console.warn(`  ✓ Generated app-config.ts`);
 }
 
+function collectionGrant(slug: string, action: string): string {
+  return `hasGrant("collections:${slug}:${action}") || hasGrant("collections:*:${action}")`;
+}
+
+function collectionRule(c: { slug: string }): string {
+  return [
+    `    match /collections_${c.slug}/{doc} {`,
+    `      allow create: if ${collectionGrant(c.slug, "create")};`,
+    `      allow read: if ${collectionGrant(c.slug, "read")};`,
+    `      allow update: if ${collectionGrant(c.slug, "update")};`,
+    `      allow delete: if ${collectionGrant(c.slug, "delete")};`,
+    `    }`,
+    `    match /collections_${c.slug}/{doc}/versions/{version} {`,
+    `      allow read: if ${collectionGrant(c.slug, "read")};`,
+    `      allow create, update, delete: if ${collectionGrant(c.slug, "update")};`,
+    `    }`,
+  ].join("\n");
+}
+
+function globalRule(g: { slug: string }): string {
+  return [
+    `    match /globals_${g.slug}/{doc} {`,
+    `      allow read, write: if hasSystem("manageSettings");`,
+    `    }`,
+    `    match /globals_${g.slug}/value/versions/{version} {`,
+    `      allow read, write: if hasSystem("manageSettings");`,
+    `    }`,
+  ].join("\n");
+}
+
+const PLATFORM_RULES = [
+  `    // Platform collections`,
+  `    match /collections_roles/{doc} {`,
+  `      allow read, create, update, delete: if hasSystem("manageRoles");`,
+  `    }`,
+  `    match /collections_users/{doc} {`,
+  `      allow read, create, update, delete: if hasSystem("manageUsers");`,
+  `    }`,
+  `    match /collections_user_roles/{doc} {`,
+  `      allow read: if hasSystem("manageUsers") || hasSystem("manageRoles");`,
+  `      allow create, update: if hasSystem("manageUsers") || hasSystem("manageRoles") || (isSignedIn() && request.resource.data.userId == request.auth.uid && request.resource.data.roleIds.size() == 0);`,
+  `      allow delete: if hasSystem("manageUsers") || hasSystem("manageRoles");`,
+  `    }`,
+  `    match /media/{doc} {`,
+  `      allow read, create, update, delete: if hasSystem("manageMedia");`,
+  `    }`,
+  `    match /collections_access_logs/{doc} {`,
+  `      allow create: if isSignedIn();`,
+  `      allow read: if hasSystem("manageUsers");`,
+  `      allow update, delete: if false;`,
+  `    }`,
+  `    match /notifications/{doc} {`,
+  `      allow create: if isSignedIn();`,
+  `      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;`,
+  `      allow update: if isSignedIn() && request.resource.data.userId == request.auth.uid;`,
+  `      allow delete: if hasSystem("manageUsers");`,
+  `    }`,
+].join("\n");
+
 async function generateFirestoreRules(
   collections: { slug: string }[],
   globals: { slug: string }[],
 ) {
-  const collectionRules = collections
-    .map(
-      (c) =>
-        `    match /collections_${c.slug}/{doc} {\n      allow read, write: if request.auth != null;\n    }`,
-    )
-    .join("\n");
-  const globalRules = globals
-    .map(
-      (g) =>
-        `    match /globals_${g.slug}/{doc} {\n      allow read, write: if request.auth != null;\n    }`,
-    )
-    .join("\n");
-
   const rules = `
-rules_version = 2;
+rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // RBAC helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function userGrants() {
+      return get(/databases/$(database)/documents/collections_user_roles/$(request.auth.uid)).data.grants;
+    }
+    function hasGrant(grant) {
+      return isSignedIn() && (grant in userGrants() || ("*:*" in userGrants()));
+    }
+    function hasSystem(flag) {
+      return hasGrant("system:" + flag);
+    }
+
     // Per-collection content rules
-${collectionRules}
+${collections.map(collectionRule).join("\n")}
 
     // Global content rules
-${globalRules}
+${globals.map(globalRule).join("\n")}
+
+${PLATFORM_RULES}
 
     // Deny everything else
     match /{document=**} {
@@ -111,11 +173,42 @@ async function generateFirestoreIndexes(_collections: unknown[]) {
 const _dirname = fileURLToPath(new URL(".", import.meta.url));
 const ADMIN_ROOT = resolve(_dirname, "../../src/admin");
 
-export async function generate(options: GenerateOptions): Promise<void> {
-  const schemaDir = resolve(process.cwd(), options.dir ?? "cms");
-  const outDir = options.outDir
+function shouldRun(type: string | undefined, kind: string): boolean {
+  return type === undefined || type === kind;
+}
+
+function schemaDirFor(options: GenerateOptions): string {
+  return resolve(process.cwd(), options.dir ?? "cms");
+}
+
+function outDirFor(options: GenerateOptions): string {
+  return options.outDir
     ? resolve(process.cwd(), options.outDir)
     : resolve(ADMIN_ROOT, "__generated__");
+}
+
+async function addBaseGenerators(options: GenerateOptions, pipeline: GenerationPipeline) {
+  if (shouldRun(options.type, "types")) pipeline.addGenerator(new TypeGenerator());
+  if (shouldRun(options.type, "validation")) pipeline.addGenerator(new ValidationGenerator());
+  if (shouldRun(options.type, "sdk")) pipeline.addGenerator(new SdkGenerator());
+}
+
+async function runExtras(options: GenerateOptions, schema: SchemaResult, outDir: string) {
+  if (shouldRun(options.type, "registry")) {
+    await generateSchemaRegistry(schema.collections, schema.globals, schema.components, outDir);
+    await generateAppConfig(outDir);
+  }
+  if (shouldRun(options.type, "rules")) {
+    await generateFirestoreRules(schema.collections, schema.globals);
+  }
+  if (shouldRun(options.type, "indexes")) {
+    await generateFirestoreIndexes(schema.collections);
+  }
+}
+
+export async function generate(options: GenerateOptions): Promise<void> {
+  const schemaDir = schemaDirFor(options);
+  const outDir = outDirFor(options);
 
   if (!existsSync(schemaDir)) {
     console.warn(`  ⚠ Schema directory not found: ${schemaDir}`);
@@ -136,27 +229,8 @@ export async function generate(options: GenerateOptions): Promise<void> {
   }
 
   const pipeline = new GenerationPipeline();
-
-  if (!options.type || options.type === "types") {
-    pipeline.addGenerator(new TypeGenerator());
-  }
-  if (!options.type || options.type === "validation") {
-    pipeline.addGenerator(new ValidationGenerator());
-  }
-  if (!options.type || options.type === "sdk") {
-    pipeline.addGenerator(new SdkGenerator());
-  }
-  if (!options.type || options.type === "registry") {
-    await generateSchemaRegistry(schema.collections, schema.globals, schema.components, outDir);
-    await generateAppConfig(outDir);
-  }
-  if (!options.type || options.type === "rules") {
-    await generateFirestoreRules(schema.collections, schema.globals);
-  }
-  if (!options.type || options.type === "indexes") {
-    await generateFirestoreIndexes(schema.collections);
-  }
-
+  await addBaseGenerators(options, pipeline);
+  await runExtras(options, schema, outDir);
   await pipeline.run(schema.collections, schema.globals, schema.components, outDir);
 
   if (!options.type) {

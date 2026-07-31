@@ -29,7 +29,7 @@ export {
   repeater,
   slug,
 } from "./fields.js";
-export { SchemaLoader } from "./loader.js";
+export { SchemaLoader, type SchemaResult } from "./loader.js";
 export { SchemaWatcher } from "./watcher.js";
 export { SchemaValidator } from "./validator.js";
 export { defineCollection } from "./define-collection.js";
