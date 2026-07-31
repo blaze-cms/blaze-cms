@@ -10,6 +10,7 @@ vi.mock("node:fs", () => ({
 
 beforeEach(() => {
   vi.clearAllMocks();
+  vi.spyOn(console, "error").mockImplementation(() => {});
 });
 
 describe("SchemaLoader", () => {
