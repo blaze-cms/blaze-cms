@@ -85,6 +85,22 @@ export interface VersionRecord {
   summary?: string;
 }
 
+export interface TransitionEntryOptions {
+  comment?: string;
+  reviewer?: string;
+}
+
+export interface NotificationRecord {
+  id: string;
+  userId: string;
+  type: string;
+  message: string;
+  collection?: string;
+  entryId?: string;
+  read: boolean;
+  createdAt: string;
+}
+
 export interface DataProvider {
   name: string;
   type: "firebase" | "mock";
@@ -107,6 +123,17 @@ export interface DataProvider {
   deleteVersion(target: VersionTarget, versionId: string): Promise<void>;
 
   getAnalytics(query: AnalyticsQuery): Promise<AnalyticsSummary>;
+
+  transitionEntry(
+    collection: string,
+    id: string,
+    to: string,
+    options?: TransitionEntryOptions,
+  ): Promise<void>;
+  assignReviewer(collection: string, id: string, userId: string): Promise<void>;
+
+  listNotifications(userId: string): Promise<NotificationRecord[]>;
+  markNotificationsRead(ids: string[]): Promise<void>;
 
   uploadMedia(file: File, options?: MediaUploadOptions): Promise<MediaUploadResult>;
   replaceMedia(id: string, file: File, options?: MediaUploadOptions): Promise<{ url: string }>;

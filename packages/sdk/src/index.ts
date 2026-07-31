@@ -23,6 +23,8 @@ export type {
   MediaQueryOptions,
   MediaUploadOptions,
   MediaUsage,
+  NotificationRecord,
+  NotificationsApi,
   PaginatedResult,
   QueryFilter,
   QueryOptions,
@@ -42,6 +44,9 @@ export type {
   VersionRecord,
   VersionTarget,
   VersionsApi,
+  WorkflowApi,
+  WorkflowTransitionOptions,
+  WorkflowTransitionRecord,
 } from "./types.js";
 
 export { BlazeError, NotFoundError, ValidationError } from "./errors.js";
@@ -84,3 +89,7 @@ export {
   enforceKeep,
   snapshotVersion,
 } from "./versions.js";
+
+export { createWorkflowApi } from "./workflow.js";
+
+export { createNotificationsApi, NOTIFICATIONS_COLLECTION } from "./notifications.js";

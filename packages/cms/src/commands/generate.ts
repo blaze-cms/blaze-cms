@@ -1,3 +1,5 @@
+import type { CollectionDefinition } from "@blazing-cms/types";
+
 import {
   TypeGenerator,
   ValidationGenerator,
@@ -8,6 +10,8 @@ import { SchemaLoader, type SchemaResult } from "@blazing-cms/schema";
 import { writeFileSync, mkdirSync, existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+
+import { hasWorkflow, resolveWorkflow } from "../shared/workflow.js";
 export interface GenerateOptions {
   type?: string;
   dir?: string;
@@ -65,19 +69,53 @@ function collectionGrant(slug: string, action: string): string {
   return `hasGrant("collections:${slug}:${action}") || hasGrant("collections:*:${action}")`;
 }
 
-function collectionRule(c: { slug: string }): string {
+function pascalName(slug: string): string {
+  const cleaned = slug.replace(/[^a-zA-Z0-9]/g, "");
+  return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+}
+
+function workflowCreateCondition(c: CollectionDefinition): string {
+  const state = resolveWorkflow(c).defaultState;
+  return `(${collectionGrant(c.slug, "create")}) && (request.resource.data.workflowState == null || request.resource.data.workflowState == "${state}")`;
+}
+
+function workflowFunction(c: CollectionDefinition): string | null {
+  if (!hasWorkflow(c)) return null;
+  const resolved = resolveWorkflow(c);
+  const pairs = resolved.transitions.map(
+    (t) =>
+      `(resource.data.workflowState == "${t.from}" && request.resource.data.workflowState == "${t.to}")`,
+  );
+  const changes = pairs.length > 0 ? ` || ${pairs.join(" || ")}` : "";
   return [
-    `    match /collections_${c.slug}/{doc} {`,
-    `      allow create: if ${collectionGrant(c.slug, "create")};`,
-    `      allow read: if ${collectionGrant(c.slug, "read")};`,
-    `      allow update: if ${collectionGrant(c.slug, "update")};`,
-    `      allow delete: if ${collectionGrant(c.slug, "delete")};`,
-    `    }`,
-    `    match /collections_${c.slug}/{doc}/versions/{version} {`,
-    `      allow read: if ${collectionGrant(c.slug, "read")};`,
-    `      allow create, update, delete: if ${collectionGrant(c.slug, "update")};`,
+    `    function valid${pascalName(c.slug)}Workflow() {`,
+    `      return request.resource.data.workflowState == resource.data.workflowState${changes};`,
     `    }`,
   ].join("\n");
+}
+
+function collectionRule(c: CollectionDefinition): string {
+  const lines = [`    match /collections_${c.slug}/{doc} {`];
+  if (hasWorkflow(c)) {
+    lines.push(`      allow create: if ${workflowCreateCondition(c)};`);
+  } else {
+    lines.push(`      allow create: if ${collectionGrant(c.slug, "create")};`);
+  }
+  lines.push(`      allow read: if ${collectionGrant(c.slug, "read")};`);
+  if (hasWorkflow(c)) {
+    lines.push(
+      `      allow update: if (${collectionGrant(c.slug, "update")}) && valid${pascalName(c.slug)}Workflow();`,
+    );
+  } else {
+    lines.push(`      allow update: if ${collectionGrant(c.slug, "update")};`);
+  }
+  lines.push(`      allow delete: if ${collectionGrant(c.slug, "delete")};`);
+  lines.push(`    }`);
+  lines.push(`    match /collections_${c.slug}/{doc}/versions/{version} {`);
+  lines.push(`      allow read: if ${collectionGrant(c.slug, "read")};`);
+  lines.push(`      allow create, update, delete: if ${collectionGrant(c.slug, "update")};`);
+  lines.push(`    }`);
+  return lines.join("\n");
 }
 
 function globalRule(g: { slug: string }): string {
@@ -121,9 +159,12 @@ const PLATFORM_RULES = [
 ].join("\n");
 
 async function generateFirestoreRules(
-  collections: { slug: string }[],
+  collections: CollectionDefinition[],
   globals: { slug: string }[],
 ) {
+  const workflowFunctions = collections
+    .map(workflowFunction)
+    .filter((fn): fn is string => fn !== null);
   const rules = `
 rules_version = '2';
 service cloud.firestore {
@@ -142,6 +183,9 @@ service cloud.firestore {
     function hasSystem(flag) {
       return hasGrant("system:" + flag);
     }
+
+    // Workflow transition helpers
+${workflowFunctions.join("\n")}
 
     // Per-collection content rules
 ${collections.map(collectionRule).join("\n")}

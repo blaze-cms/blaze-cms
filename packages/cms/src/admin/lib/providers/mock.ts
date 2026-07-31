@@ -5,6 +5,7 @@ import {
   mergeGrants,
   setCollectionAction,
 } from "@/lib/rbac/permissions";
+import { historyOf, transitionRecord } from "@/lib/workflow";
 
 import type {
   AnalyticsQuery,
@@ -12,8 +13,10 @@ import type {
   DataProvider,
   MediaUploadOptions,
   MediaUploadResult,
+  NotificationRecord,
   PaginatedResult,
   QueryOptions,
+  TransitionEntryOptions,
   VersionRecord,
   VersionTarget,
 } from "./types";
@@ -37,6 +40,7 @@ const PAGE_SIZE = 25;
 const store: Map<string, Map<string, Record<string, unknown>>> = new Map();
 const globalStore: Map<string, Record<string, unknown>> = new Map();
 const versionStore: Map<string, Map<string, VersionRecord>> = new Map();
+const notificationStore: Map<string, NotificationRecord> = new Map();
 
 function getCollection(col: string): Map<string, Record<string, unknown>> {
   if (!store.has(col)) store.set(col, new Map());
@@ -208,6 +212,59 @@ function seedMockRbac(): void {
 }
 
 seedMockRbac();
+
+function seedMockNotifications(): void {
+  if (notificationStore.size > 0) return;
+  const now = new Date().toISOString();
+  notificationStore.set("notif-1", {
+    collection: "posts",
+    createdAt: now,
+    entryId: "seed-post-1",
+    id: "notif-1",
+    message: "A post has been submitted for your review.",
+    read: false,
+    type: "workflow-review",
+    userId: "user-admin",
+  });
+}
+
+seedMockNotifications();
+
+function mockTransitionPatch(
+  data: Record<string, unknown>,
+  to: string,
+  options?: TransitionEntryOptions,
+): Record<string, unknown> {
+  const record = transitionRecord(data.workflowState, to, {
+    comment: options?.comment,
+    user: "mock-user",
+  });
+  return {
+    reviewer: options?.reviewer ?? data.reviewer ?? null,
+    workflowHistory: [...historyOf(data.workflowHistory), record],
+    workflowState: to,
+  };
+}
+
+function mockNotifyReviewer(collectionName: string, entryId: string, userId: string): void {
+  const id = `notif-${crypto.randomUUID()}`;
+  notificationStore.set(id, {
+    collection: collectionName,
+    createdAt: new Date().toISOString(),
+    entryId,
+    id,
+    message: `You have been assigned to review a ${collectionName} entry`,
+    read: false,
+    type: "workflow-review",
+    userId,
+  });
+}
+
+function mockNotificationsFor(userId: string): NotificationRecord[] {
+  return [...notificationStore.values()]
+    .filter((n) => n.userId === userId)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
 
 function pushEntryActivity(
   entries: Iterable<Record<string, unknown>>,
@@ -397,11 +454,18 @@ async function uploadMedia(file: File, options?: MediaUploadOptions): Promise<Me
 }
 
 export const mockProvider: DataProvider = {
+  async assignReviewer(collectionName: string, id: string, userId: string) {
+    const col = getCollection(collectionName);
+    const existing = col.get(id);
+    if (!existing) throw new Error(`Document ${id} not found in ${collectionName}`);
+    col.set(id, { ...existing, reviewer: userId, updatedAt: new Date().toISOString() });
+  },
   async create(collectionName: string, data: Record<string, unknown>) {
     const id = typeof data.id === "string" ? data.id : crypto.randomUUID();
     getCollection(collectionName).set(id, { ...data, id, updatedAt: new Date().toISOString() });
     return id;
   },
+
   async delete(collectionName: string, id: string) {
     getCollection(collectionName).delete(id);
   },
@@ -438,8 +502,19 @@ export const mockProvider: DataProvider = {
     return getVersions(target).get(versionId) ?? null;
   },
 
+  async listNotifications(userId: string) {
+    return mockNotificationsFor(userId);
+  },
+
   async listVersions(target: VersionTarget) {
     return [...getVersions(target).values()].sort((a, b) => b.number - a.number);
+  },
+
+  async markNotificationsRead(ids: string[]) {
+    for (const nid of ids) {
+      const existing = notificationStore.get(nid);
+      if (existing) notificationStore.set(nid, { ...existing, read: true });
+    }
   },
 
   name: "mock",
@@ -473,6 +548,23 @@ export const mockProvider: DataProvider = {
         updatedAt: new Date().toISOString(),
       });
     }
+  },
+
+  async transitionEntry(
+    collectionName: string,
+    id: string,
+    to: string,
+    options?: TransitionEntryOptions,
+  ) {
+    const col = getCollection(collectionName);
+    const existing = col.get(id);
+    if (!existing) throw new Error(`Document ${id} not found in ${collectionName}`);
+    col.set(id, {
+      ...existing,
+      ...mockTransitionPatch(existing, to, options),
+      updatedAt: new Date().toISOString(),
+    });
+    if (options?.reviewer) mockNotifyReviewer(collectionName, id, options.reviewer);
   },
 
   type: "mock",

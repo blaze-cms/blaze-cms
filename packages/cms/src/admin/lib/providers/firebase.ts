@@ -29,6 +29,7 @@ import {
 } from "firebase/storage";
 
 import { measureImage, pick, safeFileName, validateMediaFile } from "@/lib/media/validation";
+import { historyOf, transitionRecord } from "@/lib/workflow";
 
 import type {
   AnalyticsByType,
@@ -37,7 +38,9 @@ import type {
   DataProvider,
   MediaUploadOptions,
   MediaUploadResult,
+  NotificationRecord,
   QueryOptions,
+  TransitionEntryOptions,
   VersionRecord,
   VersionTarget,
 } from "./types";
@@ -437,6 +440,62 @@ function pageSize(limit?: number): number {
   return limit === undefined ? PAGE_SIZE : limit;
 }
 
+function transitionPatch(
+  data: Record<string, unknown>,
+  to: string,
+  options?: TransitionEntryOptions,
+): Record<string, unknown> {
+  const record = transitionRecord(data.workflowState, to, {
+    comment: options?.comment,
+    user: currentAuthor(),
+  });
+  return {
+    reviewer: options?.reviewer ?? data.reviewer ?? null,
+    workflowHistory: [...historyOf(data.workflowHistory), record],
+    workflowState: to,
+  };
+}
+
+async function notifyReviewer(
+  db: Firestore,
+  collectionName: string,
+  entryId: string,
+  to: string,
+  userId: string,
+): Promise<void> {
+  try {
+    await addDoc(collection(db, "notifications"), {
+      collection: collectionName,
+      createdAt: new Date().toISOString(),
+      entryId,
+      message: `You have been assigned to review a ${collectionName} entry`,
+      read: false,
+      type: "workflow-review",
+      userId,
+    });
+  } catch {
+    // Notifications are best-effort and must never break a transition.
+  }
+}
+
+function notificationFromSnapshot(d: DocumentSnapshot): NotificationRecord {
+  const raw = d.data() ?? {};
+  return {
+    collection: stringOrUndefined(raw.collection),
+    createdAt: stringField(raw.createdAt),
+    entryId: stringOrUndefined(raw.entryId),
+    id: d.id,
+    message: stringField(raw.message),
+    read: raw.read === true,
+    type: stringField(raw.type),
+    userId: stringField(raw.userId),
+  };
+}
+
+function sortNewest(records: NotificationRecord[]): NotificationRecord[] {
+  return [...records].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
+
 function addFilters(constraints: QueryConstraint[], filter?: Record<string, unknown>): void {
   if (!filter) return;
   for (const [key, val] of Object.entries(filter)) {
@@ -470,6 +529,9 @@ function cursorFor(
 }
 
 export const firebaseProvider: DataProvider = {
+  async assignReviewer(collectionName: string, id: string, userId: string) {
+    await updateDoc(doc(db, `collections_${collectionName}`, id), { reviewer: userId });
+  },
   async create(collectionName: string, data: Record<string, unknown>) {
     const col = collection(db, `collections_${collectionName}`);
     const docData = { ...data, updatedAt: new Date().toISOString() };
@@ -480,6 +542,7 @@ export const firebaseProvider: DataProvider = {
     const docRef = await addDoc(col, docData);
     return docRef.id;
   },
+
   async delete(collectionName: string, id: string) {
     await deleteDoc(doc(db, `collections_${collectionName}`, id));
   },
@@ -531,12 +594,23 @@ export const firebaseProvider: DataProvider = {
     return snap.exists() ? versionFromSnapshot(snap) : null;
   },
 
+  async listNotifications(userId: string) {
+    const snap = await getDocs(
+      query(collection(db, "notifications"), where("userId", "==", userId), limit(100)),
+    );
+    return sortNewest(snap.docs.map(notificationFromSnapshot));
+  },
+
   async listVersions(target: VersionTarget) {
     const ref = versionRef(target);
     const snap = await getDocs(
       query(collection(db, ref.versionsPath), orderBy("number", "desc"), limit(100)),
     );
     return snap.docs.map(versionFromSnapshot);
+  },
+
+  async markNotificationsRead(ids: string[]) {
+    await Promise.all(ids.map((nid) => updateDoc(doc(db, "notifications", nid), { read: true })));
   },
 
   name: "firebase",
@@ -552,6 +626,21 @@ export const firebaseProvider: DataProvider = {
     const version = versionFromSnapshot(snap);
     await writeVersionSnapshot(target, `Restored to version ${version.number}`);
     await setDoc(doc(db, ref.parentPath), version.data, { merge: true });
+  },
+
+  async transitionEntry(
+    collectionName: string,
+    id: string,
+    to: string,
+    options?: TransitionEntryOptions,
+  ) {
+    const ref = doc(db, `collections_${collectionName}`, id);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) throw new Error(`Entry not found: ${id}`);
+    await updateDoc(ref, transitionPatch(snap.data(), to, options));
+    if (options?.reviewer) {
+      await notifyReviewer(db, collectionName, id, to, options.reviewer);
+    }
   },
 
   type: "firebase",

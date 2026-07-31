@@ -16,6 +16,11 @@ service cloud.firestore {
       return hasGrant("system:" + flag);
     }
 
+    // Workflow transition helpers
+    function validPostsWorkflow() {
+      return request.resource.data.workflowState == resource.data.workflowState || (resource.data.workflowState == "draft" && request.resource.data.workflowState == "review") || (resource.data.workflowState == "draft" && request.resource.data.workflowState == "published") || (resource.data.workflowState == "review" && request.resource.data.workflowState == "published") || (resource.data.workflowState == "review" && request.resource.data.workflowState == "rejected") || (resource.data.workflowState == "rejected" && request.resource.data.workflowState == "draft") || (resource.data.workflowState == "published" && request.resource.data.workflowState == "draft");
+    }
+
     // Per-collection content rules
     match /collections_array/{doc} {
       allow create: if hasGrant("collections:array:create") || hasGrant("collections:*:create");
@@ -98,9 +103,9 @@ service cloud.firestore {
       allow create, update, delete: if hasGrant("collections:number:update") || hasGrant("collections:*:update");
     }
     match /collections_posts/{doc} {
-      allow create: if hasGrant("collections:posts:create") || hasGrant("collections:*:create");
+      allow create: if (hasGrant("collections:posts:create") || hasGrant("collections:*:create")) && (request.resource.data.workflowState == null || request.resource.data.workflowState == "draft");
       allow read: if hasGrant("collections:posts:read") || hasGrant("collections:*:read");
-      allow update: if hasGrant("collections:posts:update") || hasGrant("collections:*:update");
+      allow update: if (hasGrant("collections:posts:update") || hasGrant("collections:*:update")) && validPostsWorkflow();
       allow delete: if hasGrant("collections:posts:delete") || hasGrant("collections:*:delete");
     }
     match /collections_posts/{doc}/versions/{version} {

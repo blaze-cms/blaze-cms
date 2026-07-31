@@ -10,6 +10,31 @@ export interface CollectionTimestamps {
   updatedAt: boolean;
 }
 
+export interface WorkflowStateConfig {
+  name: string;
+  label?: string;
+}
+
+export interface WorkflowTransitionConfig {
+  from: string;
+  to: string;
+  /** Role ids allowed to perform this transition. Empty = any user with the update grant. */
+  roles?: string[];
+  /** Whether a comment is required when performing this transition. */
+  commentRequired?: boolean;
+}
+
+export interface WorkflowConfig {
+  /** Ordered states. Defaults to draft → review → published → rejected when omitted. */
+  states?: WorkflowStateConfig[];
+  /** Allowed transitions. Defaults to the standard publish flow when omitted. */
+  transitions?: WorkflowTransitionConfig[];
+  /** Roles eligible to be assigned as reviewers. Empty = any user. */
+  reviewerRoles?: string[];
+  /** State new entries start in. Defaults to the first state. */
+  defaultState?: string;
+}
+
 export interface CollectionDefinition {
   slug: string;
   labels: Labels;
@@ -46,6 +71,7 @@ export interface CollectionDefinition {
         defaultLocale: string;
       }
     | undefined;
+  workflow?: WorkflowConfig | undefined;
 }
 
 export interface GlobalDefinition {

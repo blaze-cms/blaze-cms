@@ -124,10 +124,73 @@ describe("generate", () => {
 
     await generate({ type: "rules" });
 
-    expect(mockWriteFileSync).toHaveBeenCalledWith(
-      expect.stringContaining("firestore.rules"),
-      expect.stringContaining("collections_posts"),
+    const call = mockWriteFileSync.mock.calls.find((c) =>
+      c[0].toString().endsWith("firestore.rules"),
+    )!;
+    expect(call).toBeDefined();
+    expect(call[1]).toContain("collections_posts");
+    expect(call[1]).not.toContain("validPostsWorkflow");
+    expect(call[1]).toContain(
+      'allow update: if hasGrant("collections:posts:update") || hasGrant("collections:*:update");',
     );
+  });
+
+  it("generates workflow-gated rules for workflow collections", async () => {
+    mockExistsSync.mockReturnValue(true);
+    mockLoad.mockResolvedValue({
+      collections: [
+        {
+          slug: "posts",
+          workflow: {
+            defaultState: "draft",
+            states: [
+              { label: "Draft", name: "draft" },
+              { label: "Published", name: "published" },
+            ],
+            transitions: [{ from: "draft", to: "published" }],
+          },
+        },
+      ],
+      components: [],
+      globals: [],
+    });
+
+    await generate({ type: "rules" });
+
+    const call = mockWriteFileSync.mock.calls.find((c) =>
+      c[0].toString().endsWith("firestore.rules"),
+    )!;
+    expect(call[1]).toContain("function validPostsWorkflow()");
+    expect(call[1]).toContain(
+      'allow create: if (hasGrant("collections:posts:create") || hasGrant("collections:*:create")) && (request.resource.data.workflowState == null || request.resource.data.workflowState == "draft");',
+    );
+    expect(call[1]).toContain(
+      'allow update: if (hasGrant("collections:posts:update") || hasGrant("collections:*:update")) && validPostsWorkflow();',
+    );
+    expect(call[1]).toContain(
+      'resource.data.workflowState == "draft" && request.resource.data.workflowState == "published"',
+    );
+  });
+
+  it("uses the first state as default when no defaultState is set", async () => {
+    mockExistsSync.mockReturnValue(true);
+    mockLoad.mockResolvedValue({
+      collections: [
+        {
+          slug: "pages",
+          workflow: { transitions: [{ from: "draft", to: "published" }] },
+        },
+      ],
+      components: [],
+      globals: [],
+    });
+
+    await generate({ type: "rules" });
+
+    const call = mockWriteFileSync.mock.calls.find((c) =>
+      c[0].toString().endsWith("firestore.rules"),
+    )!;
+    expect(call[1]).toContain('request.resource.data.workflowState == "draft"');
   });
 
   it("generates firestore indexes", async () => {

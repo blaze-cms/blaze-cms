@@ -12,6 +12,7 @@ import { useToast } from "@/components/toast-provider";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { VersionPanel } from "@/components/version-panel";
+import { WorkflowPanel } from "@/components/workflow-panel";
 import { useDataProvider } from "@/lib/providers/context";
 import { usePermissions } from "@/lib/rbac";
 import { appLayoutRoute } from "@/routes/app-layout";
@@ -121,6 +122,7 @@ function EditEntry() {
         </form>
       )}
       <EntryVersionHistory entry={entry} id={id} slug={slug} />
+      {col && entry && <WorkflowPanel col={col} entry={entry} id={id} slug={slug} />}
     </div>
   );
 }

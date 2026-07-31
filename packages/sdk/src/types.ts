@@ -321,3 +321,54 @@ export interface VersionsApi {
   /** Deletes oldest versions beyond `keep`, optionally with an age-based TTL. Returns count removed. */
   prune(target: VersionTarget, options?: VersionPruneOptions): Promise<number>;
 }
+
+export interface WorkflowTransitionRecord {
+  /** ISO timestamp of the transition. */
+  at: string;
+  /** State before the transition. */
+  from: string;
+  /** State after the transition. */
+  to: string;
+  /** UID of the user who performed the transition. */
+  user?: string;
+  /** Optional reviewer note attached to the transition. */
+  comment?: string;
+}
+
+export interface WorkflowTransitionOptions {
+  comment?: string;
+  reviewer?: string;
+}
+
+export interface WorkflowApi {
+  /** Moves an entry to a new workflow state, appending to its transition history. */
+  transition(
+    collection: string,
+    id: string,
+    to: string,
+    options?: WorkflowTransitionOptions,
+  ): Promise<void>;
+  /** Assigns a reviewer (by user id) to an entry. */
+  assignReviewer(collection: string, id: string, userId: string): Promise<void>;
+  /** Chronological list of state transitions for an entry (newest first). */
+  history(collection: string, id: string): Promise<WorkflowTransitionRecord[]>;
+}
+
+export interface NotificationRecord {
+  id: string;
+  /** UID of the user the notification belongs to. */
+  userId: string;
+  type: string;
+  message: string;
+  collection?: string;
+  entryId?: string;
+  read: boolean;
+  createdAt: string;
+}
+
+export interface NotificationsApi {
+  /** Notifications for the signed-in user, newest first. */
+  list(options?: { limit?: number }): Promise<NotificationRecord[]>;
+  /** Marks the given notification ids as read. */
+  markRead(ids: string[]): Promise<void>;
+}

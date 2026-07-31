@@ -274,6 +274,9 @@ export const collections: CollectionDefinition[] = [
       createdAt: true,
       updatedAt: true,
     },
+    workflow: {
+      reviewerRoles: ["role-editor"],
+    },
   },
   {
     fields: [

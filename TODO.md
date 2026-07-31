@@ -128,20 +128,20 @@
 
 ## Current Milestone: Content Workflow
 
-- [ ] **Workflow state machine schema** — `workflowState` field on entries
-- [ ] **Workflow config on collection schema** — states, transitions, required roles
-- [ ] **Default states** — Draft → Review → Published; custom states in config
-- [ ] **Transition logic** — validate transition is allowed per config
-- [ ] **Reviewer assignment** — by specific user or by role
-- [ ] **In-app notifications** — Firestore `notifications` collection listener
-- [ ] **Audit log** — chronological transitions (from → to, user, timestamp, comment)
-- [ ] **Admin UI: state indicator** — badge in entry header
-- [ ] **Admin UI: transition buttons** — Submit for Review, Approve/Publish, Reject, Unpublish
-- [ ] **Admin UI: reviewer selector** — assign reviewer on submission
-- [ ] **Admin UI: history panel** — workflow timeline with comments
-- [ ] **Security Rules** — enforce valid state transitions
-- [ ] **SDK methods** — transition, assign, history queries
-- [ ] **Tests** — state machine, enforcement, notifications, audit log
+- [x] **Workflow state machine schema** — `workflowState` field on entries
+- [x] **Workflow config on collection schema** — states, transitions, required roles
+- [x] **Default states** — Draft → Review → Published; custom states in config
+- [x] **Transition logic** — validate transition is allowed per config
+- [x] **Reviewer assignment** — by specific user or by role
+- [x] **In-app notifications** — Firestore `notifications` collection listener
+- [x] **Audit log** — chronological transitions (from → to, user, timestamp, comment)
+- [x] **Admin UI: state indicator** — badge in entry header
+- [x] **Admin UI: transition buttons** — Submit for Review, Approve/Publish, Reject, Unpublish
+- [x] **Admin UI: reviewer selector** — assign reviewer on submission
+- [x] **Admin UI: history panel** — workflow timeline with comments
+- [x] **Security Rules** — enforce valid state transitions
+- [x] **SDK methods** — transition, assign, history queries
+- [x] **Tests** — state machine, enforcement, notifications, audit log
 
 ---
 

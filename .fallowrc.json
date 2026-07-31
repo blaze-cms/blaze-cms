@@ -122,6 +122,26 @@
         "files": ["packages/cms/src/admin/routes/media/$id.tsx"],
         "maxCrap": 45,
         "reason": "media detail route with replace/delete/usage actions gated by manageMedia"
+      },
+      {
+        "files": ["packages/cms/src/admin/components/notification-bell.tsx"],
+        "maxCrap": 60,
+        "reason": "notification dropdown with unread badge, mark-read flow, and entry navigation"
+      },
+      {
+        "files": ["packages/cms/src/admin/components/workflow-panel.tsx"],
+        "maxCrap": 60,
+        "reason": "workflow state panel with reviewer assignment, comment entry, transitions, and history timeline"
+      },
+      {
+        "files": ["packages/cms/src/admin/lib/providers/firebase.ts"],
+        "maxCrap": 40,
+        "reason": "workflow transition and notification helpers alongside RBAC-aware provider methods"
+      },
+      {
+        "files": ["packages/sdk/src/workflow.ts"],
+        "maxCrap": 35,
+        "reason": "workflow transition API with existence guard, optional reviewer notification, and patch composition"
       }
     ]
   },

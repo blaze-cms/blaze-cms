@@ -10,8 +10,10 @@ import type {
   GlobalApi,
   AuthApi,
   MediaApi,
+  NotificationsApi,
   RbacApi,
   VersionsApi,
+  WorkflowApi,
 } from "./types.js";
 
 import { createAnalyticsApi } from "./analytics.js";
@@ -19,8 +21,10 @@ import { createAuthApi } from "./auth.js";
 import { createCollectionApi } from "./collection.js";
 import { createGlobalApi } from "./global.js";
 import { createMediaApi } from "./media.js";
+import { createNotificationsApi } from "./notifications.js";
 import { createRbacApi } from "./rbac.js";
 import { createVersionsApi } from "./versions.js";
+import { createWorkflowApi } from "./workflow.js";
 
 export interface BlazeClient {
   /** Access a Firestore collection by name */
@@ -37,6 +41,10 @@ export interface BlazeClient {
   rbac: RbacApi;
   /** Content versioning: snapshots, diffs, rollback, pruning */
   versions: VersionsApi;
+  /** Content workflow: transitions, reviewer assignment, history */
+  workflow: WorkflowApi;
+  /** In-app notifications for the signed-in user */
+  notifications: NotificationsApi;
   /** Raw Firebase instances for advanced use */
   app: FirebaseApp;
   db: Firestore;
@@ -76,8 +84,10 @@ export function createBlazeClient(config: BlazeClientConfig): BlazeClient {
     db,
     globals: createGlobalApi(db),
     media: createMediaApi(db, storage, config.media),
+    notifications: createNotificationsApi(db),
     rbac: createRbacApi(db),
     storage,
     versions: createVersionsApi(db),
+    workflow: createWorkflowApi(db),
   };
 }
