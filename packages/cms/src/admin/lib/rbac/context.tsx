@@ -14,6 +14,7 @@ import { useAuth } from "@/lib/auth";
 import { useDataProvider } from "@/lib/providers/context";
 
 import {
+  bootstrapAdminGrants,
   expandRolePermissions,
   hasGrant,
   hasSystemGrant,
@@ -49,6 +50,11 @@ async function loadGrants(
     provider.findMany("roles", { limit: 100 }),
   ]);
   const roles = rolesResult.data as Array<{ id: string; name: string; permissions?: unknown }>;
+
+  const bootstrapGrants = bootstrapAdminGrants(roles);
+  if (bootstrapGrants.length > 0) {
+    return { grants: bootstrapGrants, roleIds: [] };
+  }
 
   const roleIds = roleIdsFromRecords(userRoles, userRecord, roles);
 

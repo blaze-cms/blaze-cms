@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  bootstrapAdminGrants,
   emptyPermissions,
   expandRolePermissions,
   hasCollectionPermission,
@@ -62,6 +63,16 @@ describe("expandRolePermissions", () => {
 describe("mergeGrants", () => {
   it("unions and sorts multiple grant lists", () => {
     expect(mergeGrants(["b:1", "a:2"], ["b:1"], [])).toEqual(["a:2", "b:1"]);
+  });
+});
+
+describe("bootstrapAdminGrants", () => {
+  it("grants super admin when no roles exist", () => {
+    expect(bootstrapAdminGrants([])).toEqual(["*:*"]);
+  });
+
+  it("returns no bootstrap grants once roles exist", () => {
+    expect(bootstrapAdminGrants([{ id: "role-editor" }])).toEqual([]);
   });
 });
 

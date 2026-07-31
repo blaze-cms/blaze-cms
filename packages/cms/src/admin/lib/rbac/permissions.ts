@@ -74,6 +74,10 @@ export function mergeGrants(...lists: string[][]): string[] {
   return [...merged].sort();
 }
 
+export function bootstrapAdminGrants(roles: unknown[]): string[] {
+  return roles.length === 0 ? [SUPER_ADMIN_GRANT] : [];
+}
+
 export function hasGrant(grants: string[], action: string, resource: string): boolean {
   if (grants.includes(SUPER_ADMIN_GRANT)) return true;
   if (grants.includes(collectionGrant(action, resource))) return true;
