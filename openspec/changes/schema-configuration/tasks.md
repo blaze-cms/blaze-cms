@@ -43,4 +43,4 @@
 - [x] 7.2 Validator tests for invalid capability names / non-boolean flags
 - [x] 7.3 Playground: add `capabilities` to `apps/playground/blazing-cms.config.ts`, disable one capability, regenerate and verify the admin + rules reflect it
 - [x] 7.4 Update TODO.md and ARCHITECTURE.md for the schema-configuration / feature-flag capability
-- [ ] 7.5 Full check: typecheck + lint + `fallow:audit` clean
+- [x] 7.5 Full check: typecheck + lint + `fallow:audit` clean
