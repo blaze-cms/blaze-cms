@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const ArraySchema = z.object({
   id: z.string().optional(),
-  title: z.string().optional(),
+  title: z.string(),
   field: z.unknown().optional(),
 });
 

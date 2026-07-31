@@ -6,7 +6,11 @@ export const collections: CollectionDefinition[] = [
     "fields": [
       {
         "name": "title",
-        "type": "text"
+        "type": "text",
+        "label": "Title",
+        "validation": {
+          "required": true
+        }
       },
       {
         "name": "field",
@@ -21,7 +25,7 @@ export const collections: CollectionDefinition[] = [
       }
     ],
     "labels": {
-      "plural": "Array Field",
+      "plural": "Array Fields",
       "singular": "Array Field"
     },
     "slug": "array"
