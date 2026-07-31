@@ -356,10 +356,11 @@ function VersionPanelHeader({
 }
 
 interface VersionPanelProps {
+  standalone?: boolean;
   target: VersionTarget;
 }
 
-export function VersionPanel({ target }: VersionPanelProps) {
+export function VersionPanel({ standalone = false, target }: VersionPanelProps) {
   const provider = useDataProvider();
   const { addToast } = useToast();
   const queryClient = useQueryClient();
@@ -417,7 +418,7 @@ export function VersionPanel({ target }: VersionPanelProps) {
   }
 
   return (
-    <div className="mt-8 border-t pt-6">
+    <div className={standalone ? "" : "mt-8 border-t pt-6"}>
       <VersionPanelHeader
         comparing={comparing}
         count={count}

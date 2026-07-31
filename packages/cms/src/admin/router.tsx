@@ -3,6 +3,7 @@ import { analyticsRoute } from "@/routes/analytics";
 import { appLayoutRoute } from "@/routes/app-layout";
 import { collectionDetailRoute } from "@/routes/collections/$slug";
 import { editEntryRoute } from "@/routes/collections/$slug.$id.edit";
+import { entryRevisionsRoute } from "@/routes/collections/$slug.$id.revisions";
 import { collectionsIndexRoute } from "@/routes/collections/index";
 import { newEntryRoute } from "@/routes/collections/new.$slug";
 import { globalDetailRoute } from "@/routes/globals/$slug";
@@ -34,6 +35,7 @@ export const routeTree = rootRoute.addChildren([
     collectionDetailRoute,
     newEntryRoute,
     editEntryRoute,
+    entryRevisionsRoute,
     globalsIndexRoute,
     globalDetailRoute,
     mediaRoute,
