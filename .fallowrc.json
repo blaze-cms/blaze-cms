@@ -89,7 +89,9 @@
       "packages/cms/src/commands/scaffold.ts",
       "packages/cms/src/admin/routes/schemas/new.tsx",
       "packages/cms/src/admin/lib/providers/firebase.ts",
-      "packages/sdk/src/collection.ts"
+      "packages/cms/src/admin/lib/providers/analytics-helpers.ts",
+      "packages/sdk/src/collection.ts",
+      "packages/sdk/src/analytics.ts"
     ]
   },
   "entry": ["packages/*/src/index.ts", "scripts/serve-spa.mjs"]

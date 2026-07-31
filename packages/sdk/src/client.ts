@@ -3,8 +3,15 @@ import { getAuth } from "firebase/auth";
 import { getFirestore, type Firestore } from "firebase/firestore";
 import { getStorage, type FirebaseStorage } from "firebase/storage";
 
-import type { BlazeClientConfig, CollectionApi, GlobalApi, AuthApi } from "./types.js";
+import type {
+  AnalyticsApi,
+  BlazeClientConfig,
+  CollectionApi,
+  GlobalApi,
+  AuthApi,
+} from "./types.js";
 
+import { createAnalyticsApi } from "./analytics.js";
 import { createAuthApi } from "./auth.js";
 import { createCollectionApi } from "./collection.js";
 import { createGlobalApi } from "./global.js";
@@ -16,6 +23,8 @@ export interface BlazeClient {
   globals: GlobalApi;
   /** Firebase Auth API */
   auth: AuthApi;
+  /** Dashboard analytics queries */
+  analytics: AnalyticsApi;
   /** Raw Firebase instances for advanced use */
   app: FirebaseApp;
   db: Firestore;
@@ -41,6 +50,7 @@ export function createBlazeClient(config: BlazeClientConfig): BlazeClient {
   const collections = new Map<string, CollectionApi>();
 
   return {
+    analytics: createAnalyticsApi(db, config.analytics),
     app,
     auth: createAuthApi(auth),
     collection(name: string): CollectionApi {

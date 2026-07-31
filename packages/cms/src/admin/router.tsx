@@ -1,4 +1,5 @@
 import { rootRoute } from "@/routes/__root";
+import { analyticsRoute } from "@/routes/analytics";
 import { appLayoutRoute } from "@/routes/app-layout";
 import { collectionDetailRoute } from "@/routes/collections/$slug";
 import { editEntryRoute } from "@/routes/collections/$slug.$id.edit";
@@ -27,6 +28,7 @@ export const routeTree = rootRoute.addChildren([
   notFoundRoute,
   appLayoutRoute.addChildren([
     indexRoute,
+    analyticsRoute,
     collectionsIndexRoute,
     collectionDetailRoute,
     newEntryRoute,

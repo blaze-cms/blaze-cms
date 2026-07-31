@@ -12,6 +12,39 @@ export interface PaginatedResult<T> {
   hasMore: boolean;
 }
 
+export type AnalyticsPeriod = "7d" | "30d" | "90d";
+
+export interface AnalyticsByType {
+  image: number;
+  video: number;
+  audio: number;
+  document: number;
+  other: number;
+}
+
+export interface AnalyticsQuery {
+  period: AnalyticsPeriod;
+  collections: string[];
+  globals: string[];
+}
+
+export interface AnalyticsSummary {
+  counts: {
+    totalCollections: number;
+    totalEntries: number;
+    totalGlobals: number;
+    totalMedia: number;
+    totalUsers: number;
+  };
+  byCollection: Array<{ slug: string; count: number }>;
+  changes: Array<{ date: string; count: number }>;
+  storage: { totalBytes: number; byType: AnalyticsByType };
+  activity: {
+    activeUsers: number;
+    topContributors: Array<{ userId: string; count: number }>;
+  };
+}
+
 export interface DataProvider {
   name: string;
   type: "firebase" | "mock";
@@ -27,4 +60,6 @@ export interface DataProvider {
 
   getGlobal(slug: string): Promise<Record<string, unknown> | null>;
   upsertGlobal(slug: string, data: Record<string, unknown>): Promise<void>;
+
+  getAnalytics(query: AnalyticsQuery): Promise<AnalyticsSummary>;
 }

@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import {
   LayoutDashboard,
+  BarChart3,
   FileText,
   Globe,
   Image,
@@ -79,7 +80,10 @@ function navSections(): NavSection[] {
 
   return [
     {
-      items: [{ href: "/", icon: LayoutDashboard, label: "Dashboard" }],
+      items: [
+        { href: "/", icon: LayoutDashboard, label: "Dashboard" },
+        { href: "/analytics", icon: BarChart3, label: "Analytics" },
+      ],
       label: "Overview",
     },
     ...dynamicSections,

@@ -60,16 +60,16 @@
 
 ## Current Milestone: Admin Analytics
 
-- [ ] **Data layer** — Firestore composite indexes for time-range queries; analytics type definitions
-- [ ] **Analytics queries (SDK)** — `getContentCounts()`, `getContentByCollection()`, `getContentChangesOverTime()`, `getStorageUsage()`, `getUserActivity()`
-- [ ] **Dashboard widgets** — content stats (total collections, entries, globals, media, users)
-- [ ] **Per-collection chart** — entry counts as bar/pie chart
-- [ ] **Content changes over time** — line chart with time period selector (7d, 30d, 90d)
-- [ ] **Storage usage** — total + breakdown by file type
-- [ ] **User activity** — active users count + top contributors
-- [ ] **Dedicated analytics page** — full-page view with all widgets
-- [ ] **SDK config** — enabled flag, caching stale time
-- [ ] **Tests** — SDK methods + admin UI widget tests
+- [x] **Data layer** — Firestore composite indexes for time-range queries; analytics type definitions
+- [x] **Analytics queries (SDK)** — `getContentCounts()`, `getContentByCollection()`, `getContentChangesOverTime()`, `getStorageUsage()`, `getUserActivity()`
+- [x] **Dashboard widgets** — content stats (total collections, entries, globals, media, users)
+- [x] **Per-collection chart** — entry counts as bar/pie chart
+- [x] **Content changes over time** — line chart with time period selector (7d, 30d, 90d)
+- [x] **Storage usage** — total + breakdown by file type
+- [x] **User activity** — active users count + top contributors
+- [x] **Dedicated analytics page** — full-page view with all widgets
+- [x] **SDK config** — enabled flag, caching stale time
+- [x] **Tests** — SDK methods + admin UI widget tests
 
 ---
 

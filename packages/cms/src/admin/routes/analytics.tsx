@@ -1,6 +1,6 @@
-import { Link } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import { createRoute } from "@tanstack/react-router";
-import { BarChart3, ChevronRight } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { useState } from "react";
 
 import type { AnalyticsPeriod } from "@/lib/providers/types";
@@ -11,36 +11,41 @@ import { CollectionChart } from "@/components/analytics/collection-chart";
 import { ContentStats } from "@/components/analytics/content-stats";
 import { PeriodSelector } from "@/components/analytics/period-selector";
 import { StorageWidget } from "@/components/analytics/storage-widget";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAnalytics } from "@/hooks/use-analytics";
 import { appLayoutRoute } from "@/routes/app-layout";
 
-export const indexRoute = createRoute({
-  component: Dashboard,
+export const analyticsRoute = createRoute({
+  component: AnalyticsPage,
   getParentRoute: () => appLayoutRoute,
-  path: "/",
+  path: "/analytics",
 });
 
-function Dashboard() {
+function AnalyticsPage() {
   const [period, setPeriod] = useState<AnalyticsPeriod>("30d");
   const { data, isLoading } = useAnalytics(period);
+  const queryClient = useQueryClient();
+
+  function refresh() {
+    void queryClient.invalidateQueries({ queryKey: ["analytics", period] });
+  }
 
   return (
     <div>
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground mt-1">Content overview and activity.</p>
+          <h1 className="text-3xl font-bold">Analytics</h1>
+          <p className="text-muted-foreground mt-1">
+            Content statistics, storage usage, and user activity.
+          </p>
         </div>
         <div className="flex items-center gap-3">
           <PeriodSelector onChange={setPeriod} value={period} />
-          <Link
-            to="/analytics"
-            className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground"
-          >
-            Full analytics <ChevronRight className="h-3 w-3" />
-          </Link>
+          <Button onClick={refresh} variant="outline" size="sm">
+            <RefreshCw className="h-4 w-4" /> Refresh
+          </Button>
         </div>
       </div>
 
@@ -52,19 +57,19 @@ function Dashboard() {
             ))}
           </div>
           <Skeleton className="h-64 rounded-lg" />
+          <div className="grid gap-6 lg:grid-cols-2">
+            <Skeleton className="h-48 rounded-lg" />
+            <Skeleton className="h-48 rounded-lg" />
+          </div>
         </div>
       ) : (
         data && (
-          <>
-            <div className="mb-6">
-              <ContentStats counts={data.counts} />
-            </div>
+          <div className="space-y-6">
+            <ContentStats counts={data.counts} />
             <div className="grid gap-6 lg:grid-cols-2">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <BarChart3 className="h-4 w-4" /> Content by Collection
-                  </CardTitle>
+                  <CardTitle>Content by Collection</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <CollectionChart data={data.byCollection} />
@@ -101,7 +106,7 @@ function Dashboard() {
                 </CardContent>
               </Card>
             </div>
-          </>
+          </div>
         )
       )}
     </div>
