@@ -15,22 +15,22 @@ export const collections: CollectionDefinition[] = [
       {
         name: "field",
         type: "array",
-        label: "Array Field",
         fields: [
           {
             name: "item",
             type: "text",
           },
         ],
+        label: "Array Field",
       },
       {
         name: "field3",
-        type: "date",
+        type: "text",
       },
     ],
     labels: {
-      singular: "Array Field",
       plural: "Array Field",
+      singular: "Array Field",
     },
     slug: "array",
   },
