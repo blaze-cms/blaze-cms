@@ -28,23 +28,22 @@ const CATEGORY: Record<string, keyof AnalyticsByType> = {
   video: "video",
 };
 
+const DOCUMENT_KINDS = new Set(["application", "text"]);
+
 function categorizeMime(mimeType: string): keyof AnalyticsByType {
   const slash = mimeType.indexOf("/");
   const kind = slash === -1 ? mimeType : mimeType.slice(0, slash);
-  if (kind === "application" || kind === "text") return "document";
+  if (DOCUMENT_KINDS.has(kind)) return "document";
   return CATEGORY[kind] ?? "other";
+}
+
+function asNonEmptyString(value: unknown): string | null {
+  return typeof value === "string" && value ? value : null;
 }
 
 function mediaSizeAndMime(data: Record<string, unknown>): { size: number; mime: string } {
   const size = Number.isFinite(data.size as number) ? (data.size as number) : 0;
-  const type = data.type;
-  const mimeType = data.mimeType;
-  const mime =
-    typeof type === "string" && type
-      ? type
-      : typeof mimeType === "string" && mimeType
-        ? mimeType
-        : "";
+  const mime = asNonEmptyString(data.type) ?? asNonEmptyString(data.mimeType) ?? "";
   return { mime, size };
 }
 
