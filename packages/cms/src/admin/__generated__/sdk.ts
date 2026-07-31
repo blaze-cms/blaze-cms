@@ -17,8 +17,7 @@ export const array = {
     client.collection("array").findMany(options),
   findById: (id: string) => client.collection("array").findById(id),
   create: (data: Record<string, unknown>) => client.collection("array").create(data),
-  update: (id: string, data: Record<string, unknown>) =>
-    client.collection("array").update(id, data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("array").update(id, data),
   delete: (id: string) => client.collection("array").delete(id),
 };
 
@@ -27,8 +26,7 @@ export const boolean = {
     client.collection("boolean").findMany(options),
   findById: (id: string) => client.collection("boolean").findById(id),
   create: (data: Record<string, unknown>) => client.collection("boolean").create(data),
-  update: (id: string, data: Record<string, unknown>) =>
-    client.collection("boolean").update(id, data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("boolean").update(id, data),
   delete: (id: string) => client.collection("boolean").delete(id),
 };
 
@@ -37,8 +35,7 @@ export const component = {
     client.collection("component").findMany(options),
   findById: (id: string) => client.collection("component").findById(id),
   create: (data: Record<string, unknown>) => client.collection("component").create(data),
-  update: (id: string, data: Record<string, unknown>) =>
-    client.collection("component").update(id, data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("component").update(id, data),
   delete: (id: string) => client.collection("component").delete(id),
 };
 
@@ -56,8 +53,7 @@ export const dynamicZone = {
     client.collection("dynamic-zone").findMany(options),
   findById: (id: string) => client.collection("dynamic-zone").findById(id),
   create: (data: Record<string, unknown>) => client.collection("dynamic-zone").create(data),
-  update: (id: string, data: Record<string, unknown>) =>
-    client.collection("dynamic-zone").update(id, data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("dynamic-zone").update(id, data),
   delete: (id: string) => client.collection("dynamic-zone").delete(id),
 };
 
@@ -66,8 +62,7 @@ export const group = {
     client.collection("group").findMany(options),
   findById: (id: string) => client.collection("group").findById(id),
   create: (data: Record<string, unknown>) => client.collection("group").create(data),
-  update: (id: string, data: Record<string, unknown>) =>
-    client.collection("group").update(id, data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("group").update(id, data),
   delete: (id: string) => client.collection("group").delete(id),
 };
 
@@ -76,8 +71,7 @@ export const mediaTest = {
     client.collection("media-test").findMany(options),
   findById: (id: string) => client.collection("media-test").findById(id),
   create: (data: Record<string, unknown>) => client.collection("media-test").create(data),
-  update: (id: string, data: Record<string, unknown>) =>
-    client.collection("media-test").update(id, data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("media-test").update(id, data),
   delete: (id: string) => client.collection("media-test").delete(id),
 };
 
@@ -86,8 +80,7 @@ export const number = {
     client.collection("number").findMany(options),
   findById: (id: string) => client.collection("number").findById(id),
   create: (data: Record<string, unknown>) => client.collection("number").create(data),
-  update: (id: string, data: Record<string, unknown>) =>
-    client.collection("number").update(id, data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("number").update(id, data),
   delete: (id: string) => client.collection("number").delete(id),
 };
 
@@ -96,8 +89,7 @@ export const posts = {
     client.collection("posts").findMany(options),
   findById: (id: string) => client.collection("posts").findById(id),
   create: (data: Record<string, unknown>) => client.collection("posts").create(data),
-  update: (id: string, data: Record<string, unknown>) =>
-    client.collection("posts").update(id, data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("posts").update(id, data),
   delete: (id: string) => client.collection("posts").delete(id),
 };
 
@@ -106,8 +98,7 @@ export const relation = {
     client.collection("relation").findMany(options),
   findById: (id: string) => client.collection("relation").findById(id),
   create: (data: Record<string, unknown>) => client.collection("relation").create(data),
-  update: (id: string, data: Record<string, unknown>) =>
-    client.collection("relation").update(id, data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("relation").update(id, data),
   delete: (id: string) => client.collection("relation").delete(id),
 };
 
@@ -116,8 +107,7 @@ export const repeater = {
     client.collection("repeater").findMany(options),
   findById: (id: string) => client.collection("repeater").findById(id),
   create: (data: Record<string, unknown>) => client.collection("repeater").create(data),
-  update: (id: string, data: Record<string, unknown>) =>
-    client.collection("repeater").update(id, data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("repeater").update(id, data),
   delete: (id: string) => client.collection("repeater").delete(id),
 };
 
@@ -126,8 +116,7 @@ export const richText = {
     client.collection("rich-text").findMany(options),
   findById: (id: string) => client.collection("rich-text").findById(id),
   create: (data: Record<string, unknown>) => client.collection("rich-text").create(data),
-  update: (id: string, data: Record<string, unknown>) =>
-    client.collection("rich-text").update(id, data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("rich-text").update(id, data),
   delete: (id: string) => client.collection("rich-text").delete(id),
 };
 
@@ -136,8 +125,7 @@ export const select = {
     client.collection("select").findMany(options),
   findById: (id: string) => client.collection("select").findById(id),
   create: (data: Record<string, unknown>) => client.collection("select").create(data),
-  update: (id: string, data: Record<string, unknown>) =>
-    client.collection("select").update(id, data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("select").update(id, data),
   delete: (id: string) => client.collection("select").delete(id),
 };
 
@@ -259,3 +247,4 @@ export const url = {
   get: () => client.globals.get("url"),
   upsert: (data: Record<string, unknown>) => client.globals.upsert("url", data),
 };
+
