@@ -37,6 +37,11 @@ export type {
   TopContributor,
   UserActivity,
   UserRoleAssignment,
+  VersionDiffEntry,
+  VersionPruneOptions,
+  VersionRecord,
+  VersionTarget,
+  VersionsApi,
 } from "./types.js";
 
 export { BlazeError, NotFoundError, ValidationError } from "./errors.js";
@@ -71,3 +76,11 @@ export {
   SYSTEM_ACTIONS,
   USER_ROLES_COLLECTION,
 } from "./rbac.js";
+
+export {
+  createVersionsApi,
+  diffVersionData,
+  DEFAULT_KEEP,
+  enforceKeep,
+  snapshotVersion,
+} from "./versions.js";

@@ -1,4 +1,5 @@
 import { initializeApp, type FirebaseApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 import {
   getFirestore,
   collection,
@@ -37,6 +38,8 @@ import type {
   MediaUploadOptions,
   MediaUploadResult,
   QueryOptions,
+  VersionRecord,
+  VersionTarget,
 } from "./types";
 
 import {
@@ -75,6 +78,107 @@ const PAGE_SIZE = 25;
 function docToData(d: DocumentSnapshot): Record<string, unknown> | null {
   if (!d.exists()) return null;
   return { id: d.id, ...d.data() } as Record<string, unknown>;
+}
+
+const DEFAULT_VERSION_KEEP = 20;
+
+interface VersionRef {
+  kind: "entry" | "global";
+  parentId: string;
+  parentType: string;
+  parentPath: string;
+  versionsPath: string;
+}
+
+function versionRef(target: VersionTarget): VersionRef {
+  if (target.kind === "entry") {
+    const parentPath = `collections_${target.collection}/${target.id}`;
+    return {
+      kind: "entry",
+      parentId: target.id,
+      parentPath,
+      parentType: `collections_${target.collection}`,
+      versionsPath: `${parentPath}/versions`,
+    };
+  }
+  const parentPath = `globals_${target.slug}/value`;
+  return {
+    kind: "global",
+    parentId: "value",
+    parentPath,
+    parentType: `globals_${target.slug}`,
+    versionsPath: `${parentPath}/versions`,
+  };
+}
+
+function stringOrUndefined(value: unknown): string | undefined {
+  return typeof value === "string" ? value : undefined;
+}
+
+function stringField(value: unknown): string {
+  return String(value ?? "");
+}
+
+function numberField(value: unknown): number {
+  return Number(value ?? 0);
+}
+
+function dataField(value: unknown): Record<string, unknown> {
+  if (value && typeof value === "object") return value as Record<string, unknown>;
+  return {};
+}
+
+function versionFromSnapshot(d: DocumentSnapshot): VersionRecord {
+  const raw = d.data() ?? {};
+  return {
+    author: stringOrUndefined(raw.author),
+    createdAt: stringField(raw.createdAt),
+    data: dataField(raw.data),
+    id: d.id,
+    number: numberField(raw.number),
+    summary: stringOrUndefined(raw.summary),
+  };
+}
+
+function currentAuthor(): string | undefined {
+  try {
+    return getAuth(app).currentUser?.uid;
+  } catch {
+    return undefined;
+  }
+}
+
+async function nextVersionNumber(versionsPath: string): Promise<number> {
+  const snap = await getDocs(
+    query(collection(db, versionsPath), orderBy("number", "desc"), limit(1)),
+  );
+  if (snap.docs.length === 0) return 1;
+  return Number(snap.docs.at(0)?.data().number ?? 0) + 1;
+}
+
+async function writeVersionSnapshot(target: VersionTarget, summary: string): Promise<void> {
+  const ref = versionRef(target);
+  const snap = await getDoc(doc(db, ref.parentPath));
+  if (!snap.exists()) return;
+  await addDoc(collection(db, ref.versionsPath), {
+    author: currentAuthor(),
+    createdAt: new Date().toISOString(),
+    data: snap.data(),
+    kind: ref.kind,
+    number: await nextVersionNumber(ref.versionsPath),
+    parentId: ref.parentId,
+    parentType: ref.parentType,
+    summary,
+  });
+  const keepSnap = await getDocs(
+    query(
+      collection(db, ref.versionsPath),
+      orderBy("number", "desc"),
+      limit(DEFAULT_VERSION_KEEP + 1),
+    ),
+  );
+  const excess = keepSnap.docs.slice(DEFAULT_VERSION_KEEP);
+  for (const d of excess) await deleteDoc(doc(db, ref.versionsPath, d.id));
 }
 
 async function countCollection(db: Firestore, name: string): Promise<number> {
@@ -384,6 +488,11 @@ export const firebaseProvider: DataProvider = {
     await deleteMedia(db, storage, id);
   },
 
+  async deleteVersion(target: VersionTarget, versionId: string) {
+    const ref = versionRef(target);
+    await deleteDoc(doc(db, ref.versionsPath, versionId));
+  },
+
   async findMany(collectionName: string, options?: QueryOptions) {
     const size = pageSize(options?.limit);
     const constraints = buildConstraints(options);
@@ -416,16 +525,40 @@ export const firebaseProvider: DataProvider = {
     return docToData(snap);
   },
 
+  async getVersion(target: VersionTarget, versionId: string) {
+    const ref = versionRef(target);
+    const snap = await getDoc(doc(db, ref.versionsPath, versionId));
+    return snap.exists() ? versionFromSnapshot(snap) : null;
+  },
+
+  async listVersions(target: VersionTarget) {
+    const ref = versionRef(target);
+    const snap = await getDocs(
+      query(collection(db, ref.versionsPath), orderBy("number", "desc"), limit(100)),
+    );
+    return snap.docs.map(versionFromSnapshot);
+  },
+
   name: "firebase",
 
   async replaceMedia(id: string, file: File, options?: MediaUploadOptions) {
     return replaceMedia(db, storage, id, file, options);
   },
 
+  async restoreVersion(target: VersionTarget, versionId: string) {
+    const ref = versionRef(target);
+    const snap = await getDoc(doc(db, ref.versionsPath, versionId));
+    if (!snap.exists()) throw new Error(`Version not found: ${versionId}`);
+    const version = versionFromSnapshot(snap);
+    await writeVersionSnapshot(target, `Restored to version ${version.number}`);
+    await setDoc(doc(db, ref.parentPath), version.data, { merge: true });
+  },
+
   type: "firebase",
 
   async update(collectionName: string, id: string, data: Record<string, unknown>) {
     const { id: _, ...updateData } = data;
+    await writeVersionSnapshot({ collection: collectionName, id, kind: "entry" }, "Edited");
     await updateDoc(doc(db, `collections_${collectionName}`, id), {
       ...updateData,
       updatedAt: new Date().toISOString(),
@@ -437,6 +570,7 @@ export const firebaseProvider: DataProvider = {
   },
 
   async upsertGlobal(slug: string, data: Record<string, unknown>) {
+    await writeVersionSnapshot({ kind: "global", slug }, "Saved");
     await setDoc(
       doc(db, `globals_${slug}`, "value"),
       { ...data, updatedAt: new Date().toISOString() },

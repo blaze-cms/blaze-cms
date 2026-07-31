@@ -1,3 +1,5 @@
+import type { GlobalDefinition } from "@blazing-cms/types";
+
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createRoute, useRouter } from "@tanstack/react-router";
 import { ArrowLeft, Save } from "lucide-react";
@@ -8,6 +10,7 @@ import { FieldInput } from "@/components/field-input";
 import { useToast } from "@/components/toast-provider";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { VersionPanel } from "@/components/version-panel";
 import { useDataProvider } from "@/lib/providers/context";
 import { appLayoutRoute } from "@/routes/app-layout";
 
@@ -16,6 +19,25 @@ export const globalDetailRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: "/globals/$slug",
 });
+
+function globalLabel(globalDef: GlobalDefinition | undefined, slug: string): string {
+  return globalDef?.label ?? slug;
+}
+
+function saveButtonLabel(saving: boolean): string {
+  return saving ? "Saving..." : "Save";
+}
+
+function GlobalVersionHistory({
+  entry,
+  slug,
+}: {
+  entry: Record<string, unknown> | null | undefined;
+  slug: string;
+}) {
+  if (!entry) return null;
+  return <VersionPanel target={{ kind: "global", slug }} />;
+}
 
 function GlobalEditor() {
   const { slug } = globalDetailRoute.useParams();
@@ -54,7 +76,7 @@ function GlobalEditor() {
     }
   }
 
-  const label = globalDef?.label ?? slug;
+  const label = globalLabel(globalDef, slug);
 
   return (
     <div>
@@ -87,10 +109,11 @@ function GlobalEditor() {
             />
           ))}
           <Button type="submit" disabled={saving}>
-            <Save className="mr-1 h-4 w-4" /> {saving ? "Saving..." : "Save"}
+            <Save className="mr-1 h-4 w-4" /> {saveButtonLabel(saving)}
           </Button>
         </form>
       )}
+      <GlobalVersionHistory entry={entry} slug={slug} />
     </div>
   );
 }

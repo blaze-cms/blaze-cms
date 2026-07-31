@@ -71,6 +71,20 @@ export interface AnalyticsSummary {
   };
 }
 
+export type VersionTarget =
+  { kind: "entry"; collection: string; id: string } | { kind: "global"; slug: string };
+
+export interface VersionRecord {
+  id: string;
+  /** Sequential version number, starting at 1. */
+  number: number;
+  /** Snapshot of the entry/global data at save time. */
+  data: Record<string, unknown>;
+  author?: string;
+  createdAt: string;
+  summary?: string;
+}
+
 export interface DataProvider {
   name: string;
   type: "firebase" | "mock";
@@ -86,6 +100,11 @@ export interface DataProvider {
 
   getGlobal(slug: string): Promise<Record<string, unknown> | null>;
   upsertGlobal(slug: string, data: Record<string, unknown>): Promise<void>;
+
+  listVersions(target: VersionTarget): Promise<VersionRecord[]>;
+  getVersion(target: VersionTarget, versionId: string): Promise<VersionRecord | null>;
+  restoreVersion(target: VersionTarget, versionId: string): Promise<void>;
+  deleteVersion(target: VersionTarget, versionId: string): Promise<void>;
 
   getAnalytics(query: AnalyticsQuery): Promise<AnalyticsSummary>;
 

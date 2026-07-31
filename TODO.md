@@ -107,22 +107,22 @@
 
 ---
 
-## Current Milestone: Content Versioning
+## Current Milestone: Content Versioning ✅
 
-- [ ] **Version schema + indexes** — subcollection under each entry/global
-- [ ] **Pre-update snapshot hook** — save current state as new version before each update
-- [ ] **Version list** — chronological with metadata (number, author, timestamp, summary)
-- [ ] **Side-by-side diff** — compare any two versions
-- [ ] **Single version view** — read-only view of a past version
-- [ ] **Rollback** — save current as new version, restore target (reversible)
-- [ ] **Pruning** — count-based (keep last N) + optional age-based TTL
-- [ ] **Manual deletion** — remove specific versions
-- [ ] **Admin UI: timeline view** — version history panel on entry detail page
-- [ ] **Admin UI: diff view** — side-by-side comparison UI
-- [ ] **Admin UI: rollback dialog** — confirmation with summary
-- [ ] **Global versioning** — same mechanics for globals
-- [ ] **SDK methods** — `versions.list()`, `versions.restore()`, `versions.delete()`
-- [ ] **Tests** — snapshot, rollback, pruning, global versioning
+- [x] **Version schema + indexes** — subcollection under each entry/global
+- [x] **Pre-update snapshot hook** — save current state as new version before each update
+- [x] **Version list** — chronological with metadata (number, author, timestamp, summary)
+- [x] **Side-by-side diff** — compare any two versions
+- [x] **Single version view** — read-only view of a past version
+- [x] **Rollback** — save current as new version, restore target (reversible)
+- [x] **Pruning** — count-based (keep last N) + optional age-based TTL
+- [x] **Manual deletion** — remove specific versions
+- [x] **Admin UI: timeline view** — version history panel on entry detail page
+- [x] **Admin UI: diff view** — side-by-side comparison UI
+- [x] **Admin UI: rollback dialog** — confirmation with summary
+- [x] **Global versioning** — same mechanics for globals
+- [x] **SDK methods** — `versions.list()`, `versions.restore()`, `versions.delete()`
+- [x] **Tests** — snapshot, rollback, pruning, global versioning
 
 ---
 

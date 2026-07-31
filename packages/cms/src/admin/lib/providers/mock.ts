@@ -14,6 +14,8 @@ import type {
   MediaUploadResult,
   PaginatedResult,
   QueryOptions,
+  VersionRecord,
+  VersionTarget,
 } from "./types";
 
 import {
@@ -34,11 +36,42 @@ const PAGE_SIZE = 25;
 
 const store: Map<string, Map<string, Record<string, unknown>>> = new Map();
 const globalStore: Map<string, Record<string, unknown>> = new Map();
+const versionStore: Map<string, Map<string, VersionRecord>> = new Map();
 
 function getCollection(col: string): Map<string, Record<string, unknown>> {
   if (!store.has(col)) store.set(col, new Map());
   return store.get(col) ?? new Map<string, Record<string, unknown>>();
 }
+
+function getVersions(target: VersionTarget): Map<string, VersionRecord> {
+  const key =
+    target.kind === "entry" ? `${target.collection}/${target.id}` : `global/${target.slug}`;
+  if (!versionStore.has(key)) versionStore.set(key, new Map());
+  return versionStore.get(key) ?? new Map<string, VersionRecord>();
+}
+
+function writeVersionSnapshot(target: VersionTarget, summary: string): void {
+  const existing =
+    target.kind === "entry"
+      ? getCollection(target.collection).get(target.id)
+      : globalStore.get(target.slug);
+  if (!existing) return;
+  const versions = getVersions(target);
+  const numbers = [...versions.values()].map((v) => v.number);
+  const number = numbers.length === 0 ? 1 : Math.max(...numbers) + 1;
+  versions.set(`version-${number}`, {
+    author: "mock-user",
+    createdAt: new Date().toISOString(),
+    data: { ...existing },
+    id: `version-${number}`,
+    number,
+    summary,
+  });
+  const sorted = [...versions.values()].sort((a, b) => b.number - a.number);
+  for (const record of sorted.slice(DEFAULT_VERSION_KEEP)) versions.delete(record.id);
+}
+
+const DEFAULT_VERSION_KEEP = 20;
 
 function contentTypeFor(name: string): string {
   if (name.endsWith(".jpg")) return "image/jpeg";
@@ -377,6 +410,10 @@ export const mockProvider: DataProvider = {
     getCollection(MEDIA).delete(id);
   },
 
+  async deleteVersion(target: VersionTarget, versionId: string) {
+    getVersions(target).delete(versionId);
+  },
+
   async findMany(collectionName: string, options?: QueryOptions) {
     const opts = options ?? {};
     const all = [...getCollection(collectionName).values()];
@@ -397,6 +434,14 @@ export const mockProvider: DataProvider = {
     return globalStore.get(slug) ?? null;
   },
 
+  async getVersion(target: VersionTarget, versionId: string) {
+    return getVersions(target).get(versionId) ?? null;
+  },
+
+  async listVersions(target: VersionTarget) {
+    return [...getVersions(target).values()].sort((a, b) => b.number - a.number);
+  },
+
   name: "mock",
 
   async replaceMedia(id: string, file: File, options?: MediaUploadOptions) {
@@ -412,12 +457,31 @@ export const mockProvider: DataProvider = {
     return { url };
   },
 
+  async restoreVersion(target: VersionTarget, versionId: string) {
+    const version = getVersions(target).get(versionId);
+    if (!version) throw new Error(`Version not found: ${versionId}`);
+    writeVersionSnapshot(target, `Restored to version ${version.number}`);
+    if (target.kind === "entry") {
+      const col = getCollection(target.collection);
+      const existing = col.get(target.id);
+      col.set(target.id, { ...existing, ...version.data, updatedAt: new Date().toISOString() });
+    } else {
+      const existing = globalStore.get(target.slug) ?? {};
+      globalStore.set(target.slug, {
+        ...existing,
+        ...version.data,
+        updatedAt: new Date().toISOString(),
+      });
+    }
+  },
+
   type: "mock",
 
   async update(collectionName: string, id: string, data: Record<string, unknown>) {
     const col = getCollection(collectionName);
     const existing = col.get(id);
     if (!existing) throw new Error(`Document ${id} not found in ${collectionName}`);
+    writeVersionSnapshot({ collection: collectionName, id, kind: "entry" }, "Edited");
     const { id: _, ...rest } = data;
     col.set(id, { ...existing, ...rest, updatedAt: new Date().toISOString() });
   },
@@ -427,6 +491,7 @@ export const mockProvider: DataProvider = {
   },
 
   async upsertGlobal(slug: string, data: Record<string, unknown>) {
+    writeVersionSnapshot({ kind: "global", slug }, "Saved");
     const existing = globalStore.get(slug) ?? {};
     globalStore.set(slug, { ...existing, ...data, updatedAt: new Date().toISOString() });
   },

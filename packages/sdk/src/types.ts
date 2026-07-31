@@ -274,3 +274,50 @@ export interface RbacApi {
   getUserRoles(userId: string): Promise<UserRoleAssignment | null>;
   assignRoles(userId: string, roleIds: string[]): Promise<void>;
 }
+
+/** Identifies a versionable document: an entry in a content collection, or a global. */
+export type VersionTarget =
+  { kind: "entry"; collection: string; id: string } | { kind: "global"; slug: string };
+
+export interface VersionRecord {
+  id: string;
+  /** Sequential version number, starting at 1. */
+  number: number;
+  /** Snapshot of the entry/global data at save time (excluding the id). */
+  data: Record<string, unknown>;
+  /** UID of the user who created the snapshot, if known. */
+  author?: string;
+  createdAt: string;
+  /** Optional human-readable description of the change. */
+  summary?: string;
+  kind: "entry" | "global";
+  parentId: string;
+  parentType: string;
+}
+
+export interface VersionDiffEntry {
+  field: string;
+  before: unknown;
+  after: unknown;
+  changed: boolean;
+}
+
+export interface VersionPruneOptions {
+  /** Keep at most this many newest versions. Defaults to 20. */
+  keep?: number;
+  /** Also delete kept-oldest versions older than this many days (TTL). */
+  olderThanDays?: number;
+}
+
+export interface VersionsApi {
+  /** Chronological versions, newest first. */
+  list(target: VersionTarget, options?: { limit?: number }): Promise<VersionRecord[]>;
+  get(target: VersionTarget, versionId: string): Promise<VersionRecord | null>;
+  /** Field-level diff between two versions of the same target. */
+  diff(target: VersionTarget, versionId: string, otherId: string): Promise<VersionDiffEntry[]>;
+  /** Applies a version's data back to its document, snapshotting the current state first. */
+  restore(target: VersionTarget, versionId: string): Promise<void>;
+  remove(target: VersionTarget, versionId: string): Promise<void>;
+  /** Deletes oldest versions beyond `keep`, optionally with an age-based TTL. Returns count removed. */
+  prune(target: VersionTarget, options?: VersionPruneOptions): Promise<number>;
+}

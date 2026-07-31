@@ -59,6 +59,12 @@ export interface GlobalDefinition {
         hide?: boolean | undefined;
       }
     | undefined;
+  versions?:
+    | {
+        /** Max version snapshots to keep per global. Oldest versions are pruned. */
+        maxPerDoc?: number | undefined;
+      }
+    | undefined;
 }
 
 export interface ComponentDefinition {

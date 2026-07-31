@@ -1,3 +1,5 @@
+import type { CollectionDefinition } from "@blazing-cms/types";
+
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createRoute, useRouter } from "@tanstack/react-router";
 import { ArrowLeft, Save } from "lucide-react";
@@ -9,6 +11,7 @@ import { FieldInput } from "@/components/field-input";
 import { useToast } from "@/components/toast-provider";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { VersionPanel } from "@/components/version-panel";
 import { useDataProvider } from "@/lib/providers/context";
 import { usePermissions } from "@/lib/rbac";
 import { appLayoutRoute } from "@/routes/app-layout";
@@ -18,6 +21,27 @@ export const editEntryRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: "/collections/$slug/$id",
 });
+
+function entryLabel(col: CollectionDefinition | undefined, slug: string): string {
+  return col?.labels?.singular ?? slug;
+}
+
+function saveButtonLabel(saving: boolean): string {
+  return saving ? "Saving..." : "Save";
+}
+
+function EntryVersionHistory({
+  entry,
+  id,
+  slug,
+}: {
+  entry: Record<string, unknown> | null | undefined;
+  id: string;
+  slug: string;
+}) {
+  if (!entry) return null;
+  return <VersionPanel target={{ collection: slug, id, kind: "entry" }} />;
+}
 
 function EditEntry() {
   const { id, slug } = editEntryRoute.useParams();
@@ -55,7 +79,7 @@ function EditEntry() {
     }
   }
 
-  const label = col?.labels?.singular ?? slug;
+  const label = entryLabel(col, slug);
 
   if (!canUpdate) {
     return <DeniedNotice action="update" resource={slug} />;
@@ -92,10 +116,11 @@ function EditEntry() {
             />
           ))}
           <Button type="submit" disabled={saving}>
-            <Save className="mr-1 h-4 w-4" /> {saving ? "Saving..." : "Save"}
+            <Save className="mr-1 h-4 w-4" /> {saveButtonLabel(saving)}
           </Button>
         </form>
       )}
+      <EntryVersionHistory entry={entry} id={id} slug={slug} />
     </div>
   );
 }
