@@ -16,6 +16,7 @@ export default tseslint.config(
       "**/.turbo/**",
       "**/coverage/**",
       "**/.fallow/**",
+      "**/__generated__/**",
     ],
   },
   eslint.configs.recommended,

@@ -3,6 +3,8 @@ import react from "@vitejs/plugin-react";
 import path from "path";
 import { defineConfig } from "vite";
 
+import { schemaWriterPlugin } from "./vite-plugins/schema-writer";
+
 export default defineConfig({
   base: "/",
   build: {
@@ -82,7 +84,7 @@ export default defineConfig({
       "remark-gfm",
     ],
   },
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), schemaWriterPlugin()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname),

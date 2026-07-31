@@ -32,9 +32,7 @@ Commands:
 Options:
   --help            Show help
   --sync            Deprecated. Sync now runs automatically when the
-                    VITE_BACKEND_MODE env var is set to firebase.
-                     Use "firebase-admin" privileges only. The dev server auto-syncs
-                     when the VITE_BACKEND_MODE env var is set to firebase.
+                     VITE_BACKEND_MODE env var is set to firebase.
   --project <id>    Firebase project ID (for deploy)
   --dir <path>      Schema directory (default: cms/)
   --name <slug>     Schema slug (for scaffold)

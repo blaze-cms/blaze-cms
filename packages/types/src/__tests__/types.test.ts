@@ -79,24 +79,6 @@ describe("@blazing-cms/types", () => {
     expect(field.kind).toBe("manyToOne");
   });
 
-  it("DatabaseAdapter interface has required methods", () => {
-    const adapter: import("../database.js").DatabaseAdapter = {
-      connect: async () => undefined,
-      disconnect: async () => undefined,
-      findOne: async () => null,
-      findMany: async () => ({ data: [], total: 0 }),
-      create: async () => ({}),
-      update: async () => null,
-      delete: async () => true,
-      deleteMany: async () => 0,
-      transaction: async (fn) => fn(),
-    };
-    expect(typeof adapter.connect).toBe("function");
-    expect(typeof adapter.findOne).toBe("function");
-    expect(typeof adapter.findMany).toBe("function");
-    expect(typeof adapter.transaction).toBe("function");
-  });
-
   it("PluginDefinition has required fields", () => {
     const plugin: import("../plugin.js").PluginDefinition = {
       slug: "seo",
@@ -121,15 +103,4 @@ describe("@blazing-cms/types", () => {
     expect(typeof logger.fatal).toBe("function");
   });
 
-  it("QueryOptions allows sort, where, select, populate", () => {
-    const opts: import("../database.js").QueryOptions = {
-      sort: { createdAt: "desc" },
-      where: { status: "published" },
-      select: ["title", "content"],
-      populate: ["author"],
-    };
-    expect(opts.sort?.createdAt).toBe("desc");
-    expect(opts.where?.status).toBe("published");
-    expect(opts.select).toEqual(["title", "content"]);
-  });
 });

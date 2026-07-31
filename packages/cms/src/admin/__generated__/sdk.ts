@@ -1,228 +1,248 @@
 // Auto-generated Blazing CMS SDK — do not edit
 
-import { createClient } from "@blazing-cms/sdk";
+import { createBlazeClient } from "@blazing-cms/sdk";
 
-const api = createClient({ baseUrl: "/api" });
+const client = createBlazeClient({
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY ?? "",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN ?? "",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID ?? "",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET ?? "",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID ?? "",
+});
 
 export const array = {
-  findMany: (params?: Record<string, unknown>) => api.findMany("array", params),
-  findOne: (id: string) => api.findOne("array", id),
-  create: (data: Record<string, unknown>) => api.create("array", data),
-  update: (id: string, data: Record<string, unknown>) => api.update("array", id, data),
-  delete: (id: string) => api.delete("array", id),
+  findMany: (options?: Parameters<ReturnType<typeof client.collection>["findMany"]>[0]) =>
+    client.collection("array").findMany(options),
+  findById: (id: string) => client.collection("array").findById(id),
+  create: (data: Record<string, unknown>) => client.collection("array").create(data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("array").update(id, data),
+  delete: (id: string) => client.collection("array").delete(id),
 };
 
 export const boolean = {
-  findMany: (params?: Record<string, unknown>) => api.findMany("boolean", params),
-  findOne: (id: string) => api.findOne("boolean", id),
-  create: (data: Record<string, unknown>) => api.create("boolean", data),
-  update: (id: string, data: Record<string, unknown>) => api.update("boolean", id, data),
-  delete: (id: string) => api.delete("boolean", id),
+  findMany: (options?: Parameters<ReturnType<typeof client.collection>["findMany"]>[0]) =>
+    client.collection("boolean").findMany(options),
+  findById: (id: string) => client.collection("boolean").findById(id),
+  create: (data: Record<string, unknown>) => client.collection("boolean").create(data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("boolean").update(id, data),
+  delete: (id: string) => client.collection("boolean").delete(id),
 };
 
 export const component = {
-  findMany: (params?: Record<string, unknown>) => api.findMany("component", params),
-  findOne: (id: string) => api.findOne("component", id),
-  create: (data: Record<string, unknown>) => api.create("component", data),
-  update: (id: string, data: Record<string, unknown>) => api.update("component", id, data),
-  delete: (id: string) => api.delete("component", id),
+  findMany: (options?: Parameters<ReturnType<typeof client.collection>["findMany"]>[0]) =>
+    client.collection("component").findMany(options),
+  findById: (id: string) => client.collection("component").findById(id),
+  create: (data: Record<string, unknown>) => client.collection("component").create(data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("component").update(id, data),
+  delete: (id: string) => client.collection("component").delete(id),
 };
 
 export const date = {
-  findMany: (params?: Record<string, unknown>) => api.findMany("date", params),
-  findOne: (id: string) => api.findOne("date", id),
-  create: (data: Record<string, unknown>) => api.create("date", data),
-  update: (id: string, data: Record<string, unknown>) => api.update("date", id, data),
-  delete: (id: string) => api.delete("date", id),
+  findMany: (options?: Parameters<ReturnType<typeof client.collection>["findMany"]>[0]) =>
+    client.collection("date").findMany(options),
+  findById: (id: string) => client.collection("date").findById(id),
+  create: (data: Record<string, unknown>) => client.collection("date").create(data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("date").update(id, data),
+  delete: (id: string) => client.collection("date").delete(id),
 };
 
 export const dynamicZone = {
-  findMany: (params?: Record<string, unknown>) => api.findMany("dynamic-zone", params),
-  findOne: (id: string) => api.findOne("dynamic-zone", id),
-  create: (data: Record<string, unknown>) => api.create("dynamic-zone", data),
-  update: (id: string, data: Record<string, unknown>) => api.update("dynamic-zone", id, data),
-  delete: (id: string) => api.delete("dynamic-zone", id),
+  findMany: (options?: Parameters<ReturnType<typeof client.collection>["findMany"]>[0]) =>
+    client.collection("dynamic-zone").findMany(options),
+  findById: (id: string) => client.collection("dynamic-zone").findById(id),
+  create: (data: Record<string, unknown>) => client.collection("dynamic-zone").create(data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("dynamic-zone").update(id, data),
+  delete: (id: string) => client.collection("dynamic-zone").delete(id),
 };
 
 export const group = {
-  findMany: (params?: Record<string, unknown>) => api.findMany("group", params),
-  findOne: (id: string) => api.findOne("group", id),
-  create: (data: Record<string, unknown>) => api.create("group", data),
-  update: (id: string, data: Record<string, unknown>) => api.update("group", id, data),
-  delete: (id: string) => api.delete("group", id),
+  findMany: (options?: Parameters<ReturnType<typeof client.collection>["findMany"]>[0]) =>
+    client.collection("group").findMany(options),
+  findById: (id: string) => client.collection("group").findById(id),
+  create: (data: Record<string, unknown>) => client.collection("group").create(data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("group").update(id, data),
+  delete: (id: string) => client.collection("group").delete(id),
 };
 
 export const mediaTest = {
-  findMany: (params?: Record<string, unknown>) => api.findMany("media-test", params),
-  findOne: (id: string) => api.findOne("media-test", id),
-  create: (data: Record<string, unknown>) => api.create("media-test", data),
-  update: (id: string, data: Record<string, unknown>) => api.update("media-test", id, data),
-  delete: (id: string) => api.delete("media-test", id),
+  findMany: (options?: Parameters<ReturnType<typeof client.collection>["findMany"]>[0]) =>
+    client.collection("media-test").findMany(options),
+  findById: (id: string) => client.collection("media-test").findById(id),
+  create: (data: Record<string, unknown>) => client.collection("media-test").create(data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("media-test").update(id, data),
+  delete: (id: string) => client.collection("media-test").delete(id),
 };
 
 export const number = {
-  findMany: (params?: Record<string, unknown>) => api.findMany("number", params),
-  findOne: (id: string) => api.findOne("number", id),
-  create: (data: Record<string, unknown>) => api.create("number", data),
-  update: (id: string, data: Record<string, unknown>) => api.update("number", id, data),
-  delete: (id: string) => api.delete("number", id),
+  findMany: (options?: Parameters<ReturnType<typeof client.collection>["findMany"]>[0]) =>
+    client.collection("number").findMany(options),
+  findById: (id: string) => client.collection("number").findById(id),
+  create: (data: Record<string, unknown>) => client.collection("number").create(data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("number").update(id, data),
+  delete: (id: string) => client.collection("number").delete(id),
 };
 
 export const posts = {
-  findMany: (params?: Record<string, unknown>) => api.findMany("posts", params),
-  findOne: (id: string) => api.findOne("posts", id),
-  create: (data: Record<string, unknown>) => api.create("posts", data),
-  update: (id: string, data: Record<string, unknown>) => api.update("posts", id, data),
-  delete: (id: string) => api.delete("posts", id),
+  findMany: (options?: Parameters<ReturnType<typeof client.collection>["findMany"]>[0]) =>
+    client.collection("posts").findMany(options),
+  findById: (id: string) => client.collection("posts").findById(id),
+  create: (data: Record<string, unknown>) => client.collection("posts").create(data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("posts").update(id, data),
+  delete: (id: string) => client.collection("posts").delete(id),
 };
 
 export const relation = {
-  findMany: (params?: Record<string, unknown>) => api.findMany("relation", params),
-  findOne: (id: string) => api.findOne("relation", id),
-  create: (data: Record<string, unknown>) => api.create("relation", data),
-  update: (id: string, data: Record<string, unknown>) => api.update("relation", id, data),
-  delete: (id: string) => api.delete("relation", id),
+  findMany: (options?: Parameters<ReturnType<typeof client.collection>["findMany"]>[0]) =>
+    client.collection("relation").findMany(options),
+  findById: (id: string) => client.collection("relation").findById(id),
+  create: (data: Record<string, unknown>) => client.collection("relation").create(data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("relation").update(id, data),
+  delete: (id: string) => client.collection("relation").delete(id),
 };
 
 export const repeater = {
-  findMany: (params?: Record<string, unknown>) => api.findMany("repeater", params),
-  findOne: (id: string) => api.findOne("repeater", id),
-  create: (data: Record<string, unknown>) => api.create("repeater", data),
-  update: (id: string, data: Record<string, unknown>) => api.update("repeater", id, data),
-  delete: (id: string) => api.delete("repeater", id),
+  findMany: (options?: Parameters<ReturnType<typeof client.collection>["findMany"]>[0]) =>
+    client.collection("repeater").findMany(options),
+  findById: (id: string) => client.collection("repeater").findById(id),
+  create: (data: Record<string, unknown>) => client.collection("repeater").create(data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("repeater").update(id, data),
+  delete: (id: string) => client.collection("repeater").delete(id),
 };
 
 export const richText = {
-  findMany: (params?: Record<string, unknown>) => api.findMany("rich-text", params),
-  findOne: (id: string) => api.findOne("rich-text", id),
-  create: (data: Record<string, unknown>) => api.create("rich-text", data),
-  update: (id: string, data: Record<string, unknown>) => api.update("rich-text", id, data),
-  delete: (id: string) => api.delete("rich-text", id),
+  findMany: (options?: Parameters<ReturnType<typeof client.collection>["findMany"]>[0]) =>
+    client.collection("rich-text").findMany(options),
+  findById: (id: string) => client.collection("rich-text").findById(id),
+  create: (data: Record<string, unknown>) => client.collection("rich-text").create(data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("rich-text").update(id, data),
+  delete: (id: string) => client.collection("rich-text").delete(id),
 };
 
 export const select = {
-  findMany: (params?: Record<string, unknown>) => api.findMany("select", params),
-  findOne: (id: string) => api.findOne("select", id),
-  create: (data: Record<string, unknown>) => api.create("select", data),
-  update: (id: string, data: Record<string, unknown>) => api.update("select", id, data),
-  delete: (id: string) => api.delete("select", id),
+  findMany: (options?: Parameters<ReturnType<typeof client.collection>["findMany"]>[0]) =>
+    client.collection("select").findMany(options),
+  findById: (id: string) => client.collection("select").findById(id),
+  create: (data: Record<string, unknown>) => client.collection("select").create(data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("select").update(id, data),
+  delete: (id: string) => client.collection("select").delete(id),
 };
 
 export const text = {
-  findMany: (params?: Record<string, unknown>) => api.findMany("text", params),
-  findOne: (id: string) => api.findOne("text", id),
-  create: (data: Record<string, unknown>) => api.create("text", data),
-  update: (id: string, data: Record<string, unknown>) => api.update("text", id, data),
-  delete: (id: string) => api.delete("text", id),
+  findMany: (options?: Parameters<ReturnType<typeof client.collection>["findMany"]>[0]) =>
+    client.collection("text").findMany(options),
+  findById: (id: string) => client.collection("text").findById(id),
+  create: (data: Record<string, unknown>) => client.collection("text").create(data),
+  update: (id: string, data: Record<string, unknown>) => client.collection("text").update(id, data),
+  delete: (id: string) => client.collection("text").delete(id),
 };
 
 export const boolean = {
-  get: () => api.findOne("globals_boolean", "default"),
-  update: (data: Record<string, unknown>) => api.update("globals_boolean", "default", data),
+  get: () => client.globals.get("boolean"),
+  upsert: (data: Record<string, unknown>) => client.globals.upsert("boolean", data),
 };
 
 export const checkbox = {
-  get: () => api.findOne("globals_checkbox", "default"),
-  update: (data: Record<string, unknown>) => api.update("globals_checkbox", "default", data),
+  get: () => client.globals.get("checkbox"),
+  upsert: (data: Record<string, unknown>) => client.globals.upsert("checkbox", data),
 };
 
 export const code = {
-  get: () => api.findOne("globals_code", "default"),
-  update: (data: Record<string, unknown>) => api.update("globals_code", "default", data),
+  get: () => client.globals.get("code"),
+  upsert: (data: Record<string, unknown>) => client.globals.upsert("code", data),
 };
 
 export const color = {
-  get: () => api.findOne("globals_color", "default"),
-  update: (data: Record<string, unknown>) => api.update("globals_color", "default", data),
+  get: () => client.globals.get("color"),
+  upsert: (data: Record<string, unknown>) => client.globals.upsert("color", data),
 };
 
 export const date = {
-  get: () => api.findOne("globals_date", "default"),
-  update: (data: Record<string, unknown>) => api.update("globals_date", "default", data),
+  get: () => client.globals.get("date"),
+  upsert: (data: Record<string, unknown>) => client.globals.upsert("date", data),
 };
 
 export const datetime = {
-  get: () => api.findOne("globals_datetime", "default"),
-  update: (data: Record<string, unknown>) => api.update("globals_datetime", "default", data),
+  get: () => client.globals.get("datetime"),
+  upsert: (data: Record<string, unknown>) => client.globals.upsert("datetime", data),
 };
 
 export const email = {
-  get: () => api.findOne("globals_email", "default"),
-  update: (data: Record<string, unknown>) => api.update("globals_email", "default", data),
+  get: () => client.globals.get("email"),
+  upsert: (data: Record<string, unknown>) => client.globals.upsert("email", data),
 };
 
 export const homepage = {
-  get: () => api.findOne("globals_homepage", "default"),
-  update: (data: Record<string, unknown>) => api.update("globals_homepage", "default", data),
+  get: () => client.globals.get("homepage"),
+  upsert: (data: Record<string, unknown>) => client.globals.upsert("homepage", data),
 };
 
 export const json = {
-  get: () => api.findOne("globals_json", "default"),
-  update: (data: Record<string, unknown>) => api.update("globals_json", "default", data),
+  get: () => client.globals.get("json"),
+  upsert: (data: Record<string, unknown>) => client.globals.upsert("json", data),
 };
 
 export const markdown = {
-  get: () => api.findOne("globals_markdown", "default"),
-  update: (data: Record<string, unknown>) => api.update("globals_markdown", "default", data),
+  get: () => client.globals.get("markdown"),
+  upsert: (data: Record<string, unknown>) => client.globals.upsert("markdown", data),
 };
 
 export const mediaSettings = {
-  get: () => api.findOne("globals_media-settings", "default"),
-  update: (data: Record<string, unknown>) => api.update("globals_media-settings", "default", data),
+  get: () => client.globals.get("media-settings"),
+  upsert: (data: Record<string, unknown>) => client.globals.upsert("media-settings", data),
 };
 
 export const multiSelect = {
-  get: () => api.findOne("globals_multi-select", "default"),
-  update: (data: Record<string, unknown>) => api.update("globals_multi-select", "default", data),
+  get: () => client.globals.get("multi-select"),
+  upsert: (data: Record<string, unknown>) => client.globals.upsert("multi-select", data),
 };
 
 export const number = {
-  get: () => api.findOne("globals_number", "default"),
-  update: (data: Record<string, unknown>) => api.update("globals_number", "default", data),
+  get: () => client.globals.get("number"),
+  upsert: (data: Record<string, unknown>) => client.globals.upsert("number", data),
 };
 
 export const password = {
-  get: () => api.findOne("globals_password", "default"),
-  update: (data: Record<string, unknown>) => api.update("globals_password", "default", data),
+  get: () => client.globals.get("password"),
+  upsert: (data: Record<string, unknown>) => client.globals.upsert("password", data),
 };
 
 export const radio = {
-  get: () => api.findOne("globals_radio", "default"),
-  update: (data: Record<string, unknown>) => api.update("globals_radio", "default", data),
+  get: () => client.globals.get("radio"),
+  upsert: (data: Record<string, unknown>) => client.globals.upsert("radio", data),
 };
 
 export const richText = {
-  get: () => api.findOne("globals_rich-text", "default"),
-  update: (data: Record<string, unknown>) => api.update("globals_rich-text", "default", data),
+  get: () => client.globals.get("rich-text"),
+  upsert: (data: Record<string, unknown>) => client.globals.upsert("rich-text", data),
 };
 
 export const select = {
-  get: () => api.findOne("globals_select", "default"),
-  update: (data: Record<string, unknown>) => api.update("globals_select", "default", data),
+  get: () => client.globals.get("select"),
+  upsert: (data: Record<string, unknown>) => client.globals.upsert("select", data),
 };
 
 export const siteSettings = {
-  get: () => api.findOne("globals_site-settings", "default"),
-  update: (data: Record<string, unknown>) => api.update("globals_site-settings", "default", data),
+  get: () => client.globals.get("site-settings"),
+  upsert: (data: Record<string, unknown>) => client.globals.upsert("site-settings", data),
 };
 
 export const slug = {
-  get: () => api.findOne("globals_slug", "default"),
-  update: (data: Record<string, unknown>) => api.update("globals_slug", "default", data),
+  get: () => client.globals.get("slug"),
+  upsert: (data: Record<string, unknown>) => client.globals.upsert("slug", data),
 };
 
 export const text = {
-  get: () => api.findOne("globals_text", "default"),
-  update: (data: Record<string, unknown>) => api.update("globals_text", "default", data),
+  get: () => client.globals.get("text"),
+  upsert: (data: Record<string, unknown>) => client.globals.upsert("text", data),
 };
 
 export const textarea = {
-  get: () => api.findOne("globals_textarea", "default"),
-  update: (data: Record<string, unknown>) => api.update("globals_textarea", "default", data),
+  get: () => client.globals.get("textarea"),
+  upsert: (data: Record<string, unknown>) => client.globals.upsert("textarea", data),
 };
 
 export const url = {
-  get: () => api.findOne("globals_url", "default"),
-  update: (data: Record<string, unknown>) => api.update("globals_url", "default", data),
+  get: () => client.globals.get("url"),
+  upsert: (data: Record<string, unknown>) => client.globals.upsert("url", data),
 };
 
