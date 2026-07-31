@@ -9,6 +9,7 @@ export const CAPABILITY_NAMES = [
   "rbac",
 ] as const;
 
+/** Union of the runtime capability names derived from `CAPABILITY_NAMES`. */
 export type RuntimeCapabilityName = (typeof CAPABILITY_NAMES)[number];
 
 /**

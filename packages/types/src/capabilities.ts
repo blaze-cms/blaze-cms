@@ -8,19 +8,26 @@
  * current behavior.
  */
 
+/** A capability that only exposes an on/off switch. */
 export interface CapabilityEnabledConfig {
   enabled?: boolean | undefined;
 }
 
+/** Analytics settings: enable flag plus result-freshness tuning. */
 export interface AnalyticsCapabilityConfig extends CapabilityEnabledConfig {
+  /** How long analytics results are considered fresh, in milliseconds. */
   staleTimeMs?: number | undefined;
 }
 
+/** Media settings: enable flag plus upload constraints. */
 export interface MediaCapabilityConfig extends CapabilityEnabledConfig {
+  /** Maximum accepted upload size in bytes. */
   maxFileSize?: number | undefined;
 }
 
+/** Versioning settings: enable flag plus retention tuning. */
 export interface VersioningCapabilityConfig extends CapabilityEnabledConfig {
+  /** Maximum retained versions per document. */
   maxPerDoc?: number | undefined;
 }
 
@@ -35,6 +42,7 @@ export type CapabilitiesConfig = {
   rbac?: CapabilityEnabledConfig | undefined;
 };
 
+/** The seven capability names, keyed the same as `CapabilitiesConfig`. */
 export type CapabilityName = keyof CapabilitiesConfig;
 
 /** Resolved enabled state for every capability. */
@@ -46,13 +54,15 @@ export type FeatureFlags = Record<CapabilityName, boolean>;
  */
 export type CollectionFeatureFlags = Partial<Record<"workflow" | "versioning", boolean>>;
 
-/** Per-collection capability config. */
+/** Per-collection capability config, applied as an override on the project defaults. */
 export interface CollectionCapabilitiesConfig {
+  /** Feature-flag overrides for collection-scoped capabilities. */
   features?: CollectionFeatureFlags | undefined;
 }
 
 /** Per-global capability config (only versioning is collection-scoped for globals). */
 export interface GlobalCapabilitiesConfig {
+  /** Feature-flag overrides for global-scoped capabilities. */
   features?: Partial<Record<"versioning", boolean>> | undefined;
 }
 
@@ -63,7 +73,10 @@ export interface GlobalCapabilitiesConfig {
  * an override when present, otherwise the project-wide flag.
  */
 export interface ResolvedCapabilities {
+  /** Project-wide flag for every capability. */
   features: FeatureFlags;
+  /** Per-collection overrides, keyed by collection slug. */
   collections: Record<string, Partial<FeatureFlags>>;
+  /** Per-global overrides, keyed by global slug. */
   globals: Record<string, Partial<FeatureFlags>>;
 }

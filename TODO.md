@@ -151,5 +151,5 @@
 - [x] **Configuration schema entries** — per-capability config in schema system
 - [x] **Feature flags** — enable/disable per capability
 - [x] **Admin sidebar nav** — updated with new feature links
-- [ ] **TSDoc documentation** — all new APIs documented
-- [ ] **E2E tests** — critical paths for each new capability
+- [x] **TSDoc documentation** — all new APIs documented
+- [x] **E2E tests** — critical paths for each new capability

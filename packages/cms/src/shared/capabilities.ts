@@ -8,6 +8,10 @@ import type {
 
 import { CAPABILITY_NAMES } from "@blazing-cms/schema";
 
+/**
+ * Builds the default flags with every capability enabled. Used as the baseline
+ * that project-level config and per-definition overrides are merged into.
+ */
 export function defaultFeatureFlags(): FeatureFlags {
   const flags = {} as FeatureFlags;
   for (const name of CAPABILITY_NAMES) {

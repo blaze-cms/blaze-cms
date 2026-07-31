@@ -28,6 +28,7 @@ export interface Config {
     bucket?: string | undefined;
   };
   plugins: Record<string, unknown>;
+  /** Project-level capability configuration (feature flags + capability settings). */
   capabilities?: CapabilitiesConfig | undefined;
   [key: string]: unknown;
 }

@@ -96,6 +96,11 @@ export class SchemaValidator {
     return errors;
   }
 
+  /**
+   * Validates project-level capability config: rejects unknown capability
+   * names, non-object settings, non-boolean `enabled` flags, and non-numeric
+   * capability settings.
+   */
   validateCapabilities(capabilities?: CapabilitiesConfig | undefined): ValidationError[] {
     const errors: ValidationError[] = [];
     if (!capabilities) {

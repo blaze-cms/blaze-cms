@@ -73,6 +73,7 @@ export interface CollectionDefinition {
       }
     | undefined;
   workflow?: WorkflowConfig | undefined;
+  /** Per-collection capability config (feature-flag overrides for workflow/versioning). */
   config?: CollectionCapabilitiesConfig | undefined;
 }
 
@@ -93,6 +94,7 @@ export interface GlobalDefinition {
         maxPerDoc?: number | undefined;
       }
     | undefined;
+  /** Per-global capability config (feature-flag override for versioning). */
   config?: GlobalCapabilitiesConfig | undefined;
 }
 
