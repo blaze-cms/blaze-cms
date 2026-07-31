@@ -58,7 +58,7 @@
 
 ---
 
-## Current Milestone: Admin Analytics
+## Current Milestone: Admin Analytics ✅
 
 - [x] **Data layer** — Firestore composite indexes for time-range queries; analytics type definitions
 - [x] **Analytics queries (SDK)** — `getContentCounts()`, `getContentByCollection()`, `getContentChangesOverTime()`, `getStorageUsage()`, `getUserActivity()`
@@ -91,7 +91,7 @@
 
 ---
 
-## Current Milestone: RBAC
+## Current Milestone: RBAC ✅
 
 - [x] **RBAC data models** — roles and user_roles Firestore collections
 - [x] **Role CRUD** — create/edit/delete roles with permission flags
@@ -126,7 +126,7 @@
 
 ---
 
-## Current Milestone: Content Workflow
+## Current Milestone: Content Workflow ✅
 
 - [x] **Workflow state machine schema** — `workflowState` field on entries
 - [x] **Workflow config on collection schema** — states, transitions, required roles
@@ -147,10 +147,10 @@
 
 ## Current Milestone: Shared Infrastructure
 
-- [ ] **Deploy Firestore indexes + Security Rules** for all new collections/specs
+- [x] **Deploy Firestore indexes + Security Rules** for all new collections/specs
 - [ ] **Configuration schema entries** — per-capability config in schema system
 - [ ] **Feature flags** — enable/disable per capability
-- [ ] **Admin sidebar nav** — updated with new feature links
+- [x] **Admin sidebar nav** — updated with new feature links
 - [ ] **TSDoc documentation** — all new APIs documented
 - [ ] **E2E tests** — critical paths for each new capability
 
