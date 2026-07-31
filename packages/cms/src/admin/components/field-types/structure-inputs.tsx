@@ -114,6 +114,7 @@ export function renderStructureInput(
       );
     }
 
+    case "boolean":
     case "checkbox":
       return (
         <label className="flex items-center gap-2 text-sm">
