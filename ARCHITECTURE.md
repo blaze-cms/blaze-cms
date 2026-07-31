@@ -71,10 +71,11 @@ The `SchemaLoader` (`packages/schema/src/loader.ts`) resolves the raw user files
 `packages/cms/src/commands/generate.ts` is the orchestrator. It:
 
 1. Loads and validates schema definitions from `cms/`.
-2. Runs the `GenerationPipeline` (`packages/generators`) with `TypeGenerator`, `ValidationGenerator`, and `SdkGenerator`.
-3. Writes the admin registry — `schema-registry.ts` (`collections` / `globals` / `components` arrays + lookup helpers), `types.ts`, `validation.ts`, `app-config.ts` — into `packages/cms/src/admin/__generated__`.
-4. Emits `firestore.rules` and `firestore.indexes.json` at the project root.
-5. Emits the typed SDK (`createBlazeClient`) for the consumer app.
+2. Resolves capability feature flags from `blazing-cms.config.ts` merged with per-definition `config.features`.
+3. Runs the `GenerationPipeline` (`packages/generators`) with `TypeGenerator`, `ValidationGenerator`, and `SdkGenerator`.
+4. Writes the admin registry — `schema-registry.ts` (`collections` / `globals` / `components` arrays + lookup helpers), `types.ts`, `validation.ts`, `app-config.ts` (project name + resolved `capabilities`) — into `packages/cms/src/admin/__generated__`.
+5. Emits `firestore.rules` and `firestore.indexes.json` at the project root, gated on the resolved flags.
+6. Emits the typed SDK (`createBlazeClient`, including resolved `features`) for the consumer app.
 
 ### Security Rules generation
 
@@ -84,6 +85,7 @@ Rules are derived per collection:
 - **Workflow enforcement** — collections with a workflow get a `valid<Name>Workflow()` helper restricting state changes to the configured transitions; creation is restricted to the default state.
 - **Version subcollections** — `collections_<slug>/{doc}/versions/{version}` are readable by users with read grant and writable by users with update grant.
 - **Platform collections** — roles, users, user_roles, media, access logs, notifications get system-flag rules (`manageRoles`, `manageUsers`, `manageMedia`, …).
+- **Capability gating** — rule sections are omitted when the corresponding capability is disabled (e.g. workflow helpers and version subcollections per collection, media, RBAC platform collections, notifications).
 - **Deny-all fallback** — `match /{document=**}` denies everything not matched above.
 
 ## 7. Admin panel architecture
@@ -124,9 +126,11 @@ The CLI `dev`/`build` commands run Vite against this app (`vite.config.ts` inclu
 - **Analytics** — content counts, per-collection charts, content-change-over-time, storage usage, user activity.
 - **Notifications** — Firestore listener delivering workflow / system notifications to users.
 
+Every capability has a feature flag (`content`, `analytics`, `media`, `versioning`, `workflow`, `notifications`, `rbac`). Flags are configured in `blazing-cms.config.ts` (`capabilities.<name>.enabled`) and overridable per collection/global via `config.features` on schema definitions (only `workflow`/`versioning` are collection-scoped, `versioning` global-scoped). `cms generate` resolves the merged flags (`packages/cms/src/shared/capabilities.ts`) into `__generated__/app-config.ts`; generation gates Firestore rules blocks, the admin hides disabled capabilities (nav, routes, panels), and the generated SDK reports `features` to `createBlazeClient`, which gates reads (empty results + warn) and writes (`CAPABILITY_DISABLED`).
+
 ## 10. SDK
 
-`packages/sdk` exposes a Firebase-Firestore-backed client for consumer apps: collection CRUD, globals, media, version history, workflow transitions, notifications, analytics queries, RBAC (roles/user-roles), and auth. It resolves through `@blazing-cms/types` / `@blazing-cms/schema` `dist` output (rebuild those packages after type changes).
+`packages/sdk` exposes a Firebase-Firestore-backed client for consumer apps: collection CRUD, globals, media, version history, workflow transitions, notifications, analytics queries, RBAC (roles/user-roles), and auth. It resolves through `@blazing-cms/types` / `@blazing-cms/schema` `dist` output (rebuild those packages after type changes). It accepts `features?: FeatureFlags` (typically sourced from the generated SDK) to disable capability surface when the corresponding flag is off.
 
 ## 11. Tooling & quality gates
 

@@ -25,8 +25,8 @@ export const collections: CollectionDefinition[] = [
       },
     ],
     labels: {
-      singular: "Array Field",
       plural: "Array Field",
+      singular: "Array Field",
     },
     slug: "array",
   },
@@ -76,6 +76,11 @@ export const collections: CollectionDefinition[] = [
     slug: "component",
   },
   {
+    config: {
+      features: {
+        versioning: false,
+      },
+    },
     fields: [
       {
         name: "title",

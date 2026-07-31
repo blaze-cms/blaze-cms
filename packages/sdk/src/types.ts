@@ -1,3 +1,4 @@
+import type { FeatureFlags } from "@blazing-cms/types";
 import type { User } from "firebase/auth";
 
 export interface BlazeClientConfig {
@@ -9,6 +10,12 @@ export interface BlazeClientConfig {
   measurementId?: string;
   analytics?: AnalyticsConfig;
   media?: MediaConfig;
+  /**
+   * Resolved capability flags. A disabled capability keeps its API surface but
+   * returns empty results (or throws for writes), following the analytics
+   * precedent. Defaults to every capability enabled.
+   */
+  features?: FeatureFlags;
 }
 
 export interface MediaConfig {

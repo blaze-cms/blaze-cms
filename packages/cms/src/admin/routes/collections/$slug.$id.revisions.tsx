@@ -3,7 +3,9 @@ import { ArrowLeft } from "lucide-react";
 
 import { collections } from "@/__generated__/schema-registry";
 import { DeniedNotice } from "@/components/denied-notice";
+import { FeatureDisabledNotice } from "@/components/feature-disabled-notice";
 import { VersionPanel } from "@/components/version-panel";
+import { collectionFeatureEnabled } from "@/lib/features";
 import { usePermissions } from "@/lib/rbac";
 import { appLayoutRoute } from "@/routes/app-layout";
 
@@ -21,6 +23,15 @@ function EntryRevisions() {
 
   if (!can("read", slug)) {
     return <DeniedNotice action="read" resource={slug} />;
+  }
+
+  if (!collectionFeatureEnabled(slug, "versioning")) {
+    return (
+      <FeatureDisabledNotice
+        title="Version history is disabled"
+        description="The versioning capability is turned off for this collection."
+      />
+    );
   }
 
   return (

@@ -10,6 +10,7 @@ import { FieldInput } from "@/components/field-input";
 import { useToast } from "@/components/toast-provider";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { globalFeatureEnabled } from "@/lib/features";
 import { useDataProvider } from "@/lib/providers/context";
 import { appLayoutRoute } from "@/routes/app-layout";
 
@@ -80,14 +81,16 @@ function GlobalEditor() {
             <h1 className="text-3xl font-bold">{label}</h1>
             <p className="text-muted-foreground text-sm">/{slug}</p>
           </div>
-          <Link
-            to={"/globals/$slug/revisions" as string}
-            params={{ slug } as Record<string, string>}
-          >
-            <Button type="button" variant="outline" size="sm">
-              <History className="mr-1 h-4 w-4" /> Version History
-            </Button>
-          </Link>
+          {globalFeatureEnabled(slug, "versioning") && (
+            <Link
+              to={"/globals/$slug/revisions" as string}
+              params={{ slug } as Record<string, string>}
+            >
+              <Button type="button" variant="outline" size="sm">
+                <History className="mr-1 h-4 w-4" /> Version History
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
 

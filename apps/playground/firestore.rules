@@ -58,10 +58,6 @@ service cloud.firestore {
       allow update: if hasGrant("collections:date:update") || hasGrant("collections:*:update");
       allow delete: if hasGrant("collections:date:delete") || hasGrant("collections:*:delete");
     }
-    match /collections_date/{doc}/versions/{version} {
-      allow read: if hasGrant("collections:date:read") || hasGrant("collections:*:read");
-      allow create, update, delete: if hasGrant("collections:date:update") || hasGrant("collections:*:update");
-    }
     match /collections_dynamic-zone/{doc} {
       allow create: if hasGrant("collections:dynamic-zone:create") || hasGrant("collections:*:create");
       allow read: if hasGrant("collections:dynamic-zone:read") || hasGrant("collections:*:read");
@@ -297,7 +293,7 @@ service cloud.firestore {
       allow read, write: if hasSystem("manageSettings");
     }
 
-    // Platform collections
+    // RBAC platform collections
     match /collections_roles/{doc} {
       allow read, create, update, delete: if hasSystem("manageRoles");
     }
@@ -309,14 +305,18 @@ service cloud.firestore {
       allow create, update: if hasSystem("manageUsers") || hasSystem("manageRoles") || (isSignedIn() && request.resource.data.userId == request.auth.uid && request.resource.data.roleIds.size() == 0);
       allow delete: if hasSystem("manageUsers") || hasSystem("manageRoles");
     }
-    match /media/{doc} {
-      allow read, create, update, delete: if hasSystem("manageMedia");
-    }
     match /collections_access_logs/{doc} {
       allow create: if isSignedIn();
       allow read: if hasSystem("manageUsers");
       allow update, delete: if false;
     }
+
+    // Media
+    match /media/{doc} {
+      allow read, create, update, delete: if hasSystem("manageMedia");
+    }
+
+    // Notifications
     match /notifications/{doc} {
       allow create: if isSignedIn();
       allow read: if isSignedIn() && resource.data.userId == request.auth.uid;

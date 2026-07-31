@@ -12,6 +12,7 @@ import { useToast } from "@/components/toast-provider";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { WorkflowPanel } from "@/components/workflow-panel";
+import { collectionFeatureEnabled } from "@/lib/features";
 import { useDataProvider } from "@/lib/providers/context";
 import { usePermissions } from "@/lib/rbac";
 import { appLayoutRoute } from "@/routes/app-layout";
@@ -67,6 +68,8 @@ function EditEntry() {
   }
 
   const label = entryLabel(col, slug);
+  const versioningEnabled = collectionFeatureEnabled(slug, "versioning");
+  const workflowEnabled = collectionFeatureEnabled(slug, "workflow");
 
   if (!canUpdate) {
     return <DeniedNotice action="update" resource={slug} />;
@@ -86,14 +89,16 @@ function EditEntry() {
             <h1 className="text-3xl font-bold">Edit {label}</h1>
             <p className="text-muted-foreground text-sm">ID: {id}</p>
           </div>
-          <Link
-            to={"/collections/$slug/$id/revisions" as string}
-            params={{ id, slug } as Record<string, string>}
-          >
-            <Button type="button" variant="outline" size="sm">
-              <History className="mr-1 h-4 w-4" /> Version History
-            </Button>
-          </Link>
+          {versioningEnabled && (
+            <Link
+              to={"/collections/$slug/$id/revisions" as string}
+              params={{ id, slug } as Record<string, string>}
+            >
+              <Button type="button" variant="outline" size="sm">
+                <History className="mr-1 h-4 w-4" /> Version History
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
 
@@ -119,7 +124,9 @@ function EditEntry() {
           </Button>
         </form>
       )}
-      {col && entry && <WorkflowPanel col={col} entry={entry} id={id} slug={slug} />}
+      {col && entry && workflowEnabled && (
+        <WorkflowPanel col={col} entry={entry} id={id} slug={slug} />
+      )}
     </div>
   );
 }

@@ -1,4 +1,9 @@
-import type { CollectionDefinition, FieldDefinition, WorkflowConfig } from "@blazing-cms/types";
+import type {
+  CollectionCapabilitiesConfig,
+  CollectionDefinition,
+  FieldDefinition,
+  WorkflowConfig,
+} from "@blazing-cms/types";
 
 export function defineCollection(config: {
   slug: string;
@@ -25,10 +30,12 @@ export function defineCollection(config: {
     defaultLocale: string;
   };
   workflow?: WorkflowConfig;
+  config?: CollectionCapabilitiesConfig;
 }): CollectionDefinition {
   return {
     admin: config.admin,
     auth: config.auth,
+    config: config.config,
     fields: config.fields,
     labels: config.labels,
     localization: config.localization,

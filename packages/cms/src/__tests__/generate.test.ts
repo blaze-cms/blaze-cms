@@ -21,7 +21,23 @@ vi.mock("node:fs", () => ({
 }));
 
 vi.mock("@blazing-cms/schema", () => ({
+  CAPABILITY_NAMES: [
+    "content",
+    "analytics",
+    "media",
+    "versioning",
+    "workflow",
+    "notifications",
+    "rbac",
+  ],
   SchemaLoader: vi.fn(() => ({ load: mockLoad })),
+}));
+
+vi.mock("../commands/load-config.js", () => ({
+  loadProjectConfig: vi.fn(async () => ({
+    capabilities: undefined,
+    projectName: "Blazing CMS",
+  })),
 }));
 
 vi.mock("@blazing-cms/generators", () => ({

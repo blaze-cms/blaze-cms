@@ -21,6 +21,7 @@ import {
   globals as registryGlobals,
 } from "@/__generated__/schema-registry";
 import { isDevMode } from "@/lib/backend-mode";
+import { featureEnabled } from "@/lib/features";
 import { usePermissions } from "@/lib/rbac";
 import { cn } from "@/lib/utils";
 
@@ -39,7 +40,13 @@ function navSections(
   can: (action: string, resource: string) => boolean,
   canSystem: (action: string) => boolean,
 ): NavSection[] {
-  const readableCollections = registryCollections.filter((c) => can("read", c.slug));
+  const contentEnabled = featureEnabled("content");
+  const mediaEnabled = featureEnabled("media");
+  const analyticsEnabled = featureEnabled("analytics");
+  const rbacEnabled = featureEnabled("rbac");
+  const readableCollections = contentEnabled
+    ? registryCollections.filter((c) => can("read", c.slug))
+    : [];
 
   const collections = readableCollections.map((c) => ({
     group: (c as { admin?: { group?: string } }).admin?.group ?? "Collections",
@@ -48,12 +55,14 @@ function navSections(
     label: (c as { labels?: { plural?: string; singular?: string } }).labels?.plural ?? c.slug,
   }));
 
-  const globals = registryGlobals.map((g) => ({
-    group: g.admin?.group ?? "Globals",
-    href: `/globals/${g.slug}`,
-    icon: Globe,
-    label: g.label ?? g.slug,
-  }));
+  const globals = contentEnabled
+    ? registryGlobals.map((g) => ({
+        group: g.admin?.group ?? "Globals",
+        href: `/globals/${g.slug}`,
+        icon: Globe,
+        label: g.label ?? g.slug,
+      }))
+    : [];
 
   const contentItems: (NavItem & { group?: string })[] = [];
   if (readableCollections.length > 0) {
@@ -65,9 +74,13 @@ function navSections(
     });
   }
   contentItems.push(...collections);
-  contentItems.push({ group: "Globals", href: "/globals", icon: Globe, label: "All Globals" });
+  if (contentEnabled) {
+    contentItems.push({ group: "Globals", href: "/globals", icon: Globe, label: "All Globals" });
+  }
   contentItems.push(...globals);
-  contentItems.push({ group: "Media", href: "/media", icon: Image, label: "Media" });
+  if (mediaEnabled) {
+    contentItems.push({ group: "Media", href: "/media", icon: Image, label: "Media" });
+  }
 
   const groups = new Map<string, (NavItem & { group?: string })[]>();
   const ungrouped: (NavItem & { group?: string })[] = [];
@@ -94,15 +107,19 @@ function navSections(
     {
       items: [
         { href: "/", icon: LayoutDashboard, label: "Dashboard" },
-        { href: "/analytics", icon: BarChart3, label: "Analytics" },
+        ...(analyticsEnabled ? [{ href: "/analytics", icon: BarChart3, label: "Analytics" }] : []),
       ],
       label: "Overview",
     },
     ...dynamicSections,
     {
       items: [
-        ...(canSystem("manageUsers") ? [{ href: "/users", icon: Users, label: "Users" }] : []),
-        ...(canSystem("manageRoles") ? [{ href: "/roles", icon: Shield, label: "Roles" }] : []),
+        ...(rbacEnabled && canSystem("manageUsers")
+          ? [{ href: "/users", icon: Users, label: "Users" }]
+          : []),
+        ...(rbacEnabled && canSystem("manageRoles")
+          ? [{ href: "/roles", icon: Shield, label: "Roles" }]
+          : []),
         ...(isDevMode() ? [{ href: "/schemas", icon: FileJson, label: "Schemas" }] : []),
         { href: "/settings", icon: Settings, label: "Settings" },
       ],

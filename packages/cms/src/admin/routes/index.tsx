@@ -14,6 +14,7 @@ import { StorageWidget } from "@/components/analytics/storage-widget";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAnalytics } from "@/hooks/use-analytics";
+import { featureEnabled } from "@/lib/features";
 import { appLayoutRoute } from "@/routes/app-layout";
 
 export const indexRoute = createRoute({
@@ -25,6 +26,16 @@ export const indexRoute = createRoute({
 function Dashboard() {
   const [period, setPeriod] = useState<AnalyticsPeriod>("30d");
   const { data, isLoading } = useAnalytics(period);
+  const analyticsEnabled = featureEnabled("analytics");
+
+  if (!analyticsEnabled) {
+    return (
+      <div className="flex flex-col items-center gap-4 py-20 text-center">
+        <h1 className="text-3xl font-bold">Dashboard</h1>
+        <p className="text-muted-foreground">Analytics is disabled for this project.</p>
+      </div>
+    );
+  }
 
   return (
     <div>

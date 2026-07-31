@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAnalytics } from "@/hooks/use-analytics";
+import { featureEnabled } from "@/lib/features";
 import { appLayoutRoute } from "@/routes/app-layout";
 
 export const analyticsRoute = createRoute({
@@ -27,6 +28,15 @@ function AnalyticsPage() {
   const [period, setPeriod] = useState<AnalyticsPeriod>("30d");
   const { data, isLoading } = useAnalytics(period);
   const queryClient = useQueryClient();
+
+  if (!featureEnabled("analytics")) {
+    return (
+      <div className="flex flex-col items-center gap-4 py-20 text-center">
+        <h2 className="text-xl font-semibold">Analytics is disabled</h2>
+        <p className="text-muted-foreground">The analytics capability is turned off.</p>
+      </div>
+    );
+  }
 
   function refresh() {
     void queryClient.invalidateQueries({ queryKey: ["analytics", period] });

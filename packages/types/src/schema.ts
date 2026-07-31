@@ -1,3 +1,4 @@
+import type { CollectionCapabilitiesConfig, GlobalCapabilitiesConfig } from "./capabilities.js";
 import type { FieldDefinition } from "./fields.js";
 
 export interface Labels {
@@ -72,6 +73,7 @@ export interface CollectionDefinition {
       }
     | undefined;
   workflow?: WorkflowConfig | undefined;
+  config?: CollectionCapabilitiesConfig | undefined;
 }
 
 export interface GlobalDefinition {
@@ -91,6 +93,7 @@ export interface GlobalDefinition {
         maxPerDoc?: number | undefined;
       }
     | undefined;
+  config?: GlobalCapabilitiesConfig | undefined;
 }
 
 export interface ComponentDefinition {

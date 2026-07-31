@@ -35,6 +35,12 @@ export { SchemaValidator } from "./validator.js";
 export { defineCollection } from "./define-collection.js";
 export { defineGlobal } from "./define-global.js";
 export { defineComponent } from "./define-component.js";
+export {
+  CAPABILITY_NAMES,
+  COLLECTION_SCOPED_CAPABILITIES,
+  GLOBAL_SCOPED_CAPABILITIES,
+  type RuntimeCapabilityName,
+} from "./capabilities.js";
 export type {
   TextField,
   TextareaField,

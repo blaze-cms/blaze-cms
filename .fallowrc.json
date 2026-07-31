@@ -80,13 +80,18 @@
       },
       {
         "files": ["packages/cms/src/admin/components/sidebar.tsx"],
-        "maxCrap": 115,
-        "reason": "nav section builder filtering collections and system links by RBAC grants"
+        "maxCrap": 320,
+        "reason": "nav section builder filtering collections and system links by RBAC grants and capability flags"
       },
       {
         "files": ["packages/cms/src/admin/routes/collections/$slug.tsx"],
         "maxCrap": 95,
         "reason": "entry list with fallback title resolution, status badges, and create gate"
+      },
+      {
+        "files": ["packages/cms/src/admin/routes/collections/$slug.$id.revisions.tsx"],
+        "maxCrap": 35,
+        "reason": "revisions route with RBAC read gate and versioning capability gate"
       },
       {
         "files": ["packages/cms/src/admin/routes/collections/new.$slug.tsx"],
@@ -95,8 +100,8 @@
       },
       {
         "files": ["packages/cms/src/admin/routes/collections/$slug.$id.edit.tsx"],
-        "maxCrap": 45,
-        "reason": "entry editor with RBAC update gate and delete flow"
+        "maxCrap": 60,
+        "reason": "entry editor with RBAC update gate, capability-gated workflow/versioning panels, and delete flow"
       },
       {
         "files": ["packages/cms/src/admin/routes/users/index.tsx"],
@@ -142,6 +147,26 @@
         "files": ["packages/sdk/src/workflow.ts"],
         "maxCrap": 35,
         "reason": "workflow transition API with existence guard, optional reviewer notification, and patch composition"
+      },
+      {
+        "files": ["packages/schema/src/validator.ts"],
+        "maxCrap": 140,
+        "reason": "capability config validation (validateCapabilities, collection/global feature validators) plus field validation"
+      },
+      {
+        "files": ["packages/sdk/src/client.ts"],
+        "maxCrap": 140,
+        "reason": "createBlazeClient with per-capability disabled stubs and write gating"
+      },
+      {
+        "files": ["packages/cms/src/commands/generate.ts"],
+        "maxCrap": 100,
+        "reason": "rules generation gated on resolved capability flags (content, per-collection workflow/versioning, rbac, media, notifications)"
+      },
+      {
+        "files": ["packages/cms/src/commands/load-config.ts"],
+        "maxCrap": 80,
+        "reason": "jiti-based project config loader with graceful fallback and cwd resolution"
       }
     ]
   },
@@ -154,10 +179,12 @@
       "packages/cms/src/commands/scaffold.ts",
       "packages/cms/src/admin/routes/schemas/new.tsx",
       "packages/cms/src/admin/routes/users/$id.tsx",
+      "packages/cms/src/admin/routes/globals/$slug.tsx",
       "packages/cms/src/admin/lib/providers/firebase.ts",
       "packages/cms/src/admin/lib/providers/analytics-helpers.ts",
       "packages/cms/src/admin/lib/media/validation.ts",
       "packages/cms/src/admin/lib/media/usage.ts",
+      "packages/sdk/src/types.ts",
       "packages/sdk/src/collection.ts",
       "packages/sdk/src/analytics.ts",
       "packages/sdk/src/media.ts"
